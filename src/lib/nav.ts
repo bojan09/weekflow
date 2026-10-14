@@ -1,4 +1,5 @@
 import {
+  BookOpen,
   ChartColumn,
   CalendarDays,
   CalendarRange,
@@ -34,6 +35,7 @@ export const PRIMARY_NAV: readonly NavItem[] = [
 export const SECONDARY_NAV: readonly NavItem[] = [
   { route: "profile", label: "Profile", icon: UserRound, shortcut: "p" },
   { route: "settings", label: "Settings", icon: Settings, shortcut: "s" },
+  { route: "guide", label: "Guide", icon: BookOpen, shortcut: "u" },
 ];
 
 /** Reachable from the avatar menu, the command palette and the More sheet. */

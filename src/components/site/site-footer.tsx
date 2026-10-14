@@ -2,11 +2,15 @@ import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { APP_VERSION } from "@/generated/version";
+import { appPath } from "@/lib/routes";
 import { SITE_CTA, SITE_LINKS } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const PRODUCT = SITE_LINKS.filter((l) => ["Features", "How it works", "Customize"].includes(l.label));
-const PROJECT = SITE_LINKS.filter((l) => ["Roadmap", "Version history"].includes(l.label));
+const PROJECT = [
+  ...SITE_LINKS.filter((l) => ["Roadmap", "Version history"].includes(l.label)),
+  { href: appPath("guide"), label: "Guide" },
+];
 
 function LinkList({ title, links }: { title: string; links: readonly { href: string; label: string }[] }) {
   return (

@@ -53,6 +53,7 @@ export function AvatarMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href={appPath("profile")} />}>Profile</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={appPath("settings")} />}>Settings</DropdownMenuItem>
+        <DropdownMenuItem render={<Link href={appPath("guide")} />}>Guide</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={appPath("changelog")} />}>Version history</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
