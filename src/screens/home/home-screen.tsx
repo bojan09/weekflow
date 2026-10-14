@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { CircleCheck, Clock, Hourglass, ListChecks, Wand2 } from "lucide-react";
 import { WeekNav } from "@/components/calendar/week-nav";
 import { WeekPlanner } from "@/components/calendar/week-planner";
+import { StartHere } from "@/components/guide/start-here";
 import { MissedBanner, ReviewPrompt } from "@/components/home/attention-cards";
 import { ActiveRulesBar } from "@/components/home/active-rules-bar";
 import { ConflictsPanel } from "@/components/home/conflicts-panel";
@@ -47,6 +48,7 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
 
   return (
     <>
+      <StartHere />
       <section aria-label="This week in numbers" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats ? (
           <>

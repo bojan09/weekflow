@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { OfflineNotice } from "@/components/states/states";
+import { ScreenHint } from "@/components/guide/screen-hint";
 import { HelpPanel } from "@/components/guide/help-panel";
 import { HistoryDialog } from "@/components/plan/history-dialog";
 import { PlanDialog } from "@/components/plan/plan-dialog";
@@ -50,6 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           tabIndex={-1}
           className="surface-panel flex-1 rounded-3xl p-5 pb-28 shadow-soft outline-none md:p-8 md:pb-28 lg:pb-8"
         >
+          <ScreenHint />
           {children}
         </main>
       </div>
