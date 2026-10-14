@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Info } from "lucide-react";
-import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import { Info, X } from "lucide-react";
+import { Popover, PopoverClose, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
 import { termById, type TermId } from "@/guide/terms";
 import { appPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 export function Term({ id, className }: { id: TermId; className?: string }) {
   const term = termById(id);
   return (
-    <Popover>
+    <Popover modal>
       <PopoverTrigger
         aria-label={`What is ${term.word}?`}
         className={cn(
@@ -25,7 +25,13 @@ export function Term({ id, className }: { id: TermId; className?: string }) {
         <Info className="size-4" aria-hidden="true" />
       </PopoverTrigger>
       <PopoverContent>
-        <PopoverTitle className="text-sm font-semibold">{term.word}</PopoverTitle>
+        <PopoverClose
+          aria-label="Close"
+          className="absolute top-1 right-1 flex size-11 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <X className="size-4" aria-hidden="true" />
+        </PopoverClose>
+        <PopoverTitle className="pr-10 text-sm font-semibold">{term.word}</PopoverTitle>
         <PopoverDescription className="mt-1 text-sm">{term.plain}</PopoverDescription>
         <p className="mt-2 text-sm text-muted-foreground">{term.whyItMatters}</p>
         <div className="mt-3 flex flex-col gap-1.5 text-sm font-medium text-primary-text">

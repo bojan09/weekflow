@@ -5,6 +5,18 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.6 — Guide and onboarding
+Date: 2026-10-14
+Summary: A guide to every part of Weekflow, help on every screen, and a Start here checklist on Home.
+
+- Guide page: the big picture, a section for every screen, planner rules and a glossary, with live search and a contents list
+- Help on every screen: press H or the ? button for what the page is, what to try first, shortcuts and the words used (the ? key still shows all shortcuts)
+- (i) tips next to confusing words such as buffer, strict deadline, stability and inbox, in Settings, Plan my week, the rules bar and the inbox
+- Start here on Home: a map of the app, a six-step checklist that ticks off as you really do each thing, and the words people trip on
+- One short first-visit hint per screen, shown once
+- Replay Start here from the Guide page
+- Guide added to the sidebar, the phone More menu, the account menu, the command menu and the public footer
+
 ## 0.0.5 — Replanning and review
 Date: 2026-10-14
 Summary: Missed tasks get replanned, every bulk change can be rolled back, and a weekly review shows workload and progress.

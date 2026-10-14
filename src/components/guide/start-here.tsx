@@ -102,7 +102,7 @@ export function StartHere() {
                     {complete ? null : (
                       <>
                         {" "}
-                        <Link href={appPath(step.to.route, step.to.sub)} className="text-primary-text hover:underline">
+                        <Link href={appPath(step.to.route, step.to.sub)} className="text-primary-text underline underline-offset-2">
                           Show me
                         </Link>
                       </>

@@ -14,8 +14,8 @@ finished and tested (`package.json` + `CHANGELOG.md`).
 | 0.0.3 | **Landing page and public site**: redesigned landing, public navbar with mobile drawer, mobile-friendly footer (see `docs/LANDING-DESIGN.md`). Built from the owner's three reference designs. | Built |
 | 0.0.4 | **Scheduling engine** (pure TypeScript in `src/engine`): ordering, constraints, explanations, plan preview, automated tests | Built |
 | **0.0.5** | **Replanning and review**: auto-replan of missed tasks, schedule history with rollback, workload analytics, weekly review | Built |
-| **0.0.6** | **Guide and onboarding** (requested by the owner, who found the number of features hard to take in). Plan it with the brainstorming skill before building. See notes below. | Next |
-| 0.0.7 | Recurring tasks, projects and templates, custom categories, long-task blocks (min/max block settings), in-app reminders | Planned |
+| **0.0.6** | **Guide and onboarding**: Guide page, help on every screen, (i) jargon tips, Start here checklist (requested by the owner, who found the number of features hard to take in). Spec and plan in `docs/superpowers/` | Built |
+| 0.0.7 | Recurring tasks, projects and templates, custom categories, long-task blocks (min/max block settings), in-app reminders | Next |
 | 0.0.8 | Team workspaces UI on mock data, with the permission model designed in | Planned |
 | 0.0.9 | UI/UX audit: accessibility, mobile, performance, regression across every theme, palette and background | Planned |
 | 0.1.0 | Appwrite: auth, schema and migrations, permissions, Functions, adapters, real Profile security | Planned |
@@ -61,3 +61,8 @@ Starting points to explore, not decisions:
 - A first-run tour and a getting-started checklist driven by real actions
 - Plain names for the planner jargon (inbox, lock, buffer, strict deadline, engine)
 - Every later phase adds its own guide entries as part of being done (Definition of Done)
+
+## Definition of Done (from 0.0.6)
+A phase is not finished until its new screens, settings and jargon have Guide entries
+(`src/guide/content.ts`, `src/guide/terms.ts`). A new route without a Guide section fails
+`src/guide/content.test.ts`.

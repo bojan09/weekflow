@@ -183,7 +183,7 @@ export function Roadmap() {
 
 const FAQ: Array<{ q: string; a: string }> = [
   { q: "Is Weekflow really free?", a: "Yes. There are no subscriptions, paid tiers or limits, and team features will be free as well." },
-  { q: "Do I need an account to try it?", a: "No. The demo runs entirely in your browser on sample data. Accounts and sync arrive in a later release." },
+  { q: "Do I need an account to try it?", a: "No. The demo runs entirely in your browser on sample data, and its Guide explains every part. Accounts and sync arrive in a later release." },
   { q: "Where is my data kept?", a: "In the demo, only in your browser. Nothing is sent to a server and there is no tracking." },
   { q: "What is the scheduling engine?", a: "A deterministic planner: the same tasks and rules always give the same plan, and every decision is explained in plain language. Try it with Plan my week in the demo." },
   { q: "Can I plan with a team?", a: "Team workspaces are on the roadmap. Your personal tasks will always stay private, and team scheduling will never override your protected time." },

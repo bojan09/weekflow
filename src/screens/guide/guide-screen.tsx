@@ -65,7 +65,7 @@ function SectionBlock({ section }: { section: GuideSection }) {
                         {" "}
                         <Link
                           href={appPath(step.to.route, step.to.sub)}
-                          className="font-medium text-primary-text hover:underline"
+                          className="font-medium text-primary-text underline underline-offset-2"
                         >
                           {step.to.label}
                         </Link>

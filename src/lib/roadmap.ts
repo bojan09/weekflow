@@ -9,11 +9,6 @@ export interface RoadmapEntry {
 /** What each upcoming version delivers. Shipped versions live in CHANGELOG.md. */
 export const ROADMAP: readonly RoadmapEntry[] = [
   {
-    version: "0.0.6",
-    title: "Guide and onboarding",
-    summary: "A guide to every part of Weekflow, a first-run tour, and a short explanation on each screen.",
-  },
-  {
     version: "0.0.7",
     title: "Recurring tasks and projects",
     summary: "Recurring tasks, projects, templates, custom categories, long-task blocks and in-app reminders.",

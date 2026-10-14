@@ -48,7 +48,7 @@ export function HelpPanel() {
                           <Link
                             href={appPath(step.to.route, step.to.sub)}
                             onClick={() => setOpen(false)}
-                            className="font-medium text-primary-text hover:underline"
+                            className="font-medium text-primary-text underline underline-offset-2"
                           >
                             {step.to.label}
                           </Link>

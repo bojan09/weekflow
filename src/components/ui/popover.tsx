@@ -27,7 +27,7 @@ function PopoverContent({
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            "w-72 max-w-[calc(100vw-2rem)] rounded-xl bg-popover p-4 text-sm text-popover-foreground shadow-lift ring-1 ring-foreground/10 outline-none transition duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0",
+            "relative w-72 max-w-[calc(100vw-2rem)] rounded-xl bg-popover p-4 text-sm text-popover-foreground shadow-lift ring-1 ring-foreground/10 outline-none transition duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0",
             className
           )}
           {...props}
@@ -39,7 +39,8 @@ function PopoverContent({
   )
 }
 
+const PopoverClose = PopoverPrimitive.Close
 const PopoverTitle = PopoverPrimitive.Title
 const PopoverDescription = PopoverPrimitive.Description
 
-export { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger }
+export { Popover, PopoverClose, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger }
