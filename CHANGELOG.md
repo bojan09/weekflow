@@ -5,6 +5,20 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.7 — Repeat, organize and remind
+Date: 2026-10-14
+Summary: Repeating tasks, projects, templates, your own categories, long tasks split into blocks, and reminders inside Weekflow.
+
+- Repeat: a task can repeat daily, weekly on chosen days, or monthly, every N, with an optional end date. Finishing it adds the next one
+- Projects: group tasks with a colour, filter the Tasks page by project, and see the project on each task
+- Templates: save any task as a template and start new tasks from it; two starters included
+- Projects and templates are managed in one dialog on the Tasks page
+- Your own categories (up to 8) in Settings, Workspace, alongside the built-in eight; deleting one moves its tasks to Work
+- Long tasks: when a task is longer than your maximum block, Plan my week splits it into blocks placed one after another, and shows the split in the preview
+- Reminders: a message inside Weekflow shortly before a timed task starts, once per task, using the lead time in Settings
+- Settings text updated: block length and reminders are now live
+- Guide: new entries for repeat, projects, templates, categories, blocks and reminders
+
 ## 0.0.6 — Guide and onboarding
 Date: 2026-10-14
 Summary: A guide to every part of Weekflow, help on every screen, and a Start here checklist on Home.

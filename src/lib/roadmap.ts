@@ -9,11 +9,6 @@ export interface RoadmapEntry {
 /** What each upcoming version delivers. Shipped versions live in CHANGELOG.md. */
 export const ROADMAP: readonly RoadmapEntry[] = [
   {
-    version: "0.0.7",
-    title: "Recurring tasks and projects",
-    summary: "Recurring tasks, projects, templates, custom categories, long-task blocks and in-app reminders.",
-  },
-  {
     version: "0.0.8",
     title: "Team workspaces",
     summary: "Members, shared projects and tasks, assignment, comments and team availability.",

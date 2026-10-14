@@ -12,6 +12,7 @@ import { TaskEditor } from "@/components/tasks/task-editor";
 import { useConnectivity } from "@/data/use-online";
 import { GuideTracker } from "@/guide/tracker";
 import { useAutoReplan } from "@/hooks/use-auto-replan";
+import { useReminders } from "@/hooks/use-reminders";
 import { CommandMenu } from "./command-menu";
 import { MobileNav } from "./mobile-nav";
 import { ShortcutsDialog, useGlobalShortcuts } from "./shortcuts";
@@ -21,6 +22,7 @@ import { StateSimulator } from "./state-simulator";
 export function AppShell({ children }: { children: ReactNode }) {
   useGlobalShortcuts();
   useAutoReplan();
+  useReminders();
   const { online, simulated } = useConnectivity();
 
   return (

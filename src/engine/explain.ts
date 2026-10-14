@@ -3,6 +3,7 @@ import { describeSlot } from "@/domain/conflicts";
 import type { Placement, Task } from "@/domain/tasks";
 import { diffDays, formatShort, type ISODate } from "@/lib/dates";
 import type { TimeFormat } from "@/lib/time";
+import { formatDuration } from "@/domain/stats";
 import type { Reason, UnplacedCode } from "./types";
 
 export interface PlacementFacts {
@@ -19,6 +20,9 @@ export interface PlacementFacts {
   movedBecause?: string;
   reoptimizing: boolean;
   today: ISODate;
+  /** Block lengths when a long task is split. */
+  split?: readonly number[];
+  maxBlockMin: number;
 }
 
 const plural = (n: number, word: string): string => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -56,6 +60,13 @@ export function explainPlacement(
     text: `Planned ${facts.position} of ${facts.total}, because ${why}.`,
   });
 
+  if (facts.split && facts.split.length > 1) {
+    reasons.push({
+      code: "split",
+      text: `It is longer than your ${formatDuration(facts.maxBlockMin)} maximum block, so it is split into ${facts.split.length} blocks: ${facts.split.map(formatDuration).join(", ")}.`,
+    });
+  }
+
   if (task.deadline) {
     const margin = diffDays(slot.date, task.deadline);
     reasons.push({
@@ -92,7 +103,7 @@ export function explainPlacement(
 
   reasons.push({
     code: "slot",
-    text: `${describeSlot(slot, format)} is the first slot of ${plural(task.durationMin, "minute")} that fits your working hours, breaks${
+    text: `${describeSlot(slot, format)} is the first slot of ${plural(facts.split?.[0] ?? task.durationMin, "minute")} that fits your working hours, breaks${
       planning.bufferMin > 0 ? `, ${planning.bufferMin}-minute buffers` : ""
     } and the ${planning.maxDailyHours}-hour daily limit.`,
   });

@@ -19,8 +19,8 @@ export function NotificationsPane() {
   return (
     <div className="space-y-5">
       <Notice>
-        Task reminders are saved now and start working in version 0.0.7, inside Weekflow only. Browser
-        and email notifications are not requested. The weekly review card on Home already works.
+        Reminders appear inside Weekflow while it is open, shortly before a timed task starts. Browser
+        and email notifications are not requested. The weekly review card shows on Home on the day you choose.
       </Notice>
       <SettingsGroup title="Task reminders">
         <ToggleRow

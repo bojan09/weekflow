@@ -3,6 +3,7 @@ import { detectConflicts } from "@/domain/conflicts";
 import { PRIORITY_RANK, endMin, isMissed, isTimed, type Placement, type Task } from "@/domain/tasks";
 import { diffDays, type ISODate } from "@/lib/dates";
 import type { TimeFormat } from "@/lib/time";
+import { blockTitle, splitBlocks } from "./blocks";
 import { explainPlacement, explainUnplaced } from "./explain";
 import type { Plan, PlanInput, Proposal, Unplaced } from "./types";
 
@@ -175,37 +176,59 @@ export function planSchedule(input: PlanInput): Plan {
       continue;
     }
 
-    const base = {
-      durationMin: task.durationMin,
-      fromDate: start.date,
-      fromMin: start.fromMin,
-      excludeId: task.id,
-      horizonDays,
-      prefer: planning.preferredTime,
-    } as const;
     // A deadline that has already passed cannot constrain the search.
     const bound = task.deadline && task.deadline >= now.date ? task.deadline : null;
 
+    // Long tasks are placed as several blocks, one after another. All or nothing.
+    const blocks = splitBlocks(task.durationMin, engine.minBlockMin, engine.maxBlockMin);
+    const placedBlocks: Array<{ durationMin: number; to: { date: string; startMin: number } }> = [];
+    const mark = working.length;
     let late = false;
-    let slot = findFreeSlot(working, planning, { ...base, notAfter: bound });
-    if (!slot && bound && engine.deadlineBehavior === "soft") {
-      slot = findFreeSlot(working, planning, { ...base, notAfter: null });
-      late = slot !== null;
+    let cursor = { date: start.date, fromMin: start.fromMin };
+    let fits = true;
+    for (const [i, durationMin] of blocks.entries()) {
+      const base = {
+        durationMin,
+        fromDate: cursor.date,
+        fromMin: cursor.fromMin,
+        excludeId: task.id,
+        horizonDays,
+        prefer: planning.preferredTime,
+      } as const;
+      let found = findFreeSlot(working, planning, { ...base, notAfter: bound });
+      if (!found && bound && engine.deadlineBehavior === "soft") {
+        found = findFreeSlot(working, planning, { ...base, notAfter: null });
+        if (found) late = true;
+      }
+      if (!found) {
+        fits = false;
+        break;
+      }
+      working.push({
+        ...task,
+        id: blocks.length > 1 ? `${task.id}#${i}` : task.id,
+        durationMin,
+        placement: { date: found.date, startMin: found.startMin },
+      });
+      placedBlocks.push({ durationMin, to: found });
+      cursor = { date: found.date, fromMin: found.startMin + durationMin + planning.bufferMin };
     }
-    if (!slot) {
+    const slot = placedBlocks[0]?.to;
+    if (!fits || !slot) {
+      working.length = mark;
       fail(task, bound ? "no-room-before-deadline" : "no-room");
       continue;
     }
 
-    working.push({ ...task, placement: { date: slot.date, startMin: slot.startMin } });
     const from = original.get(task.id) ?? null;
-    if (from && from.date === slot.date && from.startMin === slot.startMin) continue;
+    if (blocks.length === 1 && from && from.date === slot.date && from.startMin === slot.startMin) continue;
 
     proposals.push({
       taskId: task.id,
       title: task.title,
       from,
       to: slot,
+      ...(blocks.length > 1 ? { blocks: placedBlocks } : {}),
       late,
       reasons: explainPlacement(task, slot, {
         planning,
@@ -219,6 +242,8 @@ export function planSchedule(input: PlanInput): Plan {
         movedBecause: selected.movedBecause.get(task.id),
         reoptimizing: selected.reoptimizing,
         today: now.date,
+        split: blocks.length > 1 ? blocks : undefined,
+        maxBlockMin: engine.maxBlockMin,
       }),
     });
   }
@@ -237,19 +262,61 @@ export function planSchedule(input: PlanInput): Plan {
   };
 }
 
-/** Write a plan into the task list. Locked and finished tasks are never touched. */
-export function applyPlan(tasks: readonly Task[], plan: Plan): Task[] {
-  const targets = new Map(plan.proposals.map((p) => [p.taskId, p.to] as const));
-  if (targets.size === 0) return tasks as Task[];
+/**
+ * Write a plan into the task list. Locked and finished tasks are never touched.
+ * A split task keeps its identity as block 1; later blocks become new tasks
+ * (ids from `makeId`) and anything that waited on the task now waits on all blocks.
+ */
+export function applyPlan(tasks: readonly Task[], plan: Plan, makeId: () => string = () => crypto.randomUUID()): Task[] {
+  const byId = new Map(plan.proposals.map((p) => [p.taskId, p] as const));
+  if (byId.size === 0) return tasks as Task[];
   let changed = false;
+  const extra: Task[] = [];
+  const blockIds = new Map<string, string[]>();
+
   const next = tasks.map((task) => {
-    const to = targets.get(task.id);
-    if (!to || task.locked || task.status === "done") return task;
+    const proposal = byId.get(task.id);
+    if (!proposal || task.locked || task.status === "done") return task;
+    const blocks = proposal.blocks;
+    if (blocks && blocks.length > 1) {
+      changed = true;
+      const ids = blocks.slice(1).map(() => makeId());
+      blockIds.set(task.id, ids);
+      blocks.slice(1).forEach((block, i) => {
+        extra.push({
+          ...task,
+          id: ids[i] ?? makeId(),
+          title: blockTitle(task.title, i + 1, blocks.length),
+          durationMin: block.durationMin,
+          placement: { date: block.to.date, startMin: block.to.startMin },
+          locked: false,
+          checklist: [],
+          dependsOn: [...task.dependsOn],
+          recurrence: null,
+        });
+      });
+      return {
+        ...task,
+        title: blockTitle(task.title, 0, blocks.length),
+        durationMin: blocks[0]?.durationMin ?? task.durationMin,
+        placement: { date: proposal.to.date, startMin: proposal.to.startMin },
+      };
+    }
+    const to = proposal.to;
     const same = task.placement?.date === to.date && task.placement.startMin === to.startMin;
     if (same) return task;
     changed = true;
     const placement: Placement = { date: to.date, startMin: to.startMin };
     return { ...task, placement };
   });
-  return changed ? next : (tasks as Task[]);
+  if (!changed) return tasks as Task[];
+
+  // Tasks that waited on a split task now wait on every block of it.
+  const rewired = blockIds.size === 0
+    ? next
+    : next.map((task) => {
+        const more = task.dependsOn.flatMap((id) => blockIds.get(id) ?? []);
+        return more.length > 0 ? { ...task, dependsOn: [...task.dependsOn, ...more].slice(0, 10) } : task;
+      });
+  return [...rewired, ...extra];
 }

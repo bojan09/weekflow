@@ -7,7 +7,7 @@ import { DEFAULT_PREFS } from "@/prefs/schema";
 import { applyPlan, planSchedule, type PlanInput } from ".";
 
 const planning = DEFAULT_PREFS.planning; // Mon–Fri 09–17, lunch 12–13, 10 min buffer, 6h cap
-const engine = DEFAULT_PREFS.engine;
+const engine = { ...DEFAULT_PREFS.engine, maxBlockMin: 480 }; // keep long tasks whole in these rule tests
 const MONDAY = "2026-10-12";
 const TODAY = "2026-10-14"; // Wednesday
 const NOW = { date: TODAY, minutes: 9 * 60 };

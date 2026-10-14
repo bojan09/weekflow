@@ -38,6 +38,7 @@ export type ReasonCode =
   | "earliest-start"
   | "preference"
   | "focus"
+  | "split"
   | "moved";
 
 export interface Reason {
@@ -51,6 +52,11 @@ export interface Proposal {
   /** Where the task is now, or null when it was in the inbox. */
   from: Placement | null;
   to: { date: string; startMin: number };
+  /**
+   * Present when a long task is split. The first block keeps the task; each
+   * later block becomes a new task. `to` is the first block.
+   */
+  blocks?: Array<{ durationMin: number; to: { date: string; startMin: number } }>;
   /** True when the task is placed after a soft deadline. */
   late: boolean;
   /** Plain-language answers to "why here?", most important first. */

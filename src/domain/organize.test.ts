@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { addProject, clearProject, projectsSchema, removeProject, updateProject } from "./projects";
-import { removeTemplate, saveTemplate, taskFromTemplate, templateFromTask, templatesSchema } from "./templates";
+import { removeTemplate, saveTemplate, templateFromTask, templatesSchema } from "./templates";
 import { buildTask, completeTask } from "./task-ops";
-import { allCategories, categoryOf, setCustomCategories, taskSchema, tasksSchema, type Task } from "./tasks";
+import { allCategories, categoryOf, setCustomCategories, tasksSchema, type Task } from "./tasks";
 
 const task = (id: string, extra: Partial<Task> = {}): Task => ({
   ...buildTask({ title: `Task ${id}`, durationMin: 30, priority: "medium" }, id, "2026-10-12T00:00:00.000Z"),
@@ -53,17 +53,6 @@ describe("templates", () => {
     expect(template).toMatchObject({ name: "Weekly report", durationMin: 90, steps: ["Gather numbers", "Write summary"], projectId: "p1" });
     expect(JSON.stringify(template)).not.toContain("2026-10");
     expect(templatesSchema.safeParse([template]).success).toBe(true);
-  });
-
-  it("builds a fresh unscheduled task with new step ids", () => {
-    let n = 0;
-    const made = taskFromTemplate(templateFromTask(source, "tpl1", "x"), "new1", "now", () => `s${++n}`);
-    expect(made).toMatchObject({ id: "new1", status: "todo", placement: null, locked: false, deadline: null, projectId: "p1", priority: "high" });
-    expect(made.checklist).toEqual([
-      { id: "s1", text: "Gather numbers", done: false },
-      { id: "s2", text: "Write summary", done: false },
-    ]);
-    expect(taskSchema.safeParse(made).success).toBe(true);
   });
 
   it("saves by name, replacing a same-named template, and removes", () => {

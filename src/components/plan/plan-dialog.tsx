@@ -32,19 +32,26 @@ const clock = (minutes: number, format: TimeFormat): string => formatClock(Math.
 
 function ProposalRow({ proposal, task, format }: { proposal: Proposal; task: Task | undefined; format: TimeFormat }) {
   const look = task ? styleOf(task) : null;
-  const end = proposal.to.startMin + (task?.durationMin ?? 0);
+  const firstMin = proposal.blocks?.[0]?.durationMin ?? task?.durationMin ?? 0;
+  const end = proposal.to.startMin + firstMin;
   return (
     <li className={`rounded-xl border-l-[3px] px-3 py-2 ${look ? `${look.surface} ${look.bar}` : "bg-muted"}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <p className={`min-w-0 truncate text-sm font-semibold ${look?.title ?? ""}`}>{proposal.title}</p>
         <p className={`text-xs tabular-nums ${look?.meta ?? "text-muted-foreground"}`}>
           {clock(proposal.to.startMin, format)}–{clock(end, format)}
-          {task ? ` · ${formatDuration(task.durationMin)}` : ""}
+          {task ? ` · ${formatDuration(firstMin)}` : ""}
         </p>
       </div>
       {proposal.from ? (
         <p className={`mt-0.5 text-xs ${look?.meta ?? "text-muted-foreground"}`}>
           Moved from {describeSlot(proposal.from, format)}
+        </p>
+      ) : null}
+      {proposal.blocks ? (
+        <p className={`mt-0.5 text-xs ${look?.meta ?? "text-muted-foreground"}`}>
+          Split into {proposal.blocks.length} blocks:{" "}
+          {proposal.blocks.map((b) => `${describeSlot(b.to, format)} (${formatDuration(b.durationMin)})`).join("; ")}
         </p>
       ) : null}
       {proposal.late ? <p className="mt-0.5 text-xs font-medium text-warning-text">After its deadline</p> : null}

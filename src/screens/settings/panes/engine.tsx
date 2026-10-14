@@ -21,7 +21,6 @@ export function EnginePane() {
       <Notice>
         The scheduling engine is deterministic: the same tasks and rules always produce the same
         plan, and every decision is explained. Use Plan my week to preview a plan with these rules.
-        Block length is saved now and takes effect in a later release.
       </Notice>
 
       <SettingsGroup title="Behavior">
@@ -92,8 +91,8 @@ export function EnginePane() {
         </SettingRow>
       </SettingsGroup>
 
-      <SettingsGroup title="Block length" description="Saved now. Splitting long tasks into blocks arrives in a later release.">
-        <SettingRow label="Minimum block">
+      <SettingsGroup title="Block length" description="Tasks longer than the maximum are split into blocks of about this size when Plan my week places them.">
+        <SettingRow label="Minimum block" hint={<Term id="block" />}>
           {(id) => (
             <NumberField
               id={id}
@@ -108,7 +107,7 @@ export function EnginePane() {
             />
           )}
         </SettingRow>
-        <SettingRow label="Maximum block">
+        <SettingRow label="Maximum block" hint={<Term id="block" />}>
           {(id) => (
             <NumberField
               id={id}

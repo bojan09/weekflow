@@ -15,8 +15,8 @@ finished and tested (`package.json` + `CHANGELOG.md`).
 | 0.0.4 | **Scheduling engine** (pure TypeScript in `src/engine`): ordering, constraints, explanations, plan preview, automated tests | Built |
 | **0.0.5** | **Replanning and review**: auto-replan of missed tasks, schedule history with rollback, workload analytics, weekly review | Built |
 | **0.0.6** | **Guide and onboarding**: Guide page, help on every screen, (i) jargon tips, Start here checklist (requested by the owner, who found the number of features hard to take in). Spec and plan in `docs/superpowers/` | Built |
-| 0.0.7 | Recurring tasks, projects and templates, custom categories, long-task blocks (min/max block settings), in-app reminders | Next |
-| 0.0.8 | Team workspaces UI on mock data, with the permission model designed in | Planned |
+| **0.0.7** | **Repeat, organize and remind**: recurring tasks, projects, templates, custom categories, long-task blocks, in-app reminders (spec in `docs/superpowers/specs/2026-10-14-organize-and-repeat-design.md`) | Built |
+| 0.0.8 | Team workspaces UI on mock data, with the permission model designed in | Next |
 | 0.0.9 | UI/UX audit: accessibility, mobile, performance, regression across every theme, palette and background | Planned |
 | 0.1.0 | Appwrite: auth, schema and migrations, permissions, Functions, adapters, real Profile security | Planned |
 | 0.1.1 | Realtime, team authorization tests, security and performance audit | Planned |

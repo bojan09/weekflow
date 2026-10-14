@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { buildTask } from "./task-ops";
 import { PRIORITIES, type Task } from "./tasks";
 
 export const MAX_TEMPLATES = 30;
@@ -35,26 +34,6 @@ export function templateFromTask(task: Task, id: string, name: string): Template
     labels: [...task.labels],
     steps: task.checklist.map((item) => item.text),
     projectId: task.projectId,
-  };
-}
-
-/** A fresh, unscheduled task from a template. `makeId` gives each checklist step its own id. */
-export function taskFromTemplate(template: Template, id: string, createdAt: string, makeId: () => string): Task {
-  return {
-    ...buildTask(
-      {
-        title: template.title,
-        durationMin: template.durationMin,
-        priority: template.priority,
-        category: template.category,
-        notes: template.notes,
-      },
-      id,
-      createdAt,
-    ),
-    labels: [...template.labels],
-    checklist: template.steps.map((text) => ({ id: makeId(), text, done: false })),
-    projectId: template.projectId,
   };
 }
 

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { NativeSelect, SegmentedControl, ToggleRow } from "@/components/settings/controls";
+import { Term } from "@/components/guide/term";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -13,7 +14,7 @@ import { mutateTasks, newTaskId, tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { nextOccurrence } from "@/domain/recurrence";
 import { addTask, buildTask, wouldCreateCycle } from "@/domain/task-ops";
-import { saveTemplate, taskFromTemplate, templateFromTask, type Template } from "@/domain/templates";
+import { saveTemplate, templateFromTask, type Template } from "@/domain/templates";
 import {
   allCategories,
   PRIORITIES,
@@ -441,7 +442,9 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
         </fieldset>
 
         <fieldset className="space-y-3 rounded-2xl border p-4">
-          <legend className="px-1 text-sm font-medium">Repeat</legend>
+          <legend className="flex items-center gap-1 px-1 text-sm font-medium">
+            Repeat <Term id="repeat" />
+          </legend>
           <NativeSelect
             aria-label="Repeat"
             value={draft.repeat.freq}
