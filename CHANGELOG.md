@@ -5,6 +5,20 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.8 — Team workspaces (preview)
+Date: 2026-10-14
+Summary: A free team workspace on sample data: shared tasks and projects, assignment, comments, people and roles, and team availability.
+
+- Team page with Tasks, People and Availability. It is a preview on sample data: nothing is shared with anyone yet
+- Shared projects and tasks with assignee, status, priority, deadline, length and notes, plus comments on every task
+- Four roles (Owner, Admin, Member, Viewer) with a written permission model: members edit tasks they created or own and can only assign themselves, admins cannot change owners, and a workspace always keeps one owner
+- View as: act as any sample person to see exactly what each role can and cannot do; refused actions explain why and change nothing
+- People: change roles, invite by email (saved as a pending invitation, no email is sent) and remove people; their tasks are kept and unassigned
+- Availability: each person's shared working hours by weekday, the hours everyone overlaps, and workload against a week of shared hours. Personal tasks and calendars are never shown or counted
+- The same rules will be enforced on the server when accounts arrive
+- Release notes and the public roadmap no longer name any tools or vendors
+- Guide: Team section and the terms Role and Shared hours
+
 ## 0.0.7 — Repeat, organize and remind
 Date: 2026-10-14
 Summary: Repeating tasks, projects, templates, your own categories, long tasks split into blocks, and reminders inside Weekflow.
@@ -98,4 +112,4 @@ Summary: Design tokens, 15 accent palettes, themes and backgrounds, navigation s
 - Settings with ten categories, including Appearance, Scheduling engine rules, Calendar and Accessibility
 - Version history timeline generated from this file
 - Interactive demo at /demo with a state simulator for loading, error, offline and permission-denied screens
-- Local-first data layer behind repository interfaces, ready for the Appwrite adapter
+- Local-first data layer behind repository interfaces, ready for a real database adapter

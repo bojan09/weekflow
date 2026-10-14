@@ -121,6 +121,20 @@ export const TERMS = [
     setting: { route: "settings", sub: "engine", label: "Scheduling engine" },
   },
   {
+    id: "role",
+    word: "Role",
+    plain: "What a person may do in a team: Owner, Admin, Member or Viewer.",
+    whyItMatters: "Owners and admins manage people and projects. Members work on tasks. Viewers can only read.",
+    section: "team",
+  },
+  {
+    id: "shared-hours",
+    word: "Shared hours",
+    plain: "The working hours a team member chooses to show the rest of the team.",
+    whyItMatters: "It lets the team find times that suit everyone. Personal tasks and calendars are never shared.",
+    section: "team",
+  },
+  {
     id: "engine",
     word: "Scheduling engine",
     plain: "The part of Weekflow that proposes a plan. The same tasks and rules always give the same plan.",

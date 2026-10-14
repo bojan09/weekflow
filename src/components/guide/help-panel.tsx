@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Hourglass } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { sectionForRoute } from "@/guide/content";
 import { termById } from "@/guide/terms";
@@ -27,13 +26,7 @@ export function HelpPanel() {
           <SheetDescription>{section.summary}</SheetDescription>
         </SheetHeader>
 
-        {section.comingIn ? (
-          <p className="flex items-start gap-2 rounded-xl bg-info-soft px-3 py-3 text-sm text-info-text">
-            <Hourglass className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            Arrives in version {section.comingIn}. {section.whatItIs}
-          </p>
-        ) : (
-          <>
+        <>
             <p className="text-sm">{section.whatItIs}</p>
             {section.steps.length > 0 ? (
               <section aria-label="Try this first">
@@ -69,8 +62,7 @@ export function HelpPanel() {
                 </ul>
               </section>
             ) : null}
-          </>
-        )}
+        </>
 
         {section.shortcuts.length > 0 ? (
           <section aria-label="Shortcuts on this page">

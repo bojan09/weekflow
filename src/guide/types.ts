@@ -32,8 +32,6 @@ export interface GuideSection {
   shortcuts: readonly GuideShortcut[];
   terms: readonly TermId[];
   tryIt?: GuideLink;
-  /** Version that delivers this section's screen. Shown instead of steps. */
-  comingIn?: string;
 }
 
 export interface GuideTerm {

@@ -87,7 +87,7 @@ const FEATURES: Feature[] = [
   { icon: BarChart3, title: "Workload at a glance", text: "See planned hours against your daily limit, and spot overloaded days early.", available: true, tone: "bg-success-soft text-success-text" },
   { icon: Palette, title: "Make it yours", text: "Light and dark, 15 colors, 12 backgrounds and optional glass surfaces.", available: true, tone: "bg-info-soft text-info-text" },
   { icon: Workflow, title: "A planner that explains itself", text: "A deterministic engine: the same inputs give the same plan, with every decision explained.", available: true, tone: "bg-primary-soft text-primary-soft-text" },
-  { icon: Users, title: "Free team workspaces", text: "Shared projects and tasks, with personal time always kept private.", available: false, tone: "bg-danger-soft text-danger-text" },
+  { icon: Users, title: "Free team workspaces", text: "Shared projects, tasks and comments, with personal time always kept private. Preview it in the demo; real sharing comes with accounts.", available: false, tone: "bg-danger-soft text-danger-text" },
 ];
 
 export function Features() {

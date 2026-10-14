@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { RELEASES } from "@/generated/version";
 import { LANDING_SECTION_IDS, SITE_LINKS } from "@/lib/site";
 import { Faq, Features, HowItWorks, Panel, Roadmap } from "./sections";
 import { SiteFooter } from "./site-footer";
@@ -34,12 +35,20 @@ describe("site navigation", () => {
     for (const id of LANDING_SECTION_IDS) expect(document.getElementById(id), id).not.toBeNull();
   });
 
+  it("never mentions the tech stack in release notes", () => {
+    const text = JSON.stringify(RELEASES);
+    for (const word of ["Next.js", "Appwrite", "Tailwind", "shadcn", "Zustand", "Vercel"]) {
+      expect(text).not.toContain(word);
+    }
+  });
+
   it("never mentions the tech stack", () => {
     const { container } = render(
       <>
         <SiteHeader />
         <HowItWorks />
         <Features />
+        <Roadmap />
         <Faq />
         <SiteFooter />
       </>,

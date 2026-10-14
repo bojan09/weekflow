@@ -29,15 +29,12 @@ describe("guide content", () => {
     }
   });
 
-  it("gives every live section steps and tips, and marks unbuilt screens honestly", () => {
+  it("gives every section steps and tips", () => {
     for (const s of SECTIONS) {
-      if (s.comingIn) expect(s.steps).toHaveLength(0);
-      else {
-        expect(s.steps.length, s.id).toBeGreaterThan(0);
-        expect(s.tips.length, s.id).toBeGreaterThan(0);
-      }
+      expect(s.steps.length, s.id).toBeGreaterThan(0);
+      expect(s.tips.length, s.id).toBeGreaterThan(0);
     }
-    expect(sectionForRoute("team").comingIn).toBe("0.0.8");
+    expect(sectionForRoute("team").steps.length).toBeGreaterThan(0);
   });
 
   it("only links to real routes and real settings panes", () => {

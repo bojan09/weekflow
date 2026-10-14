@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Hourglass, RotateCcw, Search } from "lucide-react";
+import { RotateCcw, Search } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
@@ -45,13 +45,7 @@ function SectionBlock({ section }: { section: GuideSection }) {
       <h2 id={`${section.id}-title`} className="text-xl font-semibold tracking-tight">
         {section.title}
       </h2>
-      {section.comingIn ? (
-        <p className="mt-3 flex items-start gap-2 rounded-xl bg-info-soft px-3 py-3 text-sm text-info-text">
-          <Hourglass className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          Arrives in version {section.comingIn}. {section.whatItIs}
-        </p>
-      ) : (
-        <>
+      <>
           <p className="mt-2 max-w-prose text-sm">{section.whatItIs}</p>
           {section.steps.length > 0 ? (
             <>
@@ -117,8 +111,7 @@ function SectionBlock({ section }: { section: GuideSection }) {
               {section.tryIt.label}
             </Link>
           ) : null}
-        </>
-      )}
+      </>
     </section>
   );
 }

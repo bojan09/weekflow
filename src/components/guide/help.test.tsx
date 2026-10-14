@@ -40,11 +40,11 @@ describe("help panel", () => {
     expect(screen.getByText("About Weekly review")).toBeTruthy();
   });
 
-  it("explains an unbuilt screen honestly", () => {
+  it("explains the Team preview honestly", () => {
     pathname = "/demo/team";
     render(<HelpPanel />);
     act(() => useUiStore.getState().setHelpOpen(true));
-    expect(screen.getByText(/Arrives in version 0.0.8/)).toBeTruthy();
+    expect(screen.getByText(/preview on sample data/i)).toBeTruthy();
   });
 
   it("closes with Escape", () => {
