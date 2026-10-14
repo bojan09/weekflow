@@ -1,7 +1,7 @@
 "use client";
 
 import type { PointerEvent } from "react";
-import { CalendarPlus, GripVertical } from "lucide-react";
+import { CalendarPlus, GripVertical, Wand2 } from "lucide-react";
 import { QuickAdd } from "@/components/tasks/quick-add";
 import { scheduleInNextFreeSlot } from "@/components/tasks/actions";
 import { CategoryChip, PriorityBadge } from "@/components/tasks/task-meta";
@@ -13,6 +13,7 @@ import { PRIORITY_RANK, isOverdue, type Task } from "@/domain/tasks";
 import type { Now } from "@/hooks/use-now";
 import { formatShort } from "@/lib/dates";
 import { cn } from "@/lib/utils";
+import { useUiStore } from "@/stores/ui";
 import type { DragState } from "./use-calendar-dnd";
 
 interface UnscheduledTrayProps {
@@ -26,6 +27,7 @@ interface UnscheduledTrayProps {
 
 /** Open tasks with no time yet. Drag one onto the calendar, or press Schedule. */
 export function UnscheduledTray({ tasks, now, planning, drag, onPointerDown, onScheduled }: UnscheduledTrayProps) {
+  const setPlanOpen = useUiStore((s) => s.setPlanOpen);
   const sorted = [...tasks].sort(
     (a, b) =>
       PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] ||
@@ -42,6 +44,9 @@ export function UnscheduledTray({ tasks, now, planning, drag, onPointerDown, onS
         <span className="text-xs text-muted-foreground tabular-nums">{tasks.length}</span>
       </div>
       <QuickAdd placeholder="Add to inbox…" />
+      <Button variant="outline" onClick={() => setPlanOpen(true)} className="w-full">
+        <Wand2 aria-hidden="true" /> Plan my week
+      </Button>
       {sorted.length === 0 ? (
         <p className="rounded-xl bg-muted/60 px-3 py-4 text-center text-sm text-muted-foreground">
           Your inbox is clear. Everything has a place.

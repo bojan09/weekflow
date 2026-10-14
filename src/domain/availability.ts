@@ -64,6 +64,17 @@ export interface FreeSlotQuery {
   /** Ignore this task's own current placement. */
   excludeId?: string;
   horizonDays?: number;
+  /** Soft preference: tried first on each day, then the rest of that day. */
+  prefer?: TimePreference;
+}
+
+export type TimePreference = "any" | "morning" | "afternoon";
+
+/** Noon: the line between "morning" and "afternoon" for the preferred-time rule. */
+export const NOON = 12 * 60;
+
+export function fitsPreference(startMin: number, prefer: TimePreference): boolean {
+  return prefer === "any" || (prefer === "morning" ? startMin < NOON : startMin >= NOON);
 }
 
 /**
@@ -78,12 +89,12 @@ export function findFreeSlot(
 ): { date: ISODate; startMin: number } | null {
   const horizon = query.horizonDays ?? 28;
   const cap = maxDailyMinutes(planning);
+  const prefer = query.prefer ?? "any";
+  const others = tasks.filter((t) => t.id !== query.excludeId);
 
   for (let i = 0; i < horizon; i += 1) {
     const date = addDays(query.fromDate, i);
     if (query.notAfter && date > query.notAfter) return null;
-
-    const others = tasks.filter((t) => t.id !== query.excludeId);
     if (scheduledMinutes(others, date) + query.durationMin > cap) continue;
 
     const busy: Interval[] = others
@@ -94,17 +105,29 @@ export function findFreeSlot(
       }))
       .sort((a, b) => a.start - b.start);
 
-    for (const window of workWindows(planning, date)) {
-      let cursor = ceilTo(
-        i === 0 && query.fromMin !== undefined ? Math.max(window.start, query.fromMin) : window.start,
-        SLOT_MIN,
-      );
-      while (cursor + query.durationMin <= Math.min(window.end, MINUTES_PER_DAY)) {
-        const clash = busy.find((b) => b.start < cursor + query.durationMin && b.end > cursor);
-        if (!clash) return { date, startMin: cursor };
-        cursor = ceilTo(clash.end, SLOT_MIN);
+    const scan = (accept: (startMin: number) => boolean): number | null => {
+      for (const window of workWindows(planning, date)) {
+        let cursor = ceilTo(
+          i === 0 && query.fromMin !== undefined ? Math.max(window.start, query.fromMin) : window.start,
+          SLOT_MIN,
+        );
+        while (cursor + query.durationMin <= Math.min(window.end, MINUTES_PER_DAY)) {
+          const clash = busy.find((b) => b.start < cursor + query.durationMin && b.end > cursor);
+          if (clash) {
+            cursor = ceilTo(clash.end, SLOT_MIN);
+          } else if (accept(cursor)) {
+            return cursor;
+          } else {
+            cursor += SLOT_MIN;
+          }
+        }
       }
-    }
+      return null;
+    };
+
+    const preferred = prefer === "any" ? null : scan((m) => fitsPreference(m, prefer));
+    const startMin = preferred ?? scan(() => true);
+    if (startMin !== null) return { date, startMin };
   }
   return null;
 }

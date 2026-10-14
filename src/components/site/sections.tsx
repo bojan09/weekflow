@@ -86,7 +86,7 @@ const FEATURES: Feature[] = [
   { icon: Lock, title: "Lock tasks in place", text: "Pin a task to a time or a day. It stays put when everything else moves.", available: true, tone: "bg-warning-soft text-warning-text" },
   { icon: BarChart3, title: "Workload at a glance", text: "See planned hours against your daily limit, and spot overloaded days early.", available: true, tone: "bg-success-soft text-success-text" },
   { icon: Palette, title: "Make it yours", text: "Light and dark, 15 colors, 12 backgrounds and optional glass surfaces.", available: true, tone: "bg-info-soft text-info-text" },
-  { icon: Workflow, title: "A planner that explains itself", text: "A deterministic engine: the same inputs give the same plan, with every decision explained.", available: false, tone: "bg-primary-soft text-primary-soft-text" },
+  { icon: Workflow, title: "A planner that explains itself", text: "A deterministic engine: the same inputs give the same plan, with every decision explained.", available: true, tone: "bg-primary-soft text-primary-soft-text" },
   { icon: Users, title: "Free team workspaces", text: "Shared projects and tasks, with personal time always kept private.", available: false, tone: "bg-danger-soft text-danger-text" },
 ];
 
@@ -185,7 +185,7 @@ const FAQ: Array<{ q: string; a: string }> = [
   { q: "Is Weekflow really free?", a: "Yes. There are no subscriptions, paid tiers or limits, and team features will be free as well." },
   { q: "Do I need an account to try it?", a: "No. The demo runs entirely in your browser on sample data. Accounts and sync arrive in a later release." },
   { q: "Where is my data kept?", a: "In the demo, only in your browser. Nothing is sent to a server and there is no tracking." },
-  { q: "What is the scheduling engine?", a: "A deterministic planner: the same tasks and rules always give the same plan, and every decision is explained in plain language. It is coming soon." },
+  { q: "What is the scheduling engine?", a: "A deterministic planner: the same tasks and rules always give the same plan, and every decision is explained in plain language. Try it with Plan my week in the demo." },
   { q: "Can I plan with a team?", a: "Team workspaces are on the roadmap. Your personal tasks will always stay private, and team scheduling will never override your protected time." },
 ];
 

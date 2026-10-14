@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { OfflineNotice } from "@/components/states/states";
+import { PlanDialog } from "@/components/plan/plan-dialog";
 import { TaskEditor } from "@/components/tasks/task-editor";
 import { useConnectivity } from "@/data/use-online";
 import { CommandMenu } from "./command-menu";
@@ -51,6 +52,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <CommandMenu />
       <ShortcutsDialog />
       <TaskEditor />
+      <PlanDialog />
     </div>
   );
 }

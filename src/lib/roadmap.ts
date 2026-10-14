@@ -9,14 +9,9 @@ export interface RoadmapEntry {
 /** What each upcoming version delivers. Shipped versions live in CHANGELOG.md. */
 export const ROADMAP: readonly RoadmapEntry[] = [
   {
-    version: "0.0.4",
-    title: "Scheduling engine",
-    summary: "Deterministic planning with explanations, conflict detection, plan preview and tests.",
-  },
-  {
     version: "0.0.5",
     title: "Replanning and workload",
-    summary: "Replan, undo, schedule history, workload analytics, weekly review, recurring tasks and projects.",
+    summary: "Auto-replanning, schedule history, workload analytics, weekly review, long-task blocks, recurring tasks and projects.",
   },
   {
     version: "0.0.6",

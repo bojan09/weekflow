@@ -58,7 +58,10 @@ export function useGlobalShortcuts(): void {
         return;
       }
       if (key === "g") pendingG = Date.now();
-      else if (key === "c") {
+      else if (key === "p") {
+        event.preventDefault();
+        ui.setPlanOpen(true);
+      } else if (key === "c") {
         event.preventDefault();
         ui.openEditor({ kind: "new" });
       }
@@ -103,6 +106,10 @@ export function ShortcutsDialog() {
           <dt>New task</dt>
           <dd>
             <Kbd>C</Kbd>
+          </dd>
+          <dt>Plan my week</dt>
+          <dd>
+            <Kbd>P</Kbd>
           </dd>
           <dt>Previous / next week (calendar pages)</dt>
           <dd className="flex gap-1">

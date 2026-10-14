@@ -19,12 +19,12 @@ export function EnginePane() {
     <div className="space-y-5">
       <Notice>
         The scheduling engine is deterministic: the same tasks and rules always produce the same
-        plan, and every decision is explained. It arrives in version 0.0.3; these settings are saved
-        now and become its rules.
+        plan, and every decision is explained. Use Plan my week to preview a plan with these rules.
+        Auto-rescheduling and block length are saved now and take effect in a later release.
       </Notice>
 
       <SettingsGroup title="Behavior">
-        <SettingRow label="Auto-rescheduling" description="What happens when a task is missed or plans change.">
+        <SettingRow label="Auto-rescheduling" description="What happens when a task is missed or plans change. Not active yet.">
           {(id) => (
             <NativeSelect
               id={id}
@@ -80,7 +80,7 @@ export function EnginePane() {
             />
           )}
         </SettingRow>
-        <SettingRow label="Stability weight" description="Prefer leaving existing tasks where they are.">
+        <SettingRow label="Stability weight" description="At 5 or more, Plan my week only moves tasks that break a rule. Below 5 it may re-plan every unlocked task.">
           {(id) => (
             <RangeField
               id={id}
@@ -91,7 +91,7 @@ export function EnginePane() {
         </SettingRow>
       </SettingsGroup>
 
-      <SettingsGroup title="Block length" description="Long tasks are split into blocks within this range.">
+      <SettingsGroup title="Block length" description="Saved now. Splitting long tasks into blocks arrives in a later release.">
         <SettingRow label="Minimum block">
           {(id) => (
             <NumberField

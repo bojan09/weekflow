@@ -12,8 +12,8 @@ finished and tested (`package.json` + `CHANGELOG.md`).
 | 0.0.1 | Foundation: design tokens, 15 accent palettes, themes and backgrounds, navigation shell, local data layer, Profile, Settings, version timeline, `/demo` | Built |
 | **0.0.2** | Tasks, inbox, week/day/agenda calendar with drag, resize and locking, Home dashboard, month Calendar, conflicts with manual fixes, glass surfaces, demo scenarios | Built |
 | 0.0.3 | **Landing page and public site**: redesigned landing, public navbar with mobile drawer, mobile-friendly footer (see `docs/LANDING-DESIGN.md`). Built from the owner's three reference designs. | Built |
-| 0.0.4 | Scheduling engine (pure TypeScript), constraints, explanations, plan preview, automated tests | Next |
-| 0.0.5 | Replan, undo and rollback, schedule history, workload analytics, weekly review. Also deferred from 0.0.2: recurring tasks, projects and templates, custom categories | Planned |
+| 0.0.4 | **Scheduling engine** (pure TypeScript in `src/engine`): ordering, constraints, explanations, plan preview, automated tests | Built |
+| 0.0.5 | Auto-replanning, schedule history and rollback, workload analytics, weekly review, long-task blocks (min/max block settings). Also deferred from 0.0.2: recurring tasks, projects and templates, custom categories | Planned |
 | 0.0.6 | Team workspaces UI on mock data, with the permission model designed in | Planned |
 | 0.0.7 | UI/UX audit: accessibility, mobile, performance, regression across every theme, palette and background | Planned |
 | 0.1.0 | Appwrite: auth, schema and migrations, permissions, Functions, adapters, real Profile security | Planned |

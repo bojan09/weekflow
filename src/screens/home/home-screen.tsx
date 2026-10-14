@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { CircleCheck, Clock, Hourglass, ListChecks } from "lucide-react";
+import { CircleCheck, Clock, Hourglass, ListChecks, Wand2 } from "lucide-react";
 import { WeekNav } from "@/components/calendar/week-nav";
 import { WeekPlanner } from "@/components/calendar/week-planner";
 import { ActiveRulesBar } from "@/components/home/active-rules-bar";
@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/shell/page-header";
 import { LoadingBlocks } from "@/components/states/states";
 import { ResourceView } from "@/components/states/resource-view";
 import { QuickAdd } from "@/components/tasks/quick-add";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { profileCollection } from "@/data/profile";
 import { tasksCollection } from "@/data/tasks";
@@ -23,6 +24,7 @@ import { usePlanner } from "@/hooks/use-planner";
 import { firstName, greetingFor } from "@/lib/greeting";
 import { appPath } from "@/lib/routes";
 import { usePrefsStore } from "@/prefs/store";
+import { useUiStore } from "@/stores/ui";
 
 function HomeBody({ tasks }: { tasks: Task[] }) {
   const planner = usePlanner();
@@ -38,6 +40,7 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
     () => (now ? detectConflicts(tasks, planning, now, format) : []),
     [tasks, planning, now, format],
   );
+  const setPlanOpen = useUiStore((s) => s.setPlanOpen);
   const inboxCount = tasks.filter(isInbox).length;
 
   return (
@@ -69,6 +72,9 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
         </section>
         <div className="space-y-4">
           <ConflictsPanel conflicts={conflicts} />
+          <Button onClick={() => setPlanOpen(true)} className="h-11 w-full rounded-2xl">
+            <Wand2 aria-hidden="true" /> Plan my week
+          </Button>
           <Link
             href={appPath("week")}
             className="flex items-center justify-between rounded-2xl border bg-card px-4 py-3 text-sm shadow-soft hover:border-primary-border"

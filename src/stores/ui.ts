@@ -23,10 +23,12 @@ interface UiState {
   commandOpen: boolean;
   shortcutsOpen: boolean;
   moreOpen: boolean;
+  planOpen: boolean;
   editor: EditorTarget;
   setCommandOpen: (open: boolean) => void;
   setShortcutsOpen: (open: boolean) => void;
   setMoreOpen: (open: boolean) => void;
+  setPlanOpen: (open: boolean) => void;
   openEditor: (target: Exclude<EditorTarget, null>) => void;
   closeEditor: () => void;
 }
@@ -35,10 +37,12 @@ export const useUiStore = create<UiState>()((set) => ({
   commandOpen: false,
   shortcutsOpen: false,
   moreOpen: false,
+  planOpen: false,
   editor: null,
   setCommandOpen: (commandOpen) => set({ commandOpen }),
   setShortcutsOpen: (shortcutsOpen) => set({ shortcutsOpen }),
   setMoreOpen: (moreOpen) => set({ moreOpen }),
+  setPlanOpen: (planOpen) => set({ planOpen }),
   openEditor: (editor) => set({ editor }),
   closeEditor: () => set({ editor: null }),
 }));

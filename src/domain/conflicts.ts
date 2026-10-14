@@ -46,7 +46,7 @@ export interface Now {
 
 const SEVERITY_ORDER: Record<Severity, number> = { high: 0, medium: 1, low: 2 };
 
-function describeSlot(slot: Placement, format: TimeFormat): string {
+export function describeSlot(slot: Placement, format: TimeFormat): string {
   const day = WEEKDAYS[weekdayOf(slot.date)]?.short ?? "";
   const time = slot.startMin === null ? "" : ` ${formatClock(Math.floor(slot.startMin / 60), slot.startMin % 60, format)}`;
   return `${day} ${formatShort(slot.date)}${time}`;

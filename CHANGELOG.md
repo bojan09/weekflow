@@ -5,6 +5,21 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.4 — Scheduling engine
+Date: 2026-10-14
+Summary: A deterministic planner that fits your inbox around your rules, shows its reasoning, and changes nothing until you apply it.
+
+- Plan my week (button on Home and My Week, command menu, or the P key) previews a plan before anything moves
+- Every placement answers "Why here?" in plain language: priority, deadline margin, prerequisites, preferred time and the slot rules
+- Tasks that cannot fit are listed with the reason and what to change, never dropped silently
+- Respects working days and hours, breaks, buffers, the daily limit, earliest start, deadlines (strict or soft) and dependencies
+- Optional "Also fix conflicts" moves only unlocked tasks that break a rule; locked tasks never move
+- Same inputs always give the same plan, whatever order the tasks arrive in; applying a plan twice changes nothing
+- Apply is one step with Undo
+- Preferred time of day (morning or afternoon) now steers where tasks land
+- Settings text now states which engine options are active and which arrive later
+- Engine covered by automated tests, including invariants over every demo scenario
+
 ## 0.0.3 — Landing page and public site
 Date: 2026-10-14
 Summary: A redesigned landing page with a public navbar, mobile menu and a phone-friendly footer.
