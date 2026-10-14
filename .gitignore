@@ -46,3 +46,6 @@ next-env.d.ts
 # local tooling
 .omc/
 .claude/
+
+# visual brainstorming sessions
+.superpowers/
