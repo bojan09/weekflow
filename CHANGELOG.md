@@ -16,7 +16,7 @@ Summary: Missed tasks get replanned, every bulk change can be rolled back, and a
 - Weekly review page: workload by day against your daily limit, time by category, estimates versus actual time, and lists of completed, missed, still ahead and due soon
 - Optional weekly review card on Home on the day you choose in Settings
 - Review added to the sidebar and the phone More menu
-- Settings now says plainly that task reminders arrive in 0.0.6
+- Settings now says plainly that task reminders arrive in 0.0.7
 
 ## 0.0.4 — Scheduling engine
 Date: 2026-10-14

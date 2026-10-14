@@ -10,16 +10,21 @@ export interface RoadmapEntry {
 export const ROADMAP: readonly RoadmapEntry[] = [
   {
     version: "0.0.6",
+    title: "Guide and onboarding",
+    summary: "A guide to every part of Weekflow, a first-run tour, and a short explanation on each screen.",
+  },
+  {
+    version: "0.0.7",
     title: "Recurring tasks and projects",
     summary: "Recurring tasks, projects, templates, custom categories, long-task blocks and in-app reminders.",
   },
   {
-    version: "0.0.7",
+    version: "0.0.8",
     title: "Team workspaces",
     summary: "Members, shared projects and tasks, assignment, comments and team availability.",
   },
   {
-    version: "0.0.8",
+    version: "0.0.9",
     title: "Polish and audit",
     summary: "Full accessibility, mobile and regression pass across every theme and palette.",
   },
@@ -34,7 +39,7 @@ export const PLANNED_ROUTES: Partial<
   Record<AppRoute, { version: string; blurb: string; items: string[] }>
 > = {
   team: {
-    version: "0.0.7",
+    version: "0.0.8",
     blurb: "Collaborate, assign tasks and keep everyone aligned. Free for every team.",
     items: [
       "Members, roles and invitations",

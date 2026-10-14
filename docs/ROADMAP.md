@@ -14,9 +14,10 @@ finished and tested (`package.json` + `CHANGELOG.md`).
 | 0.0.3 | **Landing page and public site**: redesigned landing, public navbar with mobile drawer, mobile-friendly footer (see `docs/LANDING-DESIGN.md`). Built from the owner's three reference designs. | Built |
 | 0.0.4 | **Scheduling engine** (pure TypeScript in `src/engine`): ordering, constraints, explanations, plan preview, automated tests | Built |
 | **0.0.5** | **Replanning and review**: auto-replan of missed tasks, schedule history with rollback, workload analytics, weekly review | Built |
-| 0.0.6 | Recurring tasks, projects and templates, custom categories, long-task blocks (min/max block settings), in-app reminders | Next |
-| 0.0.7 | Team workspaces UI on mock data, with the permission model designed in | Planned |
-| 0.0.8 | UI/UX audit: accessibility, mobile, performance, regression across every theme, palette and background | Planned |
+| **0.0.6** | **Guide and onboarding** (requested by the owner, who found the number of features hard to take in). Plan it with the brainstorming skill before building. See notes below. | Next |
+| 0.0.7 | Recurring tasks, projects and templates, custom categories, long-task blocks (min/max block settings), in-app reminders | Planned |
+| 0.0.8 | Team workspaces UI on mock data, with the permission model designed in | Planned |
+| 0.0.9 | UI/UX audit: accessibility, mobile, performance, regression across every theme, palette and background | Planned |
 | 0.1.0 | Appwrite: auth, schema and migrations, permissions, Functions, adapters, real Profile security | Planned |
 | 0.1.1 | Realtime, team authorization tests, security and performance audit | Planned |
 
@@ -48,3 +49,15 @@ the two disagree.
 - Demo lives under `/demo/*`; `/app/*` is added with accounts.
 - Commit and push straight to `master` after every phase or update (standing approval).
 - The public site never shows the tech stack.
+
+## 0.0.6 notes: Guide and onboarding
+Owner request: "there are so many features, we need a phase that will make sure users can see and
+understand everything. A guide page or guide on every part would be useful." Start the phase with
+the brainstorming skill (decisions first, then a blueprint), as the owner asked.
+
+Starting points to explore, not decisions:
+- A Guide page that explains every area in plain words, with a live "try it" link for each
+- Short in-context help on each screen (what this is, what to do first)
+- A first-run tour and a getting-started checklist driven by real actions
+- Plain names for the planner jargon (inbox, lock, buffer, strict deadline, engine)
+- Every later phase adds its own guide entries as part of being done (Definition of Done)
