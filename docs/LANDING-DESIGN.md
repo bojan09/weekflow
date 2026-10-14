@@ -1,8 +1,7 @@
 # Landing page, public navbar and mobile footer: design direction
 
-Planned for **0.0.3**. More reference designs are coming from the owner; this is the starting direction
-and will be revised against them before building. Nothing here is implemented yet, except the items
-marked done.
+Built in **0.0.3**. The implementation lives in `src/components/site/` and `src/app/page.tsx`. Revise
+this document if the owner sends further reference designs.
 
 ## Done already (in 0.0.2)
 - Tech stack removed from the public footer. The public site never names the stack.

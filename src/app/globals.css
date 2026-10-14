@@ -219,3 +219,27 @@ html[data-motion="reduce"] *::after {
     scroll-behavior: auto !important;
   }
 }
+
+/* Landing page: faint calendar grid behind the hero and gently floating cards. */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 8rem 5rem;
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 45%, #000 25%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 45%, #000 25%, transparent 75%);
+}
+
+@keyframes float-card {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.float-card {
+  animation: float-card 6s ease-in-out infinite;
+}

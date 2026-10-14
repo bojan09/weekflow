@@ -9,11 +9,6 @@ export interface RoadmapEntry {
 /** What each upcoming version delivers. Shipped versions live in CHANGELOG.md. */
 export const ROADMAP: readonly RoadmapEntry[] = [
   {
-    version: "0.0.3",
-    title: "Landing page and public site",
-    summary: "A redesigned landing page, public navbar with a mobile menu, and a mobile-friendly footer.",
-  },
-  {
     version: "0.0.4",
     title: "Scheduling engine",
     summary: "Deterministic planning with explanations, conflict detection, plan preview and tests.",
