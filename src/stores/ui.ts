@@ -31,6 +31,7 @@ interface UiState {
   planOpen: boolean;
   planPreset: PlanPreset;
   historyOpen: boolean;
+  helpOpen: boolean;
   editor: EditorTarget;
   setCommandOpen: (open: boolean) => void;
   setShortcutsOpen: (open: boolean) => void;
@@ -38,6 +39,7 @@ interface UiState {
   setPlanOpen: (open: boolean) => void;
   openPlan: (preset?: Partial<PlanPreset>) => void;
   setHistoryOpen: (open: boolean) => void;
+  setHelpOpen: (open: boolean) => void;
   openEditor: (target: Exclude<EditorTarget, null>) => void;
   closeEditor: () => void;
 }
@@ -49,6 +51,7 @@ export const useUiStore = create<UiState>()((set) => ({
   planOpen: false,
   planPreset: { missed: false },
   historyOpen: false,
+  helpOpen: false,
   editor: null,
   setCommandOpen: (commandOpen) => set({ commandOpen }),
   setShortcutsOpen: (shortcutsOpen) => set({ shortcutsOpen }),
@@ -56,6 +59,7 @@ export const useUiStore = create<UiState>()((set) => ({
   setPlanOpen: (planOpen) => set({ planOpen }),
   openPlan: (preset) => set({ planOpen: true, planPreset: { missed: preset?.missed ?? false } }),
   setHistoryOpen: (historyOpen) => set({ historyOpen }),
+  setHelpOpen: (helpOpen) => set({ helpOpen }),
   openEditor: (editor) => set({ editor }),
   closeEditor: () => set({ editor: null }),
 }));

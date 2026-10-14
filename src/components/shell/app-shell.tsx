@@ -7,6 +7,7 @@ import { HistoryDialog } from "@/components/plan/history-dialog";
 import { PlanDialog } from "@/components/plan/plan-dialog";
 import { TaskEditor } from "@/components/tasks/task-editor";
 import { useConnectivity } from "@/data/use-online";
+import { GuideTracker } from "@/guide/tracker";
 import { useAutoReplan } from "@/hooks/use-auto-replan";
 import { CommandMenu } from "./command-menu";
 import { MobileNav } from "./mobile-nav";
@@ -56,6 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <ShortcutsDialog />
       <TaskEditor />
       <PlanDialog />
+      <GuideTracker />
       <HistoryDialog />
     </div>
   );
