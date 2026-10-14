@@ -8,9 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { mutateTemplates, templatesCollection } from "@/data/templates";
 import { mutateTasks, newTaskId, tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
+import { nextOccurrence } from "@/domain/recurrence";
 import { addTask, buildTask, wouldCreateCycle } from "@/domain/task-ops";
+import { saveTemplate, taskFromTemplate, templateFromTask, type Template } from "@/domain/templates";
 import {
   allCategories,
   PRIORITIES,
@@ -19,17 +22,28 @@ import {
   type CategoryId,
   type ChecklistItem,
   type Priority,
+  type RecurrenceFreq,
   type Task,
 } from "@/domain/tasks";
+import { useProjects, useTemplates } from "@/hooks/use-lists";
 import { useNow } from "@/hooks/use-now";
 import { localISO } from "@/lib/dates";
-import { timeToMinutes } from "@/lib/time";
+import { timeToMinutes, orderedWeekdays } from "@/lib/time";
 import { usePlannerStore } from "@/stores/planner";
 import { usePrefsStore } from "@/prefs/store";
 import { useUiStore, type EditorTarget } from "@/stores/ui";
 import { removeTask } from "./actions";
 
 type Mode = "none" | "day" | "time";
+
+interface RepeatDraft {
+  freq: "none" | RecurrenceFreq;
+  interval: number;
+  weekdays: number[];
+  until: string;
+}
+
+const NO_REPEAT: RepeatDraft = { freq: "none", interval: 1, weekdays: [], until: "" };
 
 interface Draft {
   title: string;
@@ -48,6 +62,9 @@ interface Draft {
   date: string;
   time: string;
   locked: boolean;
+  /** Project id, or "" for none. */
+  projectId: string;
+  repeat: RepeatDraft;
 }
 
 const DURATION_CHIPS = [15, 30, 45, 60, 90, 120] as const;
@@ -74,6 +91,25 @@ function draftFromTask(task: Task, today: string): Draft {
     date: placement?.date ?? today,
     time: placement?.startMin == null ? "09:00" : toTime(placement.startMin),
     locked: task.locked,
+    projectId: task.projectId ?? "",
+    repeat: task.recurrence
+      ? { freq: task.recurrence.freq, interval: task.recurrence.interval, weekdays: task.recurrence.weekdays, until: task.recurrence.until ?? "" }
+      : NO_REPEAT,
+  };
+}
+
+/** Fill a new-task draft from a saved template. */
+function applyTemplate(draft: Draft, template: Template): Draft {
+  return {
+    ...draft,
+    title: template.title,
+    notes: template.notes,
+    durationMin: template.durationMin,
+    priority: template.priority,
+    category: template.category,
+    labels: [...template.labels],
+    checklist: template.steps.map((text) => ({ id: crypto.randomUUID(), text, done: false })),
+    projectId: template.projectId ?? "",
   };
 }
 
@@ -109,7 +145,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
     if (existing) return draftFromTask(existing, today);
     const d = target.kind === "new" ? target.defaults : undefined;
     const placement = d?.placement ?? null;
-    return {
+    const base: Draft = {
       title: d?.title ?? "",
       notes: "",
       durationMin: d?.durationMin ?? workspace.defaultDurationMin,
@@ -126,8 +162,14 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
       date: placement?.date ?? anchor ?? today,
       time: placement?.startMin == null ? "09:00" : toTime(placement.startMin),
       locked: false,
+      projectId: "",
+      repeat: NO_REPEAT,
     };
+    const template = d?.templateId ? templatesCollection.getSnapshot().find((t) => t.id === d.templateId) : undefined;
+    return template ? applyTemplate(base, template) : base;
   });
+  const projects = useProjects();
+  const templates = useTemplates();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [labelInput, setLabelInput] = useState("");
   const [checkInput, setCheckInput] = useState("");
@@ -175,6 +217,16 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
       actualMin: draft.actualMin === "" ? null : Number(draft.actualMin),
       placement,
       locked: placement !== null && draft.locked,
+      projectId: draft.projectId || null,
+      recurrence:
+        draft.repeat.freq === "none"
+          ? null
+          : {
+              freq: draft.repeat.freq,
+              interval: draft.repeat.interval,
+              weekdays: draft.repeat.freq === "weekly" ? draft.repeat.weekdays : [],
+              until: draft.repeat.until || null,
+            },
     };
     const parsed = taskSchema.safeParse(candidate);
     if (!parsed.success) {
@@ -186,10 +238,13 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
       setErrors(next);
       return;
     }
-    mutateTasks((tasks) =>
-      existing ? tasks.map((t) => (t.id === existing.id ? parsed.data : t)) : addTask(tasks, parsed.data),
-    );
-    toast.success(existing ? "Task saved" : "Task added");
+    const finishing = existing?.status === "todo" && parsed.data.status === "done";
+    const copy = finishing ? nextOccurrence(parsed.data, now?.date ?? today, newTaskId(), new Date().toISOString()) : null;
+    mutateTasks((tasks) => {
+      const next = existing ? tasks.map((t) => (t.id === existing.id ? parsed.data : t)) : addTask(tasks, parsed.data);
+      return copy ? [...next, copy] : next;
+    });
+    toast.success(copy ? "Task saved. The next one is added." : existing ? "Task saved" : "Task added");
     closeEditor();
   };
 
@@ -198,6 +253,27 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
   return (
     <form onSubmit={submit} noValidate className="flex min-h-0 flex-1 flex-col">
       <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-4">
+        {!existing && templates.length > 0 ? (
+          <Field label="Start from a template" htmlFor="te-template">
+            <NativeSelect
+              id="te-template"
+              value=""
+              onChange={(e) => {
+                const template = templates.find((t) => t.id === e.target.value);
+                if (template) setDraft((d) => applyTemplate(d, template));
+              }}
+              className="min-w-0"
+            >
+              <option value="">Choose a template…</option>
+              {templates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </NativeSelect>
+          </Field>
+        ) : null}
+
         <Field label="Title" htmlFor="te-title">
           <Input
             id="te-title"
@@ -283,6 +359,17 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
           </Field>
         </div>
 
+        <Field label="Project" htmlFor="te-project">
+          <NativeSelect id="te-project" value={draft.projectId} onChange={(e) => set("projectId", e.target.value)} className="min-w-0">
+            <option value="">No project</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </NativeSelect>
+        </Field>
+
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Deadline" htmlFor="te-deadline">
             <Input
@@ -351,6 +438,77 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
               onChange={(locked) => set("locked", locked)}
             />
           ) : null}
+        </fieldset>
+
+        <fieldset className="space-y-3 rounded-2xl border p-4">
+          <legend className="px-1 text-sm font-medium">Repeat</legend>
+          <NativeSelect
+            aria-label="Repeat"
+            value={draft.repeat.freq}
+            onChange={(e) => set("repeat", { ...draft.repeat, freq: e.target.value as RepeatDraft["freq"] })}
+            className="min-w-0"
+          >
+            <option value="none">Does not repeat</option>
+            <option value="daily">Every day</option>
+            <option value="weekly">Every week</option>
+            <option value="monthly">Every month</option>
+          </NativeSelect>
+          {draft.repeat.freq !== "none" ? (
+            <div className="space-y-3">
+              <span className="flex items-center gap-2 text-sm">
+                Every
+                <Input
+                  aria-label="Repeat every"
+                  type="number"
+                  min={1}
+                  max={30}
+                  value={draft.repeat.interval}
+                  onChange={(e) => set("repeat", { ...draft.repeat, interval: Math.min(30, Math.max(1, Number(e.target.value) || 1)) })}
+                  className="h-9 w-20 rounded-xl border-input bg-card"
+                />
+                {draft.repeat.freq === "daily" ? "day(s)" : draft.repeat.freq === "weekly" ? "week(s)" : "month(s)"}
+              </span>
+              {draft.repeat.freq === "weekly" ? (
+                <div role="group" aria-label="Repeat on" className="flex flex-wrap gap-2">
+                  {orderedWeekdays("monday").map((day) => {
+                    const on = draft.repeat.weekdays.includes(day.index);
+                    return (
+                      <button
+                        key={day.index}
+                        type="button"
+                        aria-pressed={on}
+                        aria-label={day.long}
+                        onClick={() =>
+                          set("repeat", {
+                            ...draft.repeat,
+                            weekdays: on ? draft.repeat.weekdays.filter((d) => d !== day.index) : [...draft.repeat.weekdays, day.index],
+                          })
+                        }
+                        className={
+                          on
+                            ? "h-9 min-w-11 rounded-xl border border-primary-border bg-primary-soft px-2 text-sm font-medium text-primary-soft-text"
+                            : "h-9 min-w-11 rounded-xl border bg-card px-2 text-sm text-muted-foreground hover:bg-muted"
+                        }
+                      >
+                        {day.short}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+              <Field label="Stop repeating after (optional)" htmlFor="te-until">
+                <Input
+                  id="te-until"
+                  type="date"
+                  value={draft.repeat.until}
+                  onChange={(e) => set("repeat", { ...draft.repeat, until: e.target.value })}
+                  className="h-10 rounded-xl border-input bg-card"
+                />
+              </Field>
+              <p className="text-xs text-muted-foreground">When you finish this task, the next one is added for you.</p>
+            </div>
+          ) : null}
+          <FieldError id="te-repeat-error" message={errors.recurrence} />
         </fieldset>
 
         <Field label="Labels" htmlFor="te-label">
@@ -500,7 +658,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
         ) : null}
       </div>
 
-      <SheetFooter className="flex-row items-center justify-between gap-2 border-t">
+      <SheetFooter className="flex-row flex-wrap items-center justify-between gap-2 border-t">
         {existing ? (
           <Button
             type="button"
@@ -516,6 +674,20 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
         ) : (
           <span />
         )}
+        {existing ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={() => {
+              const template = templateFromTask(existing, crypto.randomUUID(), existing.title);
+              mutateTemplates((list) => saveTemplate(list, template));
+              toast.success(`Saved template “${template.name}”`);
+            }}
+          >
+            Save as template
+          </Button>
+        ) : null}
         <span className="flex gap-2">
           <Button type="button" variant="outline" size="lg" onClick={closeEditor}>
             Cancel

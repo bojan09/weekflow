@@ -7,6 +7,7 @@ import { ScreenHint } from "@/components/guide/screen-hint";
 import { HelpPanel } from "@/components/guide/help-panel";
 import { HistoryDialog } from "@/components/plan/history-dialog";
 import { PlanDialog } from "@/components/plan/plan-dialog";
+import { OrganizeDialog } from "@/components/tasks/organize-dialog";
 import { TaskEditor } from "@/components/tasks/task-editor";
 import { useConnectivity } from "@/data/use-online";
 import { GuideTracker } from "@/guide/tracker";
@@ -63,6 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <GuideTracker />
       <HistoryDialog />
       <HelpPanel />
+      <OrganizeDialog />
     </div>
   );
 }

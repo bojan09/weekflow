@@ -3,9 +3,9 @@
 import { toast } from "sonner";
 import { findFreeSlot, type PlanningPrefs } from "@/domain/availability";
 import type { ConflictAction } from "@/domain/conflicts";
-import { deleteTask, moveTask, setDone, setLocked, unscheduleTask } from "@/domain/task-ops";
+import { completeTask, deleteTask, moveTask, setLocked, unscheduleTask } from "@/domain/task-ops";
 import type { Placement, Task } from "@/domain/tasks";
-import { mutateTasks, restoreTasks, tasksCollection } from "@/data/tasks";
+import { mutateTasks, newTaskId, restoreTasks, tasksCollection } from "@/data/tasks";
 import type { ISODate } from "@/lib/dates";
 import type { Now } from "@/hooks/use-now";
 
@@ -16,7 +16,9 @@ function withUndo(message: string, previous: Task[] | null): void {
 
 export function toggleDone(task: Task, today: ISODate): void {
   const done = task.status !== "done";
-  withUndo(done ? `Done: ${task.title}` : `Reopened: ${task.title}`, mutateTasks((t) => setDone(t, task.id, done, today)));
+  const previous = mutateTasks((t) => completeTask(t, task.id, done, today, newTaskId, new Date().toISOString()));
+  const repeats = done && task.recurrence !== null && (tasksCollection.getSnapshot().length > (previous?.length ?? 0));
+  withUndo(done ? (repeats ? `Done: ${task.title}. Next one added.` : `Done: ${task.title}`) : `Reopened: ${task.title}`, previous);
 }
 
 export function removeTask(task: Task): void {

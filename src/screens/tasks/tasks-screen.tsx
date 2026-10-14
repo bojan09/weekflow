@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ListChecks, Plus, Search } from "lucide-react";
+import { FolderKanban, ListChecks, Plus, Search } from "lucide-react";
 import { PageHeader } from "@/components/shell/page-header";
 import { LoadingBlocks } from "@/components/states/states";
 import { EmptyState } from "@/components/states/states";
@@ -15,6 +15,7 @@ import { tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { DEFAULT_FILTER, filterTasks, tabCounts, type TaskFilter, type TaskTab } from "@/domain/task-filters";
 import { allCategories, PRIORITIES, PRIORITY_LABEL, type CategoryId, type Priority, type Task } from "@/domain/tasks";
+import { useProjects } from "@/hooks/use-lists";
 import { useNow } from "@/hooks/use-now";
 import { cn } from "@/lib/utils";
 import { usePrefsStore } from "@/prefs/store";
@@ -28,6 +29,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
   const now = useNow();
   const format = usePrefsStore((s) => s.prefs.calendar.timeFormat);
   const openEditor = useUiStore((s) => s.openEditor);
+  const projects = useProjects();
   const counts = useMemo(() => tabCounts(tasks), [tasks]);
   const today = now?.date ?? null;
   const visible = useMemo(
@@ -37,7 +39,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
   const set = <K extends keyof TaskFilter>(key: K, value: TaskFilter[K]): void =>
     setFilter((f) => ({ ...f, [key]: value }));
   const filtered =
-    filter.query !== "" || filter.priority !== "all" || filter.category !== "all" || filter.overdueOnly;
+    filter.query !== "" || filter.priority !== "all" || filter.category !== "all" || filter.project !== "all" || filter.overdueOnly;
 
   return (
     <div className="space-y-5">
@@ -86,6 +88,20 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
           {allCategories().map((c) => (
             <option key={c.id} value={c.id}>
               {c.label}
+            </option>
+          ))}
+        </NativeSelect>
+        <NativeSelect
+          aria-label="Filter by project"
+          value={filter.project}
+          onChange={(e) => set("project", e.target.value)}
+          className="h-9 min-w-36"
+        >
+          <option value="all">All projects</option>
+          <option value="none">No project</option>
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
             </option>
           ))}
         </NativeSelect>
@@ -147,15 +163,21 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
 export function TasksScreen() {
   const state = useCollection(tasksCollection);
   const openEditor = useUiStore((s) => s.openEditor);
+  const setOrganizeOpen = useUiStore((s) => s.setOrganizeOpen);
   return (
     <>
       <PageHeader
         title="Tasks"
         subtitle="Capture everything, then give it a place."
         actions={
-          <Button size="lg" className="h-10" onClick={() => openEditor({ kind: "new" })}>
-            <Plus aria-hidden="true" /> New task
-          </Button>
+          <>
+            <Button variant="outline" size="lg" className="h-10" onClick={() => setOrganizeOpen(true)}>
+              <FolderKanban aria-hidden="true" /> Projects and templates
+            </Button>
+            <Button size="lg" className="h-10" onClick={() => openEditor({ kind: "new" })}>
+              <Plus aria-hidden="true" /> New task
+            </Button>
+          </>
         }
       />
       <ResourceView state={state} loading={<LoadingBlocks rows={5} />}>

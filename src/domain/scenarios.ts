@@ -1,6 +1,6 @@
 import { addDays, diffDays, type ISODate } from "@/lib/dates";
 import { clampDuration } from "./task-ops";
-import type { CategoryId, Priority, Task } from "./tasks";
+import type { CategoryId, Priority, Recurrence, Task } from "./tasks";
 
 export type ScenarioId = "standard" | "empty" | "overloaded" | "conflicts";
 
@@ -26,6 +26,10 @@ interface Draft {
   dependsOnIndex?: number[];
   /** Keep open even if it sits in the past (a missed task). */
   missed?: boolean;
+  /** Project id (see the demo project seeds). */
+  project?: string;
+  /** Repeat rule. */
+  repeat?: Recurrence;
   /** Day offsets count from today (clamped to the week) instead of the week start. */
   rel?: boolean;
 }
@@ -34,19 +38,19 @@ const H = (hours: number, minutes = 0): number => hours * 60 + minutes;
 
 const STANDARD: Draft[] = [
   { title: "Deep work: product spec", category: "focus", priority: "high", durationMin: 90, at: { day: 0, startMin: H(9) }, locked: true },
-  { title: "Team standup", category: "meetings", priority: "medium", durationMin: 30, at: { day: 0, startMin: H(10, 30) } },
-  { title: "Plan the sprint", category: "work", priority: "medium", durationMin: 60, at: { day: 0, startMin: H(14) } },
+  { title: "Team standup", category: "meetings", priority: "medium", durationMin: 30, at: { day: 0, startMin: H(10, 30) }, repeat: { freq: "weekly", interval: 1, weekdays: [1, 2, 3, 4, 5], until: null } },
+  { title: "Plan the sprint", category: "work", priority: "medium", durationMin: 60, at: { day: 0, startMin: H(14) }, project: "p-launch" },
   { title: "Client call", category: "meetings", priority: "high", durationMin: 60, at: { day: 1, startMin: H(10) }, locked: true },
-  { title: "Write the proposal", category: "work", priority: "high", durationMin: 120, at: { day: 1, startMin: H(13, 30) }, deadlineDay: 3 },
-  { title: "Design review", category: "work", priority: "medium", durationMin: 90, at: { day: 2, startMin: H(9, 30) } },
+  { title: "Write the proposal", category: "work", priority: "high", durationMin: 120, at: { day: 1, startMin: H(13, 30) }, deadlineDay: 3, project: "p-launch" },
+  { title: "Design review", category: "work", priority: "medium", durationMin: 90, at: { day: 2, startMin: H(9, 30) }, project: "p-launch" },
   { title: "TypeScript course", category: "learning", priority: "low", durationMin: 60, at: { day: 2, startMin: H(14) } },
   { title: "Review pull requests", category: "work", priority: "medium", durationMin: 45, at: { day: 3, startMin: H(9) } },
   { title: "Quarterly report", category: "admin", priority: "high", durationMin: 120, at: { day: 3, startMin: H(10) }, deadlineDay: 4, dependsOnIndex: [4] },
   { title: "Inbox zero", category: "admin", priority: "low", durationMin: 30, at: { day: 4, startMin: H(9) } },
   { title: "Team retro", category: "meetings", priority: "medium", durationMin: 60, at: { day: 4, startMin: H(15) }, locked: true },
-  { title: "Groceries", category: "personal", priority: "low", durationMin: 60, at: { day: 5, startMin: null } },
-  { title: "Prepare demo slides", category: "work", priority: "high", durationMin: 90, deadlineDay: 4 },
-  { title: "Book a dentist appointment", category: "health", priority: "low", durationMin: 15 },
+  { title: "Groceries", category: "personal", priority: "low", durationMin: 60, at: { day: 5, startMin: null }, project: "p-home", repeat: { freq: "weekly", interval: 1, weekdays: [], until: null } },
+  { title: "Prepare demo slides", category: "work", priority: "high", durationMin: 90, deadlineDay: 4, project: "p-launch" },
+  { title: "Book a dentist appointment", category: "health", priority: "low", durationMin: 15, project: "p-home" },
   { title: "Read the research paper", category: "learning", priority: "low", durationMin: 60 },
   { title: "Reply to open emails", category: "admin", priority: "medium", durationMin: 30 },
   { title: "Send the invoice", category: "admin", priority: "high", durationMin: 15, deadlineDay: -1, missed: true },
@@ -94,8 +98,8 @@ function create(drafts: Draft[], weekStart: ISODate, today: ISODate, idPrefix: s
       actualMin: past ? clampDuration(draft.durationMin) : null,
       placement: draft.at && date ? { date, startMin: draft.at.startMin } : null,
       locked: Boolean(draft.locked && draft.at),
-      recurrence: null,
-      projectId: null,
+      recurrence: draft.repeat ?? null,
+      projectId: draft.project ?? null,
       createdAt: `${weekStart}T00:${String(Math.floor(index / 60)).padStart(2, "0")}:${String(index % 60).padStart(2, "0")}.000Z`,
     };
   });

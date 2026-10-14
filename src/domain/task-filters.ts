@@ -8,6 +8,8 @@ export interface TaskFilter {
   query: string;
   priority: Priority | "all";
   category: CategoryId | "all";
+  /** A project id, "none" for tasks without one, or "all". */
+  project: string;
   overdueOnly: boolean;
 }
 
@@ -16,6 +18,7 @@ export const DEFAULT_FILTER: TaskFilter = {
   query: "",
   priority: "all",
   category: "all",
+  project: "all",
   overdueOnly: false,
 };
 
@@ -60,6 +63,7 @@ export function filterTasks(tasks: readonly Task[], filter: TaskFilter, today: I
     if (!inTab(task, filter.tab)) return false;
     if (filter.priority !== "all" && task.priority !== filter.priority) return false;
     if (filter.category !== "all" && task.category !== filter.category) return false;
+    if (filter.project === "none" ? task.projectId !== null : filter.project !== "all" && task.projectId !== filter.project) return false;
     if (filter.overdueOnly && !isOverdue(task, today)) return false;
     if (words.length > 0) {
       const text = haystack(task);

@@ -9,6 +9,8 @@ export interface NewTaskDefaults {
   durationMin?: number;
   priority?: Priority;
   category?: CategoryId;
+  /** Start the new task from this saved template. */
+  templateId?: string;
   deadline?: ISODate | null;
   placement?: Placement | null;
 }
@@ -32,6 +34,7 @@ interface UiState {
   planPreset: PlanPreset;
   historyOpen: boolean;
   helpOpen: boolean;
+  organizeOpen: boolean;
   editor: EditorTarget;
   setCommandOpen: (open: boolean) => void;
   setShortcutsOpen: (open: boolean) => void;
@@ -40,6 +43,7 @@ interface UiState {
   openPlan: (preset?: Partial<PlanPreset>) => void;
   setHistoryOpen: (open: boolean) => void;
   setHelpOpen: (open: boolean) => void;
+  setOrganizeOpen: (open: boolean) => void;
   openEditor: (target: Exclude<EditorTarget, null>) => void;
   closeEditor: () => void;
 }
@@ -52,6 +56,7 @@ export const useUiStore = create<UiState>()((set) => ({
   planPreset: { missed: false },
   historyOpen: false,
   helpOpen: false,
+  organizeOpen: false,
   editor: null,
   setCommandOpen: (commandOpen) => set({ commandOpen }),
   setShortcutsOpen: (shortcutsOpen) => set({ shortcutsOpen }),
@@ -60,6 +65,7 @@ export const useUiStore = create<UiState>()((set) => ({
   openPlan: (preset) => set({ planOpen: true, planPreset: { missed: preset?.missed ?? false } }),
   setHistoryOpen: (historyOpen) => set({ historyOpen }),
   setHelpOpen: (helpOpen) => set({ helpOpen }),
+  setOrganizeOpen: (organizeOpen) => set({ organizeOpen }),
   openEditor: (editor) => set({ editor }),
   closeEditor: () => set({ editor: null }),
 }));
