@@ -9,6 +9,7 @@ import {
   SettingsGroup,
   ToggleRow,
 } from "@/components/settings/controls";
+import { Term } from "@/components/guide/term";
 import { usePrefsStore } from "@/prefs/store";
 
 export function EnginePane() {
@@ -24,7 +25,7 @@ export function EnginePane() {
       </Notice>
 
       <SettingsGroup title="Behavior">
-        <SettingRow label="Auto-rescheduling" description="What happens when a task runs past its time without being done. Automatic changes are saved to Schedule history and can be undone.">
+        <SettingRow label="Auto-rescheduling" hint={<Term id="missed" />} description="What happens when a task runs past its time without being done. Automatic changes are saved to Schedule history and can be undone.">
           {(id) => (
             <NativeSelect
               id={id}
@@ -45,7 +46,7 @@ export function EnginePane() {
           checked={engine.allowMoveExisting}
           onChange={(allowMoveExisting) => update("engine", { allowMoveExisting })}
         />
-        <SettingRow label="Deadline behavior" description="Strict never places work past a deadline; soft allows it and flags the risk.">
+        <SettingRow label="Deadline behavior" hint={<><Term id="strict-deadline" /><Term id="soft-deadline" /></>} description="Strict never places work past a deadline; soft allows it and flags the risk.">
           {(id) => (
             <NativeSelect
               id={id}
@@ -80,7 +81,7 @@ export function EnginePane() {
             />
           )}
         </SettingRow>
-        <SettingRow label="Stability weight" description="At 5 or more, Plan my week only moves tasks that break a rule. Below 5 it may re-plan every unlocked task.">
+        <SettingRow label="Stability weight" hint={<Term id="stability" />} description="At 5 or more, Plan my week only moves tasks that break a rule. Below 5 it may re-plan every unlocked task.">
           {(id) => (
             <RangeField
               id={id}

@@ -10,6 +10,7 @@ import {
   SettingsGroup,
   ToggleRow,
 } from "@/components/settings/controls";
+import { Term } from "@/components/guide/term";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { orderedWeekdays, timeToMinutes } from "@/lib/time";
@@ -122,7 +123,7 @@ export function PlanningPane() {
             onCommit={(workStart, workEnd) => update("planning", { workStart, workEnd })}
           />
         </SettingRow>
-        <SettingRow label="Maximum daily workload" description="The planner stops filling a day past this.">
+        <SettingRow label="Maximum daily workload" hint={<Term id="daily-limit" />} description="The planner stops filling a day past this.">
           {(id) => (
             <NumberField
               id={id}
@@ -134,7 +135,7 @@ export function PlanningPane() {
             />
           )}
         </SettingRow>
-        <SettingRow label="Buffer between tasks" description="Minimum gap kept between two tasks.">
+        <SettingRow label="Buffer between tasks" hint={<Term id="buffer" />} description="Minimum gap kept between two tasks.">
           {(id) => (
             <NumberField
               id={id}
@@ -232,7 +233,7 @@ export function PlanningPane() {
           onChange={(enabled) => update("planning", { focusTime: { ...planning.focusTime, enabled } })}
         />
         {planning.focusTime.enabled ? (
-          <SettingRow label="Focus block length">
+          <SettingRow label="Focus block length" hint={<Term id="focus-time" />}>
             {(id) => (
               <NumberField
                 id={id}

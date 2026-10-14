@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CalendarCheck, CircleAlert, CircleCheck, Lock, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import { Term } from "@/components/guide/term";
 import { styleOf } from "@/components/tasks/task-style";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,7 +104,9 @@ function PlanBody({ tasks, initialMissed, onClose }: { tasks: Task[]; initialMis
     <>
       <div className="flex items-start justify-between gap-4 rounded-xl border p-3">
         <label htmlFor="plan-fix" className="min-w-0 cursor-pointer">
-          <span className="block text-sm font-medium">Also fix conflicts</span>
+          <span className="flex items-center gap-1 text-sm font-medium">
+            Also fix conflicts <Term id="conflict" />
+          </span>
           <span className="block text-xs text-muted-foreground">
             {engine.allowMoveExisting
               ? "Move unlocked tasks that overlap, break your hours or miss a deadline. Locked tasks never move."
@@ -115,7 +118,9 @@ function PlanBody({ tasks, initialMissed, onClose }: { tasks: Task[]; initialMis
 
       <div className="flex items-start justify-between gap-4 rounded-xl border p-3">
         <label htmlFor="plan-missed" className="min-w-0 cursor-pointer">
-          <span className="block text-sm font-medium">Replan missed tasks{missedCount > 0 ? ` (${missedCount})` : ""}</span>
+          <span className="flex items-center gap-1 text-sm font-medium">
+            Replan missed tasks{missedCount > 0 ? ` (${missedCount})` : ""} <Term id="missed" />
+          </span>
           <span className="block text-xs text-muted-foreground">
             {missedCount > 0
               ? "Give tasks whose time has passed a new slot from now on."

@@ -12,6 +12,7 @@ import {
   Target,
   type LucideIcon,
 } from "lucide-react";
+import { Term } from "@/components/guide/term";
 import { buttonVariants } from "@/components/ui/button";
 import { activeRules, type RuleIcon } from "@/domain/rules";
 import { appPath } from "@/lib/routes";
@@ -37,8 +38,8 @@ export function ActiveRulesBar() {
       aria-labelledby="rules-title"
       className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-2xl border bg-card px-4 py-3 shadow-soft"
     >
-      <h2 id="rules-title" className="text-sm font-semibold">
-        Active Rules
+      <h2 id="rules-title" className="flex items-center gap-1 text-sm font-semibold">
+        Active Rules <Term id="engine" />
       </h2>
       <ul className="flex flex-1 flex-wrap items-center gap-2">
         {rules.map((rule) => {

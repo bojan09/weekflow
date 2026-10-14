@@ -2,6 +2,7 @@
 
 import type { PointerEvent } from "react";
 import { CalendarPlus, GripVertical, Wand2 } from "lucide-react";
+import { Term } from "@/components/guide/term";
 import { QuickAdd } from "@/components/tasks/quick-add";
 import { scheduleInNextFreeSlot } from "@/components/tasks/actions";
 import { CategoryChip, PriorityBadge } from "@/components/tasks/task-meta";
@@ -38,8 +39,8 @@ export function UnscheduledTray({ tasks, now, planning, drag, onPointerDown, onS
   return (
     <section aria-labelledby="tray-title" className="flex flex-col gap-3 rounded-2xl border bg-card p-4 shadow-soft">
       <div className="flex items-baseline justify-between">
-        <h2 id="tray-title" className="text-sm font-semibold">
-          Unscheduled
+        <h2 id="tray-title" className="flex items-center gap-1 text-sm font-semibold">
+          Unscheduled <Term id="inbox" />
         </h2>
         <span className="text-xs text-muted-foreground tabular-nums">{tasks.length}</span>
       </div>
