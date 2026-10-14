@@ -1,0 +1,103 @@
+/*
+ * Page-canvas backgrounds. Applied through --page-bg on any element carrying
+ * data-bg, so the Settings thumbnails render the same CSS as the live app.
+ * Text never sits directly on the canvas: content lives on the --background /
+ * --card surfaces, so contrast does not depend on the chosen background.
+ */
+
+[data-bg="default"] {
+  --page-bg: var(--canvas);
+}
+
+[data-bg="light"] {
+  --page-bg: oklch(0.975 0.004 270);
+}
+
+[data-bg="dark"] {
+  --page-bg: oklch(0.14 0.03 270);
+}
+
+[data-bg="tint-lavender"] {
+  --page-bg: oklch(0.925 0.045 290);
+}
+
+[data-bg="tint-mint"] {
+  --page-bg: oklch(0.94 0.045 170);
+}
+
+[data-bg="tint-rose"] {
+  --page-bg: oklch(0.94 0.04 10);
+}
+
+.dark[data-bg="tint-lavender"],
+.dark [data-bg="tint-lavender"] {
+  --page-bg: oklch(0.2 0.06 290);
+}
+
+.dark[data-bg="tint-mint"],
+.dark [data-bg="tint-mint"] {
+  --page-bg: oklch(0.2 0.045 170);
+}
+
+.dark[data-bg="tint-rose"],
+.dark [data-bg="tint-rose"] {
+  --page-bg: oklch(0.2 0.05 10);
+}
+
+[data-bg="dots"] {
+  --page-bg:
+    radial-gradient(circle, oklch(0.62 0.04 275 / 0.4) 1.3px, transparent 1.6px) 0 0 / 18px 18px,
+    var(--canvas);
+}
+
+.dark[data-bg="dots"],
+.dark [data-bg="dots"] {
+  --page-bg:
+    radial-gradient(circle, oklch(0.72 0.04 275 / 0.28) 1.3px, transparent 1.6px) 0 0 / 18px 18px,
+    var(--canvas);
+}
+
+[data-bg="lines"] {
+  --page-bg:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 14px,
+      oklch(0.62 0.05 275 / 0.22) 14px 15px
+    ),
+    var(--canvas);
+}
+
+.dark[data-bg="lines"],
+.dark [data-bg="lines"] {
+  --page-bg:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 14px,
+      oklch(0.72 0.05 275 / 0.18) 14px 15px
+    ),
+    var(--canvas);
+}
+
+[data-bg="ocean"] {
+  --page-bg:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' preserveAspectRatio='none'%3E%3Cpath d='M0 300 Q100 260 200 300 T400 300 T600 300 T800 300 V600 H0Z' fill='%23fff' fill-opacity='.18'/%3E%3Cpath d='M0 380 Q100 340 200 380 T400 380 T600 380 T800 380 V600 H0Z' fill='%23fff' fill-opacity='.16'/%3E%3Cpath d='M0 460 Q100 420 200 460 T400 460 T600 460 T800 460 V600 H0Z' fill='%23fff' fill-opacity='.14'/%3E%3C/svg%3E") center / 100% 100% no-repeat,
+    linear-gradient(180deg, #8fdcf0 0%, #3fa7dc 45%, #1c5fa6 100%);
+}
+
+[data-bg="mountain"] {
+  --page-bg:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' preserveAspectRatio='none'%3E%3Cpath d='M0 420 L120 280 L220 380 L340 220 L470 400 L580 300 L700 390 L800 330 V600 H0Z' fill='%236f86b0'/%3E%3Cpath d='M0 480 L100 400 L210 470 L330 360 L450 480 L570 400 L690 480 L800 420 V600 H0Z' fill='%234a6a8f'/%3E%3Cpath d='M0 540 L150 480 L300 540 L450 490 L620 550 L800 500 V600 H0Z' fill='%23365a6a'/%3E%3C/svg%3E") center / 100% 100% no-repeat,
+    linear-gradient(180deg, #bcd7f2 0%, #f4dcc8 100%);
+}
+
+[data-bg="forest"] {
+  --page-bg:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' preserveAspectRatio='none'%3E%3Cpath d='M0 600 V450 L40 360 L80 450 L120 350 L170 460 L220 370 L270 470 L330 350 L380 470 L440 360 L500 470 L560 370 L620 470 L690 360 L750 460 L800 400 V600Z' fill='%231d5a40' fill-opacity='.8'/%3E%3Cpath d='M0 600 V500 L50 420 L100 510 L160 410 L220 520 L290 420 L350 520 L430 430 L500 530 L580 430 L660 530 L730 440 L800 510 V600Z' fill='%23123d2c'/%3E%3C/svg%3E") center / 100% 100% no-repeat,
+    linear-gradient(180deg, #a9d6a0 0%, #3f8f5f 55%, #0e3b2a 100%);
+}
+
+[data-bg="sunset"] {
+  --page-bg:
+    radial-gradient(circle at 50% 72%, #ffe6a8 0 8%, #ffb36b 9%, transparent 36%),
+    linear-gradient(180deg, #5b4fa8 0%, #d8629b 45%, #ff9a62 78%, #ffd08a 100%);
+}

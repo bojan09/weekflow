@@ -1,0 +1,186 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../theme/generated/tokens.css";
+@import "../theme/backgrounds.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Semantic token → Tailwind utility mapping. All colors come from the
+ * generated tokens (src/theme/generated/tokens.css); nothing here is a literal.
+ */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-canvas: var(--canvas);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-text: var(--primary-text);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-text: var(--primary-soft-text);
+  --color-primary-border: var(--primary-border);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-hover);
+  --color-sidebar-accent-foreground: var(--sidebar-foreground);
+  --color-sidebar-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-text: var(--success-text);
+  --color-success-border: var(--success-border);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-text: var(--warning-text);
+  --color-warning-border: var(--warning-border);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-text: var(--danger-text);
+  --color-danger-border: var(--danger-border);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-info-text: var(--info-text);
+  --color-info-border: var(--info-border);
+
+  --color-task-lavender-bg: var(--task-lavender-bg);
+  --color-task-lavender-bar: var(--task-lavender-bar);
+  --color-task-lavender-fg: var(--task-lavender-fg);
+  --color-task-lavender-muted: var(--task-lavender-muted);
+  --color-task-blue-bg: var(--task-blue-bg);
+  --color-task-blue-bar: var(--task-blue-bar);
+  --color-task-blue-fg: var(--task-blue-fg);
+  --color-task-blue-muted: var(--task-blue-muted);
+  --color-task-teal-bg: var(--task-teal-bg);
+  --color-task-teal-bar: var(--task-teal-bar);
+  --color-task-teal-fg: var(--task-teal-fg);
+  --color-task-teal-muted: var(--task-teal-muted);
+  --color-task-green-bg: var(--task-green-bg);
+  --color-task-green-bar: var(--task-green-bar);
+  --color-task-green-fg: var(--task-green-fg);
+  --color-task-green-muted: var(--task-green-muted);
+  --color-task-amber-bg: var(--task-amber-bg);
+  --color-task-amber-bar: var(--task-amber-bar);
+  --color-task-amber-fg: var(--task-amber-fg);
+  --color-task-amber-muted: var(--task-amber-muted);
+  --color-task-orange-bg: var(--task-orange-bg);
+  --color-task-orange-bar: var(--task-orange-bar);
+  --color-task-orange-fg: var(--task-orange-fg);
+  --color-task-orange-muted: var(--task-orange-muted);
+  --color-task-pink-bg: var(--task-pink-bg);
+  --color-task-pink-bar: var(--task-pink-bar);
+  --color-task-pink-fg: var(--task-pink-fg);
+  --color-task-pink-muted: var(--task-pink-muted);
+  --color-task-slate-bg: var(--task-slate-bg);
+  --color-task-slate-bar: var(--task-slate-bar);
+  --color-task-slate-fg: var(--task-slate-fg);
+  --color-task-slate-muted: var(--task-slate-muted);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-soft: var(--elev-1);
+  --shadow-lift: var(--elev-2);
+}
+
+:root {
+  --radius: 0.75rem;
+  --accent: var(--primary-soft);
+  --accent-foreground: var(--primary-soft-text);
+  --destructive: var(--danger-text);
+  --elev-1: 0 1px 2px oklch(0.3 0.05 270 / 0.04), 0 8px 24px -10px oklch(0.3 0.05 270 / 0.12);
+  --elev-2: 0 2px 4px oklch(0.3 0.05 270 / 0.06), 0 16px 36px -12px oklch(0.3 0.05 270 / 0.2);
+  --density: 1;
+  --row-y: calc(0.875rem * var(--density));
+}
+
+.dark {
+  --elev-1: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px -10px oklch(0 0 0 / 0.5);
+  --elev-2: 0 2px 4px oklch(0 0 0 / 0.35), 0 16px 36px -12px oklch(0 0 0 / 0.6);
+}
+
+[data-density="compact"] {
+  --density: 0.78;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--page-bg, var(--canvas));
+  background-attachment: fixed;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+*,
+::before,
+::after {
+  border-color: var(--border);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Motion: restrained by default, off when the user (or OS) asks. */
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) *,
+  html:not([data-motion="full"]) *::before,
+  html:not([data-motion="full"]) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
