@@ -58,7 +58,7 @@ export function SettingRow({
     <div
       className={cn(
         "flex gap-x-6 gap-y-3 py-[var(--row-y)]",
-        stacked ? "flex-col" : "flex-col sm:flex-row sm:items-center sm:justify-between",
+        stacked ? "flex-col" : "flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between",
       )}
     >
       <div className="min-w-0 sm:max-w-md">

@@ -32,7 +32,7 @@ export function AboutPane() {
         <SettingRow label="Changelog" description="Every released version and what changed.">
           <Link
             href={appPath("changelog")}
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "min-h-11")}
           >
             <History aria-hidden="true" /> Version history
           </Link>

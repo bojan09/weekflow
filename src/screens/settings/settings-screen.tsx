@@ -45,7 +45,7 @@ export function SettingsScreen({ section }: { section?: SettingsSectionId }) {
   return (
     <>
       <PageHeader title="Settings" subtitle="Customize Weekflow to fit the way you work" />
-      <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
+      <div className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)]">
         <nav aria-label="Settings categories" className={cn(section ? "hidden lg:block" : "block")}>
           <ul className="flex flex-col gap-1 rounded-2xl border bg-card p-2 shadow-soft lg:sticky lg:top-6">
             {SETTINGS_SECTIONS.map((item) => {
@@ -83,7 +83,7 @@ export function SettingsScreen({ section }: { section?: SettingsSectionId }) {
         <div className={cn("min-w-0", !section && "hidden lg:block")}>
           <Link
             href={appPath("settings")}
-            className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-primary-text lg:hidden"
+            className="mb-2 inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary-text lg:hidden"
           >
             <ChevronLeft className="size-4" aria-hidden="true" /> All settings
           </Link>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarRange, FlaskConical, History, ListChecks, Palette } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarRange, FlaskConical, ListChecks, Palette, Users, Wand2 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ScenarioPicker } from "@/components/settings/scenario-picker";
 import { buttonVariants } from "@/components/ui/button";
@@ -31,10 +31,22 @@ const TRY_FIRST = [
     href: appPath("settings", "appearance"),
   },
   {
-    icon: History,
-    title: "Read the version history",
-    text: "A timeline generated from the changelog.",
-    href: appPath("changelog"),
+    icon: Wand2,
+    title: "Let the planner plan",
+    text: "Press P for Plan my week: a preview with a reason for every placement, and nothing changes until you apply it.",
+    href: appPath("week"),
+  },
+  {
+    icon: Users,
+    title: "Try a team workspace",
+    text: "A preview on sample data. Switch between roles to see what each can do.",
+    href: appPath("team"),
+  },
+  {
+    icon: BookOpen,
+    title: "Read the guide",
+    text: "Every part of Weekflow explained, with a Start here checklist on Home.",
+    href: appPath("guide"),
   },
 ] as const;
 
@@ -43,7 +55,7 @@ export default function DemoLauncher() {
     <div className="mx-auto flex min-h-dvh max-w-4xl flex-col p-3 sm:p-5">
       <div className="flex-1 surface-panel rounded-3xl p-6 shadow-soft sm:p-10">
         <header className="flex items-center justify-between">
-          <Link href="/" aria-label="Weekflow home">
+          <Link href="/" aria-label="Weekflow home" className="flex min-h-11 items-center">
             <Logo markClassName="size-8" />
           </Link>
           <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary-soft-text">
@@ -58,7 +70,7 @@ export default function DemoLauncher() {
             nothing leaves your device.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={appPath("home")} className={cn(buttonVariants({ size: "lg" }))}>
+            <Link href={appPath("home")} className={cn(buttonVariants({ size: "lg" }), "min-h-11")}>
               Open the app <ArrowRight aria-hidden="true" />
             </Link>
           </div>

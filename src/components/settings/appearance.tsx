@@ -141,7 +141,7 @@ export function AccentPicker({
             onClick={() => onChange(palette.id)}
             onKeyDown={(event) => onKeyDown(event, index)}
             className={cn(
-              "flex size-8 items-center justify-center rounded-full border border-foreground/15 transition-transform hover:scale-110",
+              "relative flex size-8 items-center justify-center rounded-full border border-foreground/15 transition-transform after:absolute after:-inset-2.5 hover:scale-110",
               selected && "ring-2 ring-foreground ring-offset-2 ring-offset-card",
             )}
             style={{ backgroundColor: palette.swatch, color: palette.swatchFg }}

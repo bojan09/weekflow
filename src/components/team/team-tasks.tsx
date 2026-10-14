@@ -129,7 +129,7 @@ function TaskCard({ task, state, onOpen }: { task: TeamTask; state: TeamState; o
   const project = state.projects.find((p) => p.id === task.projectId);
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-2xl border bg-card p-3">
-      <button type="button" onClick={onOpen} className="min-w-0 flex-1 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      <button type="button" onClick={onOpen} className="min-h-11 min-w-0 flex-1 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <span className="block truncate text-sm font-medium">{task.title}</span>
         <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {project ? (

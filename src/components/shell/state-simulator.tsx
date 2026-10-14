@@ -25,7 +25,7 @@ export function StateSimulator() {
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          "flex h-8 items-center gap-1.5 rounded-full border bg-card px-3 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "flex h-8 min-h-11 items-center gap-1.5 rounded-full border bg-card px-3 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8",
           mode !== "none" && "border-warning-border bg-warning-soft text-warning-text",
         )}
       >

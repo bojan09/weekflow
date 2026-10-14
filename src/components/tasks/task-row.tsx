@@ -49,7 +49,7 @@ export function TaskRow({ task, today, format, onOpen, showSchedule = true, sche
         disabled={today === null}
         onClick={() => today && toggleDone(task, today)}
         className={cn(
-          "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+          "relative mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors after:absolute after:-inset-4",
           done ? "border-success bg-success text-success-foreground" : "border-input hover:border-primary-text",
         )}
       >
@@ -61,7 +61,7 @@ export function TaskRow({ task, today, format, onOpen, showSchedule = true, sche
           type="button"
           onClick={() => onOpen(task.id)}
           className={cn(
-            "block max-w-full truncate rounded text-left text-sm font-medium hover:underline",
+            "-my-3 block max-w-full truncate rounded py-3 text-left text-sm font-medium hover:underline",
             done && "text-muted-foreground line-through",
           )}
         >
@@ -81,7 +81,7 @@ export function TaskRow({ task, today, format, onOpen, showSchedule = true, sche
       <DropdownMenu>
         <DropdownMenuTrigger
           aria-label={`Actions for ${task.title}`}
-          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          className="relative flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground outline-none after:absolute after:-inset-1.5 hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Ellipsis className="size-4" aria-hidden="true" />
         </DropdownMenuTrigger>

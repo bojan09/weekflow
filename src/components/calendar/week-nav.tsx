@@ -14,7 +14,7 @@ export function WeekNav({ planner }: { planner: Planner }) {
   const label = day && planner.anchor ? formatLong(planner.anchor) : planner.rangeLabel;
   const unit = day ? "day" : "week";
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex flex-wrap items-center gap-1.5">
       <Button variant="outline" size="icon-lg" aria-label={`Previous ${unit}`} onClick={() => planner.step(-1)}>
         <ChevronLeft aria-hidden="true" />
       </Button>

@@ -1,6 +1,6 @@
 {
   "name": "weekflow",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -39,6 +39,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.2",
+    "axe-core": "^4.10.2",
     "culori": "^4.0.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",

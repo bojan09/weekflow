@@ -135,7 +135,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
                   aria-label={formatWeekdayLong(date)}
                   onClick={() => setAnchor(date)}
                   className={cn(
-                    "flex flex-col items-center rounded-xl py-1.5 text-xs",
+                    "flex min-w-0 flex-col items-center rounded-xl py-1.5 text-xs",
                     selected ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground",
                   )}
                 >
@@ -180,7 +180,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
     );
 
   return (
-    <div className={cn("grid gap-4", !compact && view !== "agenda" && "xl:grid-cols-[minmax(0,1fr)_18rem]")}>
+    <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-4", !compact && view !== "agenda" && "xl:grid-cols-[minmax(0,1fr)_18rem]")}>
       <div className="min-w-0">{calendar}</div>
       {!compact && view !== "agenda" ? (
         <UnscheduledTray

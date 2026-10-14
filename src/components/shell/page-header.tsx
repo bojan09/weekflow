@@ -14,7 +14,7 @@ function SearchButton() {
       onClick={() => setCommandOpen(true)}
       aria-label="Search and commands"
       aria-keyshortcuts="Control+K Meta+K"
-      className="flex size-10 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:text-foreground"
+      className="flex size-11 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:text-foreground sm:size-10"
     >
       <Search className="size-[18px]" aria-hidden="true" />
     </button>
@@ -35,11 +35,13 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
         {subtitle ? <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p> : null}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2">
         {actions}
-        <HelpButton />
-        <SearchButton />
-        <AvatarMenu />
+        <div className="flex items-center gap-2">
+          <HelpButton />
+          <SearchButton />
+          <AvatarMenu />
+        </div>
       </div>
     </header>
   );

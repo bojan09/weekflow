@@ -39,14 +39,14 @@ function TimeRange({
 
   return (
     <div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Input
           id={`${idPrefix}-start`}
           type="time"
           aria-label="Start time"
           value={draft.start}
           onChange={(e) => change({ ...draft, start: e.target.value })}
-          className="h-10 w-32 rounded-xl border-input bg-card"
+          className="h-10 w-28 min-w-0 rounded-xl border-input bg-card"
           aria-invalid={invalid}
         />
         <span className="text-muted-foreground" aria-hidden="true">
@@ -58,7 +58,7 @@ function TimeRange({
           aria-label="End time"
           value={draft.end}
           onChange={(e) => change({ ...draft, end: e.target.value })}
-          className="h-10 w-32 rounded-xl border-input bg-card"
+          className="h-10 w-28 min-w-0 rounded-xl border-input bg-card"
           aria-invalid={invalid}
         />
       </div>
@@ -103,7 +103,7 @@ export function PlanningPane() {
                   aria-label={day.long}
                   onClick={() => toggleDay(day.index)}
                   className={cn(
-                    "h-10 min-w-12 rounded-xl border px-3 text-sm font-medium transition-colors",
+                    "h-10 min-w-12 rounded-xl border px-3 text-sm font-medium transition-colors max-sm:min-h-11",
                     on
                       ? "border-primary-border bg-primary-soft text-primary-soft-text ring-1 ring-primary-text/40"
                       : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground",

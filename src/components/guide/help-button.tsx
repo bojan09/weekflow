@@ -11,7 +11,7 @@ export function HelpButton() {
       onClick={() => setOpen(true)}
       aria-label="Help for this page"
       aria-keyshortcuts="H"
-      className="flex size-10 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:text-foreground"
+      className="flex size-11 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:text-foreground sm:size-10"
     >
       <CircleHelp className="size-[18px]" aria-hidden="true" />
     </button>

@@ -110,7 +110,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
           aria-pressed={filter.overdueOnly}
           onClick={() => set("overdueOnly", !filter.overdueOnly)}
           className={cn(
-            "h-9 rounded-xl border px-3 text-sm font-medium transition-colors",
+            "h-9 rounded-xl border px-3 text-sm font-medium transition-colors max-sm:min-h-11",
             filter.overdueOnly
               ? "border-danger-border bg-danger-soft text-danger-text"
               : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground",

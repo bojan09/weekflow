@@ -220,6 +220,23 @@ html[data-motion="reduce"] *::after {
   }
 }
 
+/* Touch targets: at least 44px tall (and wide, for icon buttons) on phones and touch screens. */
+@media (max-width: 639px), (pointer: coarse) {
+  [data-slot="button"],
+  [data-slot="input"],
+  [data-slot="textarea"],
+  select,
+  input[type="range"],
+  [role="radio"],
+  [role="tab"],
+  summary {
+    min-height: 2.75rem !important;
+  }
+  [data-slot="button"] {
+    min-width: 2.75rem;
+  }
+}
+
 /* Landing page: faint calendar grid behind the hero and gently floating cards. */
 .hero-grid {
   background-image:

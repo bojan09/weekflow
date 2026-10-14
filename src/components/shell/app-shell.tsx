@@ -43,7 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p>Demo mode. Everything you change stays in this browser.</p>
           <div className="flex items-center gap-3">
             <StateSimulator />
-            <Link href="/" className="font-medium text-primary-text underline-offset-4 hover:underline">
+            <Link href="/" className="inline-flex min-h-11 items-center font-medium text-primary-text underline-offset-4 hover:underline">
               Exit demo
             </Link>
           </div>

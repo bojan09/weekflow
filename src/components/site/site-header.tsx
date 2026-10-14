@@ -59,7 +59,7 @@ export function SiteHeader() {
           scrolled ? "shadow-lift" : "shadow-soft",
         )}
       >
-        <Link href="/" aria-label="Weekflow home" className="rounded-lg">
+        <Link href="/" aria-label="Weekflow home" className="flex min-h-11 items-center rounded-lg">
           <Logo markClassName="size-8" />
         </Link>
 

@@ -309,8 +309,8 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
                 onClick={() => set("durationMin", minutes)}
                 className={
                   draft.durationMin === minutes
-                    ? "h-9 rounded-xl border border-primary-border bg-primary-soft px-3 text-sm font-medium text-primary-soft-text ring-1 ring-primary-text/40"
-                    : "h-9 rounded-xl border bg-card px-3 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "h-9 rounded-xl max-sm:min-h-11 border border-primary-border bg-primary-soft px-3 text-sm font-medium text-primary-soft-text ring-1 ring-primary-text/40"
+                    : "h-9 rounded-xl max-sm:min-h-11 border bg-card px-3 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                 }
               >
                 {minutes < 60 ? `${minutes}m` : `${minutes / 60}h`}
@@ -489,8 +489,8 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
                         }
                         className={
                           on
-                            ? "h-9 min-w-11 rounded-xl border border-primary-border bg-primary-soft px-2 text-sm font-medium text-primary-soft-text"
-                            : "h-9 min-w-11 rounded-xl border bg-card px-2 text-sm text-muted-foreground hover:bg-muted"
+                            ? "h-9 min-w-11 rounded-xl max-sm:min-h-11 border border-primary-border bg-primary-soft px-2 text-sm font-medium text-primary-soft-text"
+                            : "h-9 min-w-11 rounded-xl max-sm:min-h-11 border bg-card px-2 text-sm text-muted-foreground hover:bg-muted"
                         }
                       >
                         {day.short}
@@ -551,15 +551,17 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
           <ul className="space-y-1.5">
             {draft.checklist.map((item) => (
               <li key={item.id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={item.done}
-                  aria-label={`Done: ${item.text}`}
-                  onChange={(e) =>
-                    set("checklist", draft.checklist.map((c) => (c.id === item.id ? { ...c, done: e.target.checked } : c)))
-                  }
-                  className="size-4 accent-primary"
-                />
+                <label className="-my-2 -ml-2 flex size-11 shrink-0 items-center justify-center">
+                  <input
+                    type="checkbox"
+                    checked={item.done}
+                    aria-label={`Done: ${item.text}`}
+                    onChange={(e) =>
+                      set("checklist", draft.checklist.map((c) => (c.id === item.id ? { ...c, done: e.target.checked } : c)))
+                    }
+                    className="size-4 accent-primary"
+                  />
+                </label>
                 <span className={item.done ? "flex-1 text-sm text-muted-foreground line-through" : "flex-1 text-sm"}>
                   {item.text}
                 </span>
@@ -567,7 +569,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
                   type="button"
                   aria-label={`Remove ${item.text}`}
                   onClick={() => set("checklist", draft.checklist.filter((c) => c.id !== item.id))}
-                  className="rounded p-1 text-muted-foreground hover:text-foreground"
+                  className="-my-2 -mr-2 flex size-11 shrink-0 items-center justify-center rounded text-muted-foreground hover:text-foreground"
                 >
                   <Trash2 className="size-3.5" aria-hidden="true" />
                 </button>

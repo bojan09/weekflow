@@ -5,7 +5,20 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
-## 0.0.8 — Team workspaces (preview)
+## 0.0.9 — Polish and audit
+Date: 2026-10-14
+Summary: A full accessibility, mobile and theme audit of every screen, with the problems it found fixed.
+
+- Audited every page in light and dark, on a phone and a desktop, with larger text, using axe-core: no violations remain
+- Colour contrast checked for all 15 accent colours and all 12 backgrounds with every glass level, in both schemes: all pass
+- Phone: pages no longer scroll sideways (Home, Tasks and Review header controls now wrap)
+- Touch targets are at least 44px on phones and touch screens, including switches, colour swatches, task checkboxes and checklist items
+- Larger text: week, month and review navigation, planning time fields and settings rows wrap instead of overflowing
+- Each Settings pane has its own page title
+- The demo start page lists what you can try today: the planner, Team and the Guide
+- New automated accessibility checks on the main screens and dialogs, plus a repeatable browser audit script and a written report in the docs
+- Known limits are documented: seven-column calendar cells on a phone are slightly narrower than 44px but much taller
+
 Date: 2026-10-14
 Summary: A free team workspace on sample data: shared tasks and projects, assignment, comments, people and roles, and team availability.
 

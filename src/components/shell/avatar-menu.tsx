@@ -33,7 +33,7 @@ export function AvatarMenu() {
         aria-label="Account menu"
         className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <Avatar className="size-10">
+        <Avatar className="size-11 sm:size-10">
           <AvatarFallback className="bg-primary-soft text-sm font-semibold text-primary-soft-text">
             {initials || " "}
           </AvatarFallback>

@@ -60,7 +60,7 @@ function MonthBody({ tasks }: { tasks: Task[] }) {
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           <Button variant="outline" size="icon-lg" aria-label="Previous month" onClick={() => setMonth(addMonths(focus, -1))}>
             <ChevronLeft aria-hidden="true" />
           </Button>
