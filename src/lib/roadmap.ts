@@ -9,17 +9,17 @@ export interface RoadmapEntry {
 /** What each upcoming version delivers. Shipped versions live in CHANGELOG.md. */
 export const ROADMAP: readonly RoadmapEntry[] = [
   {
-    version: "0.0.5",
-    title: "Replanning and workload",
-    summary: "Auto-replanning, schedule history, workload analytics, weekly review, long-task blocks, recurring tasks and projects.",
+    version: "0.0.6",
+    title: "Recurring tasks and projects",
+    summary: "Recurring tasks, projects, templates, custom categories, long-task blocks and in-app reminders.",
   },
   {
-    version: "0.0.6",
+    version: "0.0.7",
     title: "Team workspaces",
     summary: "Members, shared projects and tasks, assignment, comments and team availability.",
   },
   {
-    version: "0.0.7",
+    version: "0.0.8",
     title: "Polish and audit",
     summary: "Full accessibility, mobile and regression pass across every theme and palette.",
   },
@@ -34,7 +34,7 @@ export const PLANNED_ROUTES: Partial<
   Record<AppRoute, { version: string; blurb: string; items: string[] }>
 > = {
   team: {
-    version: "0.0.6",
+    version: "0.0.7",
     blurb: "Collaborate, assign tasks and keep everyone aligned. Free for every team.",
     items: [
       "Members, roles and invitations",

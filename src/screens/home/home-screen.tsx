@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { CircleCheck, Clock, Hourglass, ListChecks, Wand2 } from "lucide-react";
 import { WeekNav } from "@/components/calendar/week-nav";
 import { WeekPlanner } from "@/components/calendar/week-planner";
+import { MissedBanner, ReviewPrompt } from "@/components/home/attention-cards";
 import { ActiveRulesBar } from "@/components/home/active-rules-bar";
 import { ConflictsPanel } from "@/components/home/conflicts-panel";
 import { StatCard } from "@/components/home/stat-card";
@@ -19,7 +20,7 @@ import { tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { detectConflicts } from "@/domain/conflicts";
 import { formatDuration, weekStats } from "@/domain/stats";
-import { isInbox, type Task } from "@/domain/tasks";
+import { isInbox, isMissed, type Task } from "@/domain/tasks";
 import { usePlanner } from "@/hooks/use-planner";
 import { firstName, greetingFor } from "@/lib/greeting";
 import { appPath } from "@/lib/routes";
@@ -40,8 +41,9 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
     () => (now ? detectConflicts(tasks, planning, now, format) : []),
     [tasks, planning, now, format],
   );
-  const setPlanOpen = useUiStore((s) => s.setPlanOpen);
+  const openPlan = useUiStore((s) => s.openPlan);
   const inboxCount = tasks.filter(isInbox).length;
+  const missedCount = now ? tasks.filter((t) => !t.locked && isMissed(t, now)).length : 0;
 
   return (
     <>
@@ -64,6 +66,9 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
         )}
       </section>
 
+      {now ? <ReviewPrompt now={now} /> : null}
+      <MissedBanner count={missedCount} />
+
       <QuickAdd className="max-w-2xl" placeholder="Quick add a task to your inbox…" />
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
@@ -72,7 +77,7 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
         </section>
         <div className="space-y-4">
           <ConflictsPanel conflicts={conflicts} />
-          <Button onClick={() => setPlanOpen(true)} className="h-11 w-full rounded-2xl">
+          <Button onClick={() => openPlan()} className="h-11 w-full rounded-2xl">
             <Wand2 aria-hidden="true" /> Plan my week
           </Button>
           <Link

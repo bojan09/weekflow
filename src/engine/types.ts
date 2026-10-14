@@ -20,6 +20,11 @@ export interface PlanInput {
   engine: EnginePrefs;
   now: Now;
   mode: PlanMode;
+  /**
+   * Open tasks whose time has passed. `include` re-plans them along with the
+   * rest; `only` plans nothing else. Locked tasks are never touched.
+   */
+  missed?: "include" | "only";
   /** Only used to word explanations. */
   format?: TimeFormat;
   horizonDays?: number;

@@ -42,7 +42,8 @@ export function MobileNav() {
   const pathname = usePathname();
   const moreOpen = useUiStore((s) => s.moreOpen);
   const setMoreOpen = useUiStore((s) => s.setMoreOpen);
-  const moreItems = [...SECONDARY_NAV, ...EXTRA_NAV];
+  const tabItems = PRIMARY_NAV.filter((item) => item.tab !== false);
+  const moreItems = [...PRIMARY_NAV.filter((item) => item.tab === false), ...SECONDARY_NAV, ...EXTRA_NAV];
   const moreActive = moreItems.some((item) => isActiveRoute(pathname, item));
 
   return (
@@ -52,7 +53,7 @@ export function MobileNav() {
         className="fixed inset-x-2 bottom-3 z-40 surface-sidebar rounded-3xl p-1 shadow-lift lg:hidden"
       >
         <ul className="grid grid-cols-6 gap-0.5">
-          {PRIMARY_NAV.map((item) => {
+          {tabItems.map((item) => {
             const Icon = item.icon;
             const active = isActiveRoute(pathname, item);
             return (

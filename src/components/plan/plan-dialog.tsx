@@ -14,11 +14,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { mutateTasks, restoreTasks, tasksCollection } from "@/data/tasks";
+import { commitSchedule } from "@/data/history";
+import { restoreTasks, tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { describeSlot } from "@/domain/conflicts";
 import { formatDuration } from "@/domain/stats";
-import type { Task } from "@/domain/tasks";
+import { isMissed, type Task } from "@/domain/tasks";
 import { applyPlan, planSchedule, type PlanMode, type Proposal } from "@/engine";
 import { useNow } from "@/hooks/use-now";
 import { formatLong } from "@/lib/dates";
@@ -60,18 +61,20 @@ function ProposalRow({ proposal, task, format }: { proposal: Proposal; task: Tas
   );
 }
 
-function PlanBody({ tasks, onClose }: { tasks: Task[]; onClose: () => void }) {
+function PlanBody({ tasks, initialMissed, onClose }: { tasks: Task[]; initialMissed: boolean; onClose: () => void }) {
   const now = useNow();
   const planning = usePrefsStore((s) => s.prefs.planning);
   const engine = usePrefsStore((s) => s.prefs.engine);
   const format = usePrefsStore((s) => s.prefs.calendar.timeFormat);
   const [fix, setFix] = useState(false);
+  const [missed, setMissed] = useState(initialMissed);
   const mode: PlanMode = fix && engine.allowMoveExisting ? "fix" : "inbox";
 
   const plan = useMemo(
-    () => (now ? planSchedule({ tasks, planning, engine, now, mode, format }) : null),
-    [tasks, planning, engine, now, mode, format],
+    () => (now ? planSchedule({ tasks, planning, engine, now, mode, format, missed: missed ? "include" : undefined }) : null),
+    [tasks, planning, engine, now, mode, format, missed],
   );
+  const missedCount = useMemo(() => (now ? tasks.filter((t) => !t.locked && isMissed(t, now)).length : 0), [tasks, now]);
   const byId = useMemo(() => new Map(tasks.map((t) => [t.id, t] as const)), [tasks]);
   const days = useMemo(() => {
     const groups = new Map<string, Proposal[]>();
@@ -84,7 +87,7 @@ function PlanBody({ tasks, onClose }: { tasks: Task[]; onClose: () => void }) {
   if (!plan) return <p className="py-6 text-sm text-muted-foreground">Preparing your plan…</p>;
 
   const apply = (): void => {
-    const previous = mutateTasks((t) => applyPlan(t, plan));
+    const previous = commitSchedule("Before Plan my week", (t) => applyPlan(t, plan));
     onClose();
     if (!previous) return;
     const count = plan.proposals.length;
@@ -108,6 +111,18 @@ function PlanBody({ tasks, onClose }: { tasks: Task[]; onClose: () => void }) {
           </span>
         </label>
         <Switch id="plan-fix" checked={fix && engine.allowMoveExisting} disabled={!engine.allowMoveExisting} onCheckedChange={setFix} />
+      </div>
+
+      <div className="flex items-start justify-between gap-4 rounded-xl border p-3">
+        <label htmlFor="plan-missed" className="min-w-0 cursor-pointer">
+          <span className="block text-sm font-medium">Replan missed tasks{missedCount > 0 ? ` (${missedCount})` : ""}</span>
+          <span className="block text-xs text-muted-foreground">
+            {missedCount > 0
+              ? "Give tasks whose time has passed a new slot from now on."
+              : "Nothing was missed. Tasks whose time passes without being done will show up here."}
+          </span>
+        </label>
+        <Switch id="plan-missed" checked={missed} disabled={missedCount === 0} onCheckedChange={setMissed} />
       </div>
 
       <div className="max-h-[22rem] space-y-4 overflow-y-auto pr-1">
@@ -176,6 +191,7 @@ export function PlanDialog() {
   const open = useUiStore((s) => s.planOpen);
   const setOpen = useUiStore((s) => s.setPlanOpen);
   const tasks = useCollection(tasksCollection);
+  const preset = useUiStore((s) => s.planPreset);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -189,7 +205,7 @@ export function PlanDialog() {
           </DialogDescription>
         </DialogHeader>
         {tasks.status === "ready" ? (
-          <PlanBody tasks={tasks.data} onClose={() => setOpen(false)} />
+          <PlanBody tasks={tasks.data} initialMissed={preset.missed} onClose={() => setOpen(false)} />
         ) : (
           <p className="py-6 text-sm text-muted-foreground">Your tasks are not available right now.</p>
         )}

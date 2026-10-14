@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Keyboard, Monitor, Moon, Plus, Sun, Wand2 } from "lucide-react";
+import { Keyboard, Monitor, Moon, Plus, Sun, Wand2, History } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -23,7 +23,8 @@ export function CommandMenu() {
   const setOpen = useUiStore((s) => s.setCommandOpen);
   const setShortcutsOpen = useUiStore((s) => s.setShortcutsOpen);
   const openEditor = useUiStore((s) => s.openEditor);
-  const setPlanOpen = useUiStore((s) => s.setPlanOpen);
+  const openPlan = useUiStore((s) => s.openPlan);
+  const setHistoryOpen = useUiStore((s) => s.setHistoryOpen);
   const update = usePrefsStore((s) => s.update);
 
   const run = (action: () => void): void => {
@@ -46,8 +47,11 @@ export function CommandMenu() {
             <CommandItem value="new task add" onSelect={() => run(() => openEditor({ kind: "new" }))}>
               <Plus aria-hidden="true" /> New task
             </CommandItem>
-            <CommandItem value="plan my week schedule" onSelect={() => run(() => setPlanOpen(true))}>
+            <CommandItem value="plan my week schedule" onSelect={() => run(() => openPlan())}>
               <Wand2 aria-hidden="true" /> Plan my week
+            </CommandItem>
+            <CommandItem value="schedule history restore undo" onSelect={() => run(() => setHistoryOpen(true))}>
+              <History aria-hidden="true" /> Schedule history
             </CommandItem>
           </CommandGroup>
           <CommandGroup heading="Go to">

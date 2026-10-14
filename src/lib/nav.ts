@@ -1,4 +1,5 @@
 import {
+  ChartColumn,
   CalendarDays,
   CalendarRange,
   History,
@@ -17,6 +18,8 @@ export interface NavItem {
   icon: LucideIcon;
   /** Second key of the "g then <key>" shortcut. */
   shortcut: string;
+  /** False keeps the item out of the five-slot phone tab bar (it lives under More). */
+  tab?: boolean;
 }
 
 export const PRIMARY_NAV: readonly NavItem[] = [
@@ -24,6 +27,7 @@ export const PRIMARY_NAV: readonly NavItem[] = [
   { route: "week", label: "My Week", icon: CalendarRange, shortcut: "w" },
   { route: "tasks", label: "Tasks", icon: ListChecks, shortcut: "t" },
   { route: "calendar", label: "Calendar", icon: CalendarDays, shortcut: "c" },
+  { route: "review", label: "Review", icon: ChartColumn, shortcut: "r", tab: false },
   { route: "team", label: "Team", icon: Users, shortcut: "m" },
 ];
 

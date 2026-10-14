@@ -13,6 +13,11 @@ export interface NewTaskDefaults {
   placement?: Placement | null;
 }
 
+export interface PlanPreset {
+  /** Start with "replan missed tasks" switched on. */
+  missed: boolean;
+}
+
 export type EditorTarget =
   | { kind: "new"; defaults?: NewTaskDefaults }
   | { kind: "edit"; id: string }
@@ -24,11 +29,15 @@ interface UiState {
   shortcutsOpen: boolean;
   moreOpen: boolean;
   planOpen: boolean;
+  planPreset: PlanPreset;
+  historyOpen: boolean;
   editor: EditorTarget;
   setCommandOpen: (open: boolean) => void;
   setShortcutsOpen: (open: boolean) => void;
   setMoreOpen: (open: boolean) => void;
   setPlanOpen: (open: boolean) => void;
+  openPlan: (preset?: Partial<PlanPreset>) => void;
+  setHistoryOpen: (open: boolean) => void;
   openEditor: (target: Exclude<EditorTarget, null>) => void;
   closeEditor: () => void;
 }
@@ -38,11 +47,15 @@ export const useUiStore = create<UiState>()((set) => ({
   shortcutsOpen: false,
   moreOpen: false,
   planOpen: false,
+  planPreset: { missed: false },
+  historyOpen: false,
   editor: null,
   setCommandOpen: (commandOpen) => set({ commandOpen }),
   setShortcutsOpen: (shortcutsOpen) => set({ shortcutsOpen }),
   setMoreOpen: (moreOpen) => set({ moreOpen }),
   setPlanOpen: (planOpen) => set({ planOpen }),
+  openPlan: (preset) => set({ planOpen: true, planPreset: { missed: preset?.missed ?? false } }),
+  setHistoryOpen: (historyOpen) => set({ historyOpen }),
   openEditor: (editor) => set({ editor }),
   closeEditor: () => set({ editor: null }),
 }));

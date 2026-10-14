@@ -230,6 +230,41 @@ describe("planSchedule: moving existing tasks", () => {
   });
 });
 
+describe("planSchedule: missed tasks", () => {
+  const now = { date: TODAY, minutes: 13 * 60 };
+  const missedSet = (): Task[] => [
+    task("old", { placement: at("2026-10-13", 10 * 60) }),
+    task("morning", { placement: at(TODAY, 9 * 60) }),
+    task("later", { placement: at(TODAY, 15 * 60) }),
+    task("inbox"),
+    task("pinned", { placement: at("2026-10-13", 11 * 60), locked: true }),
+  ];
+
+  it("only: replans just the missed, unlocked tasks, into the future", () => {
+    const plan = run(missedSet(), { now, missed: "only" });
+    expect(plan.proposals.map((p) => p.taskId).sort()).toEqual(["morning", "old"]);
+    for (const p of plan.proposals) {
+      expect(p.to.date > TODAY || p.to.startMin >= 13 * 60).toBe(true);
+      expect(p.reasons[0]).toMatchObject({ code: "moved" });
+      expect(p.reasons[0]?.text).toMatch(/not done in time/);
+    }
+    expect(run(missedSet(), { now, missed: "only" }).proposals.some((p) => p.taskId === "inbox")).toBe(false);
+  });
+
+  it("include: also plans the inbox, and never moves a locked missed task", () => {
+    const plan = run(missedSet(), { now, missed: "include" });
+    expect(plan.proposals.map((p) => p.taskId).sort()).toEqual(["inbox", "morning", "old"]);
+    expect(plan.proposals.every((p) => p.taskId !== "pinned")).toBe(true);
+  });
+
+  it("does nothing when nothing was missed, and is stable once applied", () => {
+    const tasks = missedSet();
+    const once = applyPlan(tasks, run(tasks, { now, missed: "only" }));
+    expect(run(once, { now, missed: "only" }).proposals).toEqual([]);
+    expect(run([task("x", { placement: at(TODAY, 15 * 60) })], { now, missed: "only" }).proposals).toEqual([]);
+  });
+});
+
 describe("planSchedule: invariants over every demo scenario", () => {
   for (const scenario of SCENARIOS) {
     it(`${scenario.label}: obeys the rules and is reproducible`, () => {

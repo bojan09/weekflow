@@ -3,9 +3,11 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { OfflineNotice } from "@/components/states/states";
+import { HistoryDialog } from "@/components/plan/history-dialog";
 import { PlanDialog } from "@/components/plan/plan-dialog";
 import { TaskEditor } from "@/components/tasks/task-editor";
 import { useConnectivity } from "@/data/use-online";
+import { useAutoReplan } from "@/hooks/use-auto-replan";
 import { CommandMenu } from "./command-menu";
 import { MobileNav } from "./mobile-nav";
 import { ShortcutsDialog, useGlobalShortcuts } from "./shortcuts";
@@ -14,6 +16,7 @@ import { StateSimulator } from "./state-simulator";
 
 export function AppShell({ children }: { children: ReactNode }) {
   useGlobalShortcuts();
+  useAutoReplan();
   const { online, simulated } = useConnectivity();
 
   return (
@@ -53,6 +56,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <ShortcutsDialog />
       <TaskEditor />
       <PlanDialog />
+      <HistoryDialog />
     </div>
   );
 }

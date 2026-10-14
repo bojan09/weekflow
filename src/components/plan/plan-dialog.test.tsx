@@ -17,7 +17,7 @@ beforeEach(() => {
 
 const open = (): void => {
   render(<PlanDialog />);
-  act(() => useUiStore.getState().setPlanOpen(true));
+  act(() => useUiStore.getState().openPlan());
 };
 
 describe("PlanDialog", () => {

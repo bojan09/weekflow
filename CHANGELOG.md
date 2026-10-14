@@ -5,6 +5,19 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.5 — Replanning and review
+Date: 2026-10-14
+Summary: Missed tasks get replanned, every bulk change can be rolled back, and a weekly review shows workload and progress.
+
+- Missed tasks (their time passed without being done) can be replanned: preview from Home, or switch on "Replan missed tasks" in Plan my week
+- Auto-rescheduling setting now works: "ask" shows a prompt on Home, "Replan automatically" does it once and offers Undo, "never" leaves it to you
+- Schedule history: the schedule is saved before Plan my week, auto-replanning and each restore; restore any version with a preview of what moves, and undo the restore
+- Restoring never touches locked or finished tasks and keeps your edits to titles, notes and checklists
+- Weekly review page: workload by day against your daily limit, time by category, estimates versus actual time, and lists of completed, missed, still ahead and due soon
+- Optional weekly review card on Home on the day you choose in Settings
+- Review added to the sidebar and the phone More menu
+- Settings now says plainly that task reminders arrive in 0.0.6
+
 ## 0.0.4 — Scheduling engine
 Date: 2026-10-14
 Summary: A deterministic planner that fits your inbox around your rules, shows its reasoning, and changes nothing until you apply it.

@@ -121,7 +121,17 @@ export function isOverdue(task: Task, today: ISODate): boolean {
   return task.status === "todo" && task.deadline !== null && task.deadline < today;
 }
 
-/** Human description of where a task sits, e.g. "Locked to Tue 14:00". */
+/**
+ * An open task whose time has passed without it being done: it sits on an
+ * earlier day, or ended earlier today. A day-only task is missed once its day is over.
+ */
+export function isMissed(task: Task, now: { date: ISODate; minutes: number }): boolean {
+  if (task.status !== "todo" || task.placement === null) return false;
+  if (task.placement.date < now.date) return true;
+  if (task.placement.date > now.date || task.placement.startMin === null) return false;
+  return task.placement.startMin + task.durationMin <= now.minutes;
+}
+
 export function checklistProgress(task: Task): { done: number; total: number } {
   return { done: task.checklist.filter((i) => i.done).length, total: task.checklist.length };
 }

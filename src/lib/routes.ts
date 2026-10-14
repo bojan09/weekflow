@@ -6,6 +6,7 @@ export type AppRoute =
   | "week"
   | "tasks"
   | "calendar"
+  | "review"
   | "team"
   | "profile"
   | "settings"

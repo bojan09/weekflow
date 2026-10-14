@@ -20,11 +20,11 @@ export function EnginePane() {
       <Notice>
         The scheduling engine is deterministic: the same tasks and rules always produce the same
         plan, and every decision is explained. Use Plan my week to preview a plan with these rules.
-        Auto-rescheduling and block length are saved now and take effect in a later release.
+        Block length is saved now and takes effect in a later release.
       </Notice>
 
       <SettingsGroup title="Behavior">
-        <SettingRow label="Auto-rescheduling" description="What happens when a task is missed or plans change. Not active yet.">
+        <SettingRow label="Auto-rescheduling" description="What happens when a task runs past its time without being done. Automatic changes are saved to Schedule history and can be undone.">
           {(id) => (
             <NativeSelect
               id={id}

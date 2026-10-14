@@ -60,7 +60,7 @@ export function useGlobalShortcuts(): void {
       if (key === "g") pendingG = Date.now();
       else if (key === "p") {
         event.preventDefault();
-        ui.setPlanOpen(true);
+        ui.openPlan();
       } else if (key === "c") {
         event.preventDefault();
         ui.openEditor({ kind: "new" });

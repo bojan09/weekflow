@@ -1,6 +1,6 @@
 import { findFreeSlot } from "@/domain/availability";
 import { detectConflicts } from "@/domain/conflicts";
-import { PRIORITY_RANK, endMin, isTimed, type Placement, type Task } from "@/domain/tasks";
+import { PRIORITY_RANK, endMin, isMissed, isTimed, type Placement, type Task } from "@/domain/tasks";
 import { diffDays, type ISODate } from "@/lib/dates";
 import type { TimeFormat } from "@/lib/time";
 import { explainPlacement, explainUnplaced } from "./explain";
@@ -28,11 +28,24 @@ export function selectCandidates(input: PlanInput): Candidates {
   const inbox = open.filter((t) => t.placement === null);
   const none = { movedBecause: new Map<string, string>(), reoptimizing: false };
 
-  if (mode !== "fix" || !engine.allowMoveExisting) return { tasks: inbox, ...none };
+  const missed = input.missed ? open.filter((t) => !t.locked && isMissed(t, now)) : [];
+  const missedBecause = new Map(missed.map((t) => [t.id, "it was not done in time"] as const));
+  if (input.missed === "only") return { tasks: missed, movedBecause: missedBecause, reoptimizing: false };
+  const withMissed = (base: Candidates): Candidates => {
+    const have = new Set(base.tasks.map((t) => t.id));
+    const extra = missed.filter((t) => !have.has(t.id));
+    return {
+      ...base,
+      tasks: [...base.tasks, ...extra],
+      movedBecause: new Map([...base.movedBecause, ...missedBecause]),
+    };
+  };
+
+  if (mode !== "fix" || !engine.allowMoveExisting) return withMissed({ tasks: inbox, ...none });
 
   const movable = open.filter((t) => !t.locked && t.placement !== null && t.placement.date >= now.date);
   if (engine.weights.stability < STABILITY_THRESHOLD) {
-    return { tasks: [...inbox, ...movable], movedBecause: new Map(), reoptimizing: true };
+    return withMissed({ tasks: [...inbox, ...movable], movedBecause: new Map(), reoptimizing: true });
   }
 
   const movedBecause = new Map<string, string>();
@@ -43,11 +56,11 @@ export function selectCandidates(input: PlanInput): Candidates {
       }
     }
   }
-  return {
+  return withMissed({
     tasks: [...inbox, ...movable.filter((t) => movedBecause.has(t.id))],
     movedBecause,
     reoptimizing: false,
-  };
+  });
 }
 
 interface Rank {

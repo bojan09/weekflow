@@ -27,7 +27,7 @@ interface UnscheduledTrayProps {
 
 /** Open tasks with no time yet. Drag one onto the calendar, or press Schedule. */
 export function UnscheduledTray({ tasks, now, planning, drag, onPointerDown, onScheduled }: UnscheduledTrayProps) {
-  const setPlanOpen = useUiStore((s) => s.setPlanOpen);
+  const openPlan = useUiStore((s) => s.openPlan);
   const sorted = [...tasks].sort(
     (a, b) =>
       PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] ||
@@ -44,7 +44,7 @@ export function UnscheduledTray({ tasks, now, planning, drag, onPointerDown, onS
         <span className="text-xs text-muted-foreground tabular-nums">{tasks.length}</span>
       </div>
       <QuickAdd placeholder="Add to inbox…" />
-      <Button variant="outline" onClick={() => setPlanOpen(true)} className="w-full">
+      <Button variant="outline" onClick={() => openPlan()} className="w-full">
         <Wand2 aria-hidden="true" /> Plan my week
       </Button>
       {sorted.length === 0 ? (
