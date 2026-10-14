@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { DEFAULT_FILTER, filterTasks, tabCounts, type TaskFilter, type TaskTab } from "@/domain/task-filters";
-import { CATEGORIES, PRIORITIES, PRIORITY_LABEL, type CategoryId, type Priority, type Task } from "@/domain/tasks";
+import { allCategories, PRIORITIES, PRIORITY_LABEL, type CategoryId, type Priority, type Task } from "@/domain/tasks";
 import { useNow } from "@/hooks/use-now";
 import { cn } from "@/lib/utils";
 import { usePrefsStore } from "@/prefs/store";
@@ -83,7 +83,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
           className="h-9 min-w-36"
         >
           <option value="all">All categories</option>
-          {CATEGORIES.map((c) => (
+          {allCategories().map((c) => (
             <option key={c.id} value={c.id}>
               {c.label}
             </option>

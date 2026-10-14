@@ -1,6 +1,6 @@
 import { addDays, type ISODate } from "@/lib/dates";
 import { availableMinutes, maxDailyMinutes, scheduledMinutes, type PlanningPrefs } from "./availability";
-import { CATEGORIES, isMissed, type CategoryId, type Task } from "./tasks";
+import { allCategories, categoryOf, isMissed, type CategoryId, type Task } from "./tasks";
 
 /** Planned work from this share of the daily limit upward is flagged as nearly full. */
 export const NEAR_LIMIT = 0.85;
@@ -45,12 +45,13 @@ export function categoryBreakdown(tasks: readonly Task[], week: readonly ISODate
   for (const task of tasks) {
     const date = task.status === "done" ? (task.completedOn ?? task.placement?.date) : task.placement?.date;
     if (!date || !inWeek.has(date)) continue;
-    const entry = totals.get(task.category) ?? { minutes: 0, tasks: 0 };
+    const id = categoryOf(task.category).id;
+    const entry = totals.get(id) ?? { minutes: 0, tasks: 0 };
     entry.minutes += task.status === "done" && task.actualMin !== null ? task.actualMin : task.durationMin;
     entry.tasks += 1;
-    totals.set(task.category, entry);
+    totals.set(id, entry);
   }
-  return CATEGORIES.flatMap((c) => {
+  return allCategories().flatMap((c) => {
     const entry = totals.get(c.id);
     return entry ? [{ category: c.id, label: c.label, ...entry }] : [];
   }).sort((a, b) => b.minutes - a.minutes || (a.category < b.category ? -1 : 1));

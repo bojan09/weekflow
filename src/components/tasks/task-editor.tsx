@@ -12,7 +12,7 @@ import { mutateTasks, newTaskId, tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { addTask, buildTask, wouldCreateCycle } from "@/domain/task-ops";
 import {
-  CATEGORIES,
+  allCategories,
   PRIORITIES,
   PRIORITY_LABEL,
   taskSchema,
@@ -274,7 +274,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
               onChange={(e) => set("category", e.target.value as CategoryId)}
               className="min-w-0"
             >
-              {CATEGORIES.map((c) => (
+              {allCategories().map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.label}
                 </option>

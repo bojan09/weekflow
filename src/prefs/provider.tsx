@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, type ReactNode } from "react";
+import { setCustomCategories } from "@/domain/tasks";
 import { applyPrefs } from "./apply";
 import { PREFS_STORAGE_KEY } from "./boot-script";
 import { usePrefsStore } from "./store";
@@ -15,7 +16,11 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
     persist.rehydrate();
     usePrefsStore.setState({ hydrated: true });
 
-    const apply = (): void => applyPrefs(usePrefsStore.getState().prefs);
+    const apply = (): void => {
+      const { prefs } = usePrefsStore.getState();
+      setCustomCategories(prefs.workspace.customCategories);
+      applyPrefs(prefs);
+    };
     apply();
 
     const unsubscribe = usePrefsStore.subscribe(apply);

@@ -1,3 +1,4 @@
+import { nextOccurrence } from "./recurrence";
 import type { ISODate } from "@/lib/dates";
 import {
   MAX_DURATION,
@@ -42,6 +43,8 @@ export function buildTask(input: NewTaskInput, id: string, createdAt: string): T
     actualMin: null,
     placement: input.placement ?? null,
     locked: false,
+    recurrence: null,
+    projectId: null,
     createdAt,
   };
 }
@@ -145,6 +148,25 @@ export function setDone(tasks: readonly Task[], id: string, done: boolean, today
       return { ...task, status, completedOn: done ? today : null };
     }),
   );
+}
+
+/**
+ * Finish or reopen a task. Finishing a repeating task also adds its next
+ * occurrence as a new open task. Reopening never removes that copy.
+ */
+export function completeTask(
+  tasks: readonly Task[],
+  id: string,
+  done: boolean,
+  today: ISODate,
+  makeId: () => string,
+  nowIso: string,
+): Task[] {
+  const next = setDone(tasks, id, done, today);
+  if (!done || next === tasks) return next;
+  const finished = next.find((t) => t.id === id);
+  const copy = finished ? nextOccurrence(finished, today, makeId(), nowIso) : null;
+  return copy ? [...next, copy] : next;
 }
 
 /** True when adding `dependsOn` to `id` would create a cycle. */

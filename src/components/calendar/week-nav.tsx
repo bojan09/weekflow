@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SegmentedControl, NativeSelect } from "@/components/settings/controls";
 import { Button } from "@/components/ui/button";
-import { CATEGORIES, type CategoryId } from "@/domain/tasks";
+import { allCategories, type CategoryId } from "@/domain/tasks";
 import type { Planner } from "@/hooks/use-planner";
 import { formatLong } from "@/lib/dates";
 import { usePlannerStore, type PlannerView } from "@/stores/planner";
@@ -58,7 +58,7 @@ export function CategoryFilter() {
       className="h-9 min-w-36"
     >
       <option value="all">All categories</option>
-      {CATEGORIES.map((c) => (
+      {allCategories().map((c) => (
         <option key={c.id} value={c.id}>
           {c.label}
         </option>

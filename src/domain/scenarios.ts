@@ -94,6 +94,8 @@ function create(drafts: Draft[], weekStart: ISODate, today: ISODate, idPrefix: s
       actualMin: past ? clampDuration(draft.durationMin) : null,
       placement: draft.at && date ? { date, startMin: draft.at.startMin } : null,
       locked: Boolean(draft.locked && draft.at),
+      recurrence: null,
+      projectId: null,
       createdAt: `${weekStart}T00:${String(Math.floor(index / 60)).padStart(2, "0")}:${String(index % 60).padStart(2, "0")}.000Z`,
     };
   });

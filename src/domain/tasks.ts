@@ -13,15 +13,8 @@ export const PRIORITY_LABEL: Record<Priority, string> = {
 /** Higher number = more important. */
 export const PRIORITY_RANK: Record<Priority, number> = { low: 0, medium: 1, high: 2 };
 
-export type TaskHue =
-  | "lavender"
-  | "blue"
-  | "teal"
-  | "green"
-  | "amber"
-  | "orange"
-  | "pink"
-  | "slate";
+export const TASK_HUES = ["lavender", "blue", "teal", "green", "amber", "orange", "pink", "slate"] as const;
+export type TaskHue = (typeof TASK_HUES)[number];
 
 export const CATEGORIES = [
   { id: "work", label: "Work", hue: "blue" },
@@ -34,13 +27,50 @@ export const CATEGORIES = [
   { id: "social", label: "Social", hue: "pink" },
 ] as const satisfies ReadonlyArray<{ id: string; label: string; hue: TaskHue }>;
 
-export type CategoryId = (typeof CATEGORIES)[number]["id"];
+/** Built-in ids are the eight above; custom categories (Settings, Workspace) add more. */
+export type CategoryId = string;
 
-export const CATEGORY_IDS = CATEGORIES.map((c) => c.id) as [CategoryId, ...CategoryId[]];
-
-export function categoryOf(id: CategoryId): (typeof CATEGORIES)[number] {
-  return CATEGORIES.find((c) => c.id === id) ?? CATEGORIES[0];
+export interface Category {
+  id: CategoryId;
+  label: string;
+  hue: TaskHue;
 }
+
+export const MAX_CUSTOM_CATEGORIES = 8;
+
+let customCategories: readonly Category[] = [];
+
+/**
+ * Tell the domain about the user's custom categories. Called when preferences
+ * load or change, so every screen and pure function resolves the same list.
+ */
+export function setCustomCategories(list: readonly Category[]): void {
+  customCategories = list;
+}
+
+export function allCategories(): readonly Category[] {
+  return [...CATEGORIES, ...customCategories];
+}
+
+/** An unknown id (for example a deleted custom category) falls back to Work. */
+export function categoryOf(id: CategoryId): Category {
+  return allCategories().find((c) => c.id === id) ?? CATEGORIES[0];
+}
+
+export const RECURRENCE_FREQS = ["daily", "weekly", "monthly"] as const;
+export type RecurrenceFreq = (typeof RECURRENCE_FREQS)[number];
+
+export const recurrenceSchema = z.object({
+  freq: z.enum(RECURRENCE_FREQS),
+  /** Every N days, weeks or months. */
+  interval: z.number().int().min(1).max(30),
+  /** Weekly only: which days (0 = Sunday). Empty means the same weekday as the task. */
+  weekdays: z.array(z.number().int().min(0).max(6)).max(7),
+  /** Last day a new occurrence may land on. */
+  until: z.string().refine(isValidISO, "Use a valid date").nullable(),
+});
+
+export type Recurrence = z.infer<typeof recurrenceSchema>;
 
 export const MINUTES_PER_DAY = 1440;
 export const MIN_DURATION = 5;
@@ -67,7 +97,7 @@ export const taskSchema = z
     notes: z.string().max(2000),
     durationMin: z.number().int().min(MIN_DURATION).max(MAX_DURATION),
     priority: z.enum(PRIORITIES),
-    category: z.enum(CATEGORY_IDS),
+    category: z.string().min(1).max(40),
     labels: z.array(z.string().trim().min(1).max(24)).max(8),
     deadline: isoDate.nullable(),
     earliestStart: isoDate.nullable(),
@@ -82,6 +112,10 @@ export const taskSchema = z
     /** A locked task is never moved by the user's drag or the engine. */
     locked: z.boolean(),
     createdAt: z.string().min(1),
+    /** Repeat rule. Completing the task creates the next occurrence. */
+    recurrence: recurrenceSchema.nullable().default(null),
+    /** Id of the project the task belongs to. */
+    projectId: z.string().min(1).nullable().default(null),
   })
   .refine((t) => !t.locked || t.placement !== null, {
     message: "A locked task needs a place on the calendar",

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_CUSTOM_CATEGORIES, TASK_HUES } from "@/domain/tasks";
 import { BACKGROUND_IDS } from "@/theme/backgrounds";
 import { ACCENT_IDS } from "@/theme/generated/palettes";
 import { DEFAULT_ACCENT } from "@/theme/palettes";
@@ -82,6 +83,17 @@ const workspace = z.object({
   name: z.string().trim().min(1).max(40).default("Personal"),
   defaultDurationMin: z.number().int().min(5).max(480).default(45),
   defaultPriority: z.enum(["low", "medium", "high"]).default("medium"),
+  /** Extra task categories next to the built-in eight. */
+  customCategories: z
+    .array(
+      z.object({
+        id: z.string().min(1).max(40),
+        label: z.string().trim().min(1).max(24),
+        hue: z.enum(TASK_HUES),
+      }),
+    )
+    .max(MAX_CUSTOM_CATEGORIES)
+    .default([]),
 });
 
 const advanced = z.object({
