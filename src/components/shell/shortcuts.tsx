@@ -58,7 +58,10 @@ export function useGlobalShortcuts(): void {
         return;
       }
       if (key === "g") pendingG = Date.now();
-      else if (key === "p") {
+      else if (key === "h") {
+        event.preventDefault();
+        ui.setHelpOpen(!ui.helpOpen);
+      } else if (key === "p") {
         event.preventDefault();
         ui.openPlan();
       } else if (key === "c") {
@@ -106,6 +109,10 @@ export function ShortcutsDialog() {
           <dt>New task</dt>
           <dd>
             <Kbd>C</Kbd>
+          </dd>
+          <dt>Help for this page</dt>
+          <dd>
+            <Kbd>H</Kbd>
           </dd>
           <dt>Plan my week</dt>
           <dd>

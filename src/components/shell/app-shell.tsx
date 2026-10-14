@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { OfflineNotice } from "@/components/states/states";
+import { HelpPanel } from "@/components/guide/help-panel";
 import { HistoryDialog } from "@/components/plan/history-dialog";
 import { PlanDialog } from "@/components/plan/plan-dialog";
 import { TaskEditor } from "@/components/tasks/task-editor";
@@ -59,6 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <PlanDialog />
       <GuideTracker />
       <HistoryDialog />
+      <HelpPanel />
     </div>
   );
 }

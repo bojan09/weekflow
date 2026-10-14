@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { Search } from "lucide-react";
+import { HelpButton } from "@/components/guide/help-button";
 import { useUiStore } from "@/stores/ui";
 import { AvatarMenu } from "./avatar-menu";
 
@@ -36,6 +37,7 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
       </div>
       <div className="flex items-center gap-2">
         {actions}
+        <HelpButton />
         <SearchButton />
         <AvatarMenu />
       </div>
