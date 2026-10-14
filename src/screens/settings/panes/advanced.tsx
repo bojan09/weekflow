@@ -3,6 +3,7 @@
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/settings/confirm-dialog";
 import { SettingRow, SettingsGroup, ToggleRow } from "@/components/settings/controls";
+import { ScenarioPicker } from "@/components/settings/scenario-picker";
 import { usePrefsStore } from "@/prefs/store";
 
 export function AdvancedPane() {
@@ -20,6 +21,17 @@ export function AdvancedPane() {
           onChange={(showStateSimulator) => update("advanced", { showStateSimulator })}
         />
       </SettingsGroup>
+      <section aria-labelledby="scenarios-title" className="space-y-3">
+        <div>
+          <h3 id="scenarios-title" className="text-sm font-semibold">
+            Demo scenarios
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Replace your demo tasks with a ready-made week to see Weekflow in that situation.
+          </p>
+        </div>
+        <ScenarioPicker />
+      </section>
       <SettingsGroup title="Reset">
         <SettingRow
           label="Reset all settings"

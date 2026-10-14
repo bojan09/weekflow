@@ -47,3 +47,14 @@ export function solveColor(opts: SolveOptions): string {
     `No color with hue ${opts.hue} reaches ${opts.min}:1 against ${opts.against.join(", ")}`,
   );
 }
+
+/** Composite `top` at `alpha` over an opaque `bottom` in sRGB, as CSS does. Returns hex. */
+export function compositeHex(top: string, alpha: number, bottom: string): string {
+  const a = parse(toHex(top));
+  const b = parse(toHex(bottom));
+  if (!a || !b) throw new Error("Unparseable color");
+  const mix = (x: number, y: number): number => alpha * x + (1 - alpha) * y;
+  const rgb = a as { r: number; g: number; b: number };
+  const base = b as { r: number; g: number; b: number };
+  return formatHex({ mode: "rgb", r: mix(rgb.r, base.r), g: mix(rgb.g, base.g), b: mix(rgb.b, base.b) });
+}

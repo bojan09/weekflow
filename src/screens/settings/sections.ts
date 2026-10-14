@@ -31,9 +31,3 @@ export const SETTINGS_SECTIONS = [
 }>;
 
 export type SettingsSectionId = (typeof SETTINGS_SECTIONS)[number]["id"];
-
-export const SETTINGS_SECTION_IDS = SETTINGS_SECTIONS.map((s) => s.id);
-
-export function isSettingsSection(value: string): value is SettingsSectionId {
-  return (SETTINGS_SECTION_IDS as string[]).includes(value);
-}

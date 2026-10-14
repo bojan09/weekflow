@@ -1,5 +1,7 @@
 import { converter } from "culori";
-import { contrast, oklchHex, solveColor, toHex } from "./color";
+import { BACKGROUND_IDS } from "./backgrounds";
+import { backdropExtremes } from "./backdrops";
+import { compositeHex, contrast, oklchHex, solveColor, toHex } from "./color";
 import {
   PALETTE_DEFS,
   STATUS_DEFS,
@@ -176,6 +178,7 @@ export function buildAccent(
   const hoverL = fg === WHITE ? fillL - 0.04 : fillL + 0.03;
   const hover = oklchHex(hoverL, chroma, hue);
 
+  // Extra headroom so accent text stays AA when the surface is translucent.
   const primaryText =
     scheme === "light"
       ? solveColor({
@@ -184,7 +187,7 @@ export function buildAccent(
           start: 0.55,
           direction: -1,
           against: [card, surface],
-          min: TEXT_MIN + MARGIN,
+          min: TEXT_MIN + 0.9,
         })
       : solveColor({
           hue,
@@ -192,7 +195,7 @@ export function buildAccent(
           start: 0.78,
           direction: 1,
           against: [card, surface],
-          min: TEXT_MIN + MARGIN,
+          min: TEXT_MIN + 0.9,
         });
 
   const soft =
@@ -364,6 +367,24 @@ function declarations(tokens: Tokens): string {
     .join("\n");
 }
 
+/**
+ * Lowest surface opacity at which `texts` stay readable on a surface drawn over
+ * every given backdrop color. Returns 1 (fully opaque) when no translucency is safe.
+ */
+function solveGlassAlpha(surface: string, texts: readonly string[], backdrops: readonly string[], min: number): number {
+  for (let a = 50; a <= 100; a += 1) {
+    const alpha = a / 100;
+    const ok = backdrops.every((backdrop) => {
+      const composite = compositeHex(surface, alpha, backdrop);
+      return texts.every((text) => contrast(text, composite) >= min);
+    });
+    if (ok) return alpha;
+  }
+  return 1;
+}
+
+const SUBTLE_EXTRA = 0.1;
+
 export interface BuiltPalette {
   id: string;
   name: string;
@@ -384,28 +405,85 @@ export function buildTheme(): BuiltTheme {
   const checks: ContrastCheck[] = [];
   const blocks: string[] = [];
 
+  const accents = PALETTE_DEFS.map((def) => ({
+    def,
+    light: buildAccent(def, "light"),
+    dark: buildAccent(def, "dark"),
+  }));
+
   const schemeBlocks: Record<Scheme, string> = { light: "", dark: "" };
+  const glassBlocks: string[] = [];
   for (const scheme of ["light", "dark"] as const) {
+    const s = SURFACES[scheme];
     const status = buildStatus(scheme);
     const task = buildTaskHues(scheme);
     checks.push(...surfaceChecks(scheme), ...status.checks, ...task.checks);
+
+    // Translucent ("glass") surfaces: per background, solve the lowest opacity that
+    // keeps text AA over everything that background can show.
+    const panelTexts = [
+      toHex(s.foreground),
+      toHex(s["muted-foreground"]),
+      ...accents.map((a) => a[scheme].tokens["primary-text"] ?? ""),
+    ];
+    const sidebarTexts = [toHex(s["sidebar-foreground"]), toHex(s["sidebar-muted"])];
+    for (const id of BACKGROUND_IDS) {
+      const backdrops = backdropExtremes(id, scheme, s.canvas);
+      const panelMin = solveGlassAlpha(s.background, panelTexts, backdrops, TEXT_MIN + 0.05);
+      const sidebarMin = solveGlassAlpha(s.sidebar, sidebarTexts, backdrops, TEXT_MIN + 0.05);
+      const levels = {
+        subtle: { panel: Math.min(1, +(panelMin + SUBTLE_EXTRA).toFixed(2)), sidebar: Math.min(1, +(sidebarMin + SUBTLE_EXTRA).toFixed(2)) },
+        frosted: { panel: +panelMin.toFixed(2), sidebar: +sidebarMin.toFixed(2) },
+      };
+      const selector =
+        scheme === "light" ? `[data-bg="${id}"]` : `.dark[data-bg="${id}"],
+.dark [data-bg="${id}"]`;
+      glassBlocks.push(
+        `${selector} {
+${declarations({
+          "glass-subtle-panel": String(levels.subtle.panel),
+          "glass-frosted-panel": String(levels.frosted.panel),
+          "glass-subtle-sidebar": String(levels.subtle.sidebar),
+          "glass-frosted-sidebar": String(levels.frosted.sidebar),
+        })}
+}`,
+      );
+      for (const level of ["subtle", "frosted"] as const) {
+        for (const backdrop of backdrops) {
+          const panel = compositeHex(s.background, levels[level].panel, backdrop);
+          const bar = compositeHex(s.sidebar, levels[level].sidebar, backdrop);
+          const where = `${scheme}: glass ${level} on ${id} over ${backdrop}`;
+          panelTexts.forEach((text, i) => checks.push({ id: `${where} panel text ${i}`, fg: text, bg: panel, min: TEXT_MIN }));
+          sidebarTexts.forEach((text, i) => checks.push({ id: `${where} sidebar text ${i}`, fg: text, bg: bar, min: TEXT_MIN }));
+        }
+      }
+    }
+
     schemeBlocks[scheme] = declarations({
       ...SURFACES[scheme],
       ...status.tokens,
       ...task.tokens,
     });
   }
-  blocks.push(`:root,\n.light {\n${schemeBlocks.light}\n}`);
-  blocks.push(`.dark {\n${schemeBlocks.dark}\n}`);
+  blocks.push(`:root,
+.light {
+${schemeBlocks.light}
+}`);
+  blocks.push(`.dark {
+${schemeBlocks.dark}
+}`);
+  blocks.push(...glassBlocks);
 
   const built: BuiltPalette[] = [];
-  for (const def of PALETTE_DEFS) {
-    const light = buildAccent(def, "light");
-    const dark = buildAccent(def, "dark");
+  for (const { def, light, dark } of accents) {
     checks.push(...light.checks, ...dark.checks);
     built.push({ id: def.id, name: def.name, swatch: light.fill, swatchFg: light.fg });
-    blocks.push(`[data-accent="${def.id}"] {\n${declarations(light.tokens)}\n}`);
-    blocks.push(`.dark[data-accent="${def.id}"] {\n${declarations(dark.tokens)}\n}`);
+    blocks.push(`[data-accent="${def.id}"] {
+${declarations(light.tokens)}
+}`);
+    blocks.push(`.dark[data-accent="${def.id}"] {
+${declarations(dark.tokens)}
+}`);
   }
 
   // "Light to dark" row: order by swatch lightness, lightest first.

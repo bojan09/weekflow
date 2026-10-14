@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, FlaskConical, History, Palette, Settings, UserRound } from "lucide-react";
+import { ArrowRight, CalendarRange, FlaskConical, History, ListChecks, Palette } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { ScenarioPicker } from "@/components/settings/scenario-picker";
 import { buttonVariants } from "@/components/ui/button";
 import { APP_VERSION } from "@/generated/version";
 import { ROADMAP } from "@/lib/roadmap";
@@ -12,22 +13,22 @@ export const metadata: Metadata = { title: "Demo" };
 
 const TRY_FIRST = [
   {
+    icon: CalendarRange,
+    title: "Plan your week",
+    text: "Drag tasks, pull a block's bottom edge to resize it, and lock what must not move.",
+    href: appPath("week"),
+  },
+  {
+    icon: ListChecks,
+    title: "Capture tasks fast",
+    text: 'Type "Write report 1h30 !high due fri" in the quick-add box and press Enter.',
+    href: appPath("tasks"),
+  },
+  {
     icon: Palette,
     title: "Make it yours",
     text: "Switch theme, pick one of 15 accent colors and one of 12 backgrounds.",
     href: appPath("settings", "appearance"),
-  },
-  {
-    icon: UserRound,
-    title: "Edit your profile",
-    text: "Change the demo persona's name, bio, time zone and locale.",
-    href: appPath("profile"),
-  },
-  {
-    icon: Settings,
-    title: "Set your rules",
-    text: "Working hours, breaks, buffers and the scheduling rules the engine will follow.",
-    href: appPath("settings", "engine"),
   },
   {
     icon: History,
@@ -40,7 +41,7 @@ const TRY_FIRST = [
 export default function DemoLauncher() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-4xl flex-col p-3 sm:p-5">
-      <div className="flex-1 rounded-3xl bg-background p-6 shadow-soft sm:p-10">
+      <div className="flex-1 surface-panel rounded-3xl p-6 shadow-soft sm:p-10">
         <header className="flex items-center justify-between">
           <Link href="/" aria-label="Weekflow home">
             <Logo markClassName="size-8" />
@@ -87,6 +88,18 @@ export default function DemoLauncher() {
                 );
               })}
             </ul>
+          </section>
+
+          <section aria-labelledby="scenarios" className="mt-10">
+            <h2 id="scenarios" className="text-lg font-semibold">
+              Start from a scenario
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Load a ready-made week, then open the app to see it.
+            </p>
+            <div className="mt-4">
+              <ScenarioPicker />
+            </div>
           </section>
 
           <section aria-labelledby="states" className="mt-10 rounded-2xl border border-info-border bg-info-soft p-5 text-info-text">

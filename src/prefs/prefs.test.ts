@@ -22,6 +22,7 @@ describe("prefs schema", () => {
       accent: "indigo",
       background: "default",
       density: "comfortable",
+      glass: "off",
     });
   });
 

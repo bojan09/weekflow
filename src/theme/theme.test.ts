@@ -66,6 +66,30 @@ describe("generated files", () => {
   });
 });
 
+describe("glass surfaces", () => {
+  it("solves an opacity for every background in both schemes", () => {
+    for (const id of BACKGROUND_IDS) {
+      expect(theme.css, `light ${id}`).toContain(`[data-bg="${id}"] {\n  --glass-subtle-panel`);
+      expect(theme.css, `dark ${id}`).toContain(`.dark [data-bg="${id}"] {\n  --glass-subtle-panel`);
+    }
+  });
+
+  it("keeps opacities in range and frosted never more opaque than subtle", () => {
+    const rows = [...theme.css.matchAll(/--glass-subtle-panel: ([\d.]+);\n {2}--glass-frosted-panel: ([\d.]+);/g)];
+    expect(rows.length).toBe(BACKGROUND_IDS.length * 2);
+    for (const [, subtle, frosted] of rows) {
+      expect(Number(frosted)).toBeLessThanOrEqual(Number(subtle));
+      expect(Number(frosted)).toBeGreaterThanOrEqual(0.5);
+      expect(Number(subtle)).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it("checks text over translucent panels for every background", () => {
+    const glassChecks = theme.checks.filter((c) => c.id.includes("glass"));
+    expect(glassChecks.length).toBeGreaterThan(1000);
+  });
+});
+
 describe("backgrounds", () => {
   it("keeps the id list and the labelled list in sync", () => {
     expect(BACKGROUNDS.map((b) => b.id)).toEqual([...BACKGROUND_IDS]);

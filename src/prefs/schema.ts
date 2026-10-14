@@ -17,6 +17,8 @@ const appearance = z.object({
   accent: z.enum(ACCENT_IDS).default(DEFAULT_ACCENT),
   background: z.enum(BACKGROUND_IDS).default("default"),
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
+  /** Translucent, blurred surfaces so the background shows through. */
+  glass: z.enum(["off", "subtle", "frosted"]).default("off"),
 });
 
 const planning = z.object({

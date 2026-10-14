@@ -24,6 +24,7 @@ d.classList.toggle("dark",dark);
 d.setAttribute("data-accent",pick(a.accent,${JSON.stringify(ACCENT_IDS)},${JSON.stringify(DEFAULT_ACCENT)}));
 d.setAttribute("data-bg",pick(a.background,${JSON.stringify(BACKGROUND_IDS)},"default"));
 d.setAttribute("data-density",pick(a.density,["comfortable","compact"],"comfortable"));
+d.setAttribute("data-glass",pick(a.glass,["off","subtle","frosted"],"off"));
 d.setAttribute("data-motion",pick(x.motion,["system","reduce","full"],"system"));
 d.style.fontSize=pick(x.textScale,[100,110,125],100)+"%";
 }catch(e){}})();`;

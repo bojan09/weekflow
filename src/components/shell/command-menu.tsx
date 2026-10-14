@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Keyboard, Monitor, Moon, Sun } from "lucide-react";
+import { Keyboard, Monitor, Moon, Plus, Sun } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -22,6 +22,7 @@ export function CommandMenu() {
   const open = useUiStore((s) => s.commandOpen);
   const setOpen = useUiStore((s) => s.setCommandOpen);
   const setShortcutsOpen = useUiStore((s) => s.setShortcutsOpen);
+  const openEditor = useUiStore((s) => s.openEditor);
   const update = usePrefsStore((s) => s.update);
 
   const run = (action: () => void): void => {
@@ -40,6 +41,11 @@ export function CommandMenu() {
         <CommandInput placeholder="Search pages and settings…" />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Actions">
+            <CommandItem value="new task add" onSelect={() => run(() => openEditor({ kind: "new" }))}>
+              <Plus aria-hidden="true" /> New task
+            </CommandItem>
+          </CommandGroup>
           <CommandGroup heading="Go to">
             {ALL_NAV.map((item) => {
               const Icon = item.icon;

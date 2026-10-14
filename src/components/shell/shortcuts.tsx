@@ -58,6 +58,10 @@ export function useGlobalShortcuts(): void {
         return;
       }
       if (key === "g") pendingG = Date.now();
+      else if (key === "c") {
+        event.preventDefault();
+        ui.openEditor({ kind: "new" });
+      }
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -95,6 +99,19 @@ export function ShortcutsDialog() {
           <dt>Show this help</dt>
           <dd>
             <Kbd>?</Kbd>
+          </dd>
+          <dt>New task</dt>
+          <dd>
+            <Kbd>C</Kbd>
+          </dd>
+          <dt>Previous / next week (calendar pages)</dt>
+          <dd className="flex gap-1">
+            <Kbd>[</Kbd>
+            <Kbd>]</Kbd>
+          </dd>
+          <dt>Jump to today (calendar pages)</dt>
+          <dd>
+            <Kbd>.</Kbd>
           </dd>
           {ALL_NAV.map((item) => (
             <div key={item.route} className="contents">

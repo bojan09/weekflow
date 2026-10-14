@@ -38,7 +38,7 @@ export function Sidebar() {
   const { online } = useConnectivity();
 
   return (
-    <aside className="sticky top-4 hidden h-[calc(100dvh-2rem)] w-60 shrink-0 flex-col rounded-3xl bg-sidebar p-4 text-sidebar-foreground shadow-lift lg:flex">
+    <aside className="sticky top-4 hidden h-[calc(100dvh-2rem)] w-60 shrink-0 flex-col surface-sidebar rounded-3xl p-4 text-sidebar-foreground shadow-lift lg:flex">
       <Link
         href={appPath("home")}
         className="mb-6 flex items-center rounded-xl px-2 pt-2 text-sidebar-foreground"

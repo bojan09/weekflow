@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { PlannedScreen } from "@/screens/planned-screen";
+import { HomeScreen } from "@/screens/home/home-screen";
 
 export const metadata: Metadata = { title: "Home" };
 
 export default function Page() {
-  return <PlannedScreen route="home" title="Home" />;
+  return <HomeScreen />;
 }

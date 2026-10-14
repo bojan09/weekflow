@@ -44,6 +44,23 @@ export function AppearancePane() {
           </div>
         </SettingRow>
 
+        <SettingRow
+          label="Surfaces"
+          description="Let the background show through softly blurred panels. Weekflow keeps a minimum opacity so text always stays readable, so some combinations stay solid."
+          stacked
+        >
+          <SegmentedControl
+            label="Surfaces"
+            value={appearance.glass}
+            onChange={(glass) => update("appearance", { glass })}
+            options={[
+              { value: "off", label: "Solid" },
+              { value: "subtle", label: "Soft glass" },
+              { value: "frosted", label: "Frosted glass" },
+            ]}
+          />
+        </SettingRow>
+
         <SettingRow label="Density" description="Compact fits more on screen." stacked>
           <SegmentedControl
             label="Density"

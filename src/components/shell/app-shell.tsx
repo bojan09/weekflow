@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { OfflineNotice } from "@/components/states/states";
+import { TaskEditor } from "@/components/tasks/task-editor";
 import { useConnectivity } from "@/data/use-online";
 import { CommandMenu } from "./command-menu";
 import { MobileNav } from "./mobile-nav";
@@ -27,7 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div
           role="region"
           aria-label="Demo mode"
-          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl bg-background px-4 py-2 text-xs text-muted-foreground shadow-soft"
+          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 surface-panel rounded-2xl px-4 py-2 text-xs text-muted-foreground shadow-soft"
         >
           <p>Demo mode. Everything you change stays in this browser.</p>
           <div className="flex items-center gap-3">
@@ -41,7 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main
           id="main"
           tabIndex={-1}
-          className="flex-1 rounded-3xl bg-background p-5 pb-28 shadow-soft outline-none md:p-8 md:pb-28 lg:pb-8"
+          className="surface-panel flex-1 rounded-3xl p-5 pb-28 shadow-soft outline-none md:p-8 md:pb-28 lg:pb-8"
         >
           {children}
         </main>
@@ -49,6 +50,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <MobileNav />
       <CommandMenu />
       <ShortcutsDialog />
+      <TaskEditor />
     </div>
   );
 }

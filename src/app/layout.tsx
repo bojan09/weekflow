@@ -24,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-accent={DEFAULT_ACCENT}
       data-bg="default"
       data-density="comfortable"
+      data-glass="off"
       data-motion="system"
       suppressHydrationWarning
     >

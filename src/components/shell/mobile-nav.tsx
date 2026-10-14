@@ -49,7 +49,7 @@ export function MobileNav() {
     <>
       <nav
         aria-label="Primary"
-        className="fixed inset-x-2 bottom-3 z-40 rounded-3xl bg-sidebar p-1 shadow-lift lg:hidden"
+        className="fixed inset-x-2 bottom-3 z-40 surface-sidebar rounded-3xl p-1 shadow-lift lg:hidden"
       >
         <ul className="grid grid-cols-6 gap-0.5">
           {PRIMARY_NAV.map((item) => {

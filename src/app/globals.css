@@ -136,6 +136,41 @@
   --density: 0.78;
 }
 
+/*
+ * Glass surfaces. The opacity values come from the generated tokens: they are
+ * solved per background so text stays AA over everything that background can
+ * show. With glass off (or an unsafe combination) surfaces stay opaque.
+ */
+:root {
+  --panel-alpha: 1;
+  --sidebar-alpha: 1;
+  --glass-blur: 0px;
+}
+
+[data-glass="subtle"] {
+  --panel-alpha: var(--glass-subtle-panel);
+  --sidebar-alpha: var(--glass-subtle-sidebar);
+  --glass-blur: 10px;
+}
+
+[data-glass="frosted"] {
+  --panel-alpha: var(--glass-frosted-panel);
+  --sidebar-alpha: var(--glass-frosted-sidebar);
+  --glass-blur: 20px;
+}
+
+.surface-panel {
+  background-color: color-mix(in oklab, var(--background) calc(var(--panel-alpha) * 100%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+}
+
+.surface-sidebar {
+  background-color: color-mix(in oklab, var(--sidebar) calc(var(--sidebar-alpha) * 100%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+}
+
 html {
   color-scheme: light;
 }

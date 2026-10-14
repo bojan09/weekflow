@@ -18,7 +18,7 @@ const FEATURES: Array<{ icon: LucideIcon; title: string; detail?: string; tone: 
 export default function LandingPage() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-6xl flex-col p-3 sm:p-5">
-      <div className="flex flex-1 flex-col rounded-3xl bg-background p-6 shadow-soft sm:p-10">
+      <div className="flex flex-1 flex-col surface-panel rounded-3xl p-6 shadow-soft sm:p-10">
         <header className="flex items-center justify-between">
           <Logo markClassName="size-9" wordmarkClassName="text-xl" />
           <Link href={DEMO_BASE} className={cn(buttonVariants({ size: "lg" }))}>
@@ -72,11 +72,7 @@ export default function LandingPage() {
         </main>
 
         <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t pt-5 text-xs text-muted-foreground">
-          <p>
-            Weekflow {APP_VERSION} <span aria-hidden="true">·</span> Next.js <span aria-hidden="true">·</span>{" "}
-            Appwrite <span aria-hidden="true">·</span> Tailwind CSS <span aria-hidden="true">·</span> shadcn/ui{" "}
-            <span aria-hidden="true">·</span> Zustand
-          </p>
+          <p>Weekflow {APP_VERSION}</p>
           <p className="font-medium text-foreground">Your time. Your rules.</p>
         </footer>
       </div>
