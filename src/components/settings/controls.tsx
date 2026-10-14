@@ -41,11 +41,14 @@ export function SettingsGroup({
 export function SettingRow({
   label,
   description,
+  hint,
   children,
   stacked = false,
 }: {
   label: string;
   description?: string;
+  /** Small extra next to the label, such as an (i) tip. */
+  hint?: ReactNode;
   children: ReactNode | ((id: string) => ReactNode);
   /** Put the control under the label instead of beside it. */
   stacked?: boolean;
@@ -59,9 +62,12 @@ export function SettingRow({
       )}
     >
       <div className="min-w-0 sm:max-w-md">
-        <label htmlFor={id} className="text-sm font-medium">
-          {label}
-        </label>
+        <div className="flex items-center gap-1">
+          <label htmlFor={id} className="text-sm font-medium">
+            {label}
+          </label>
+          {hint}
+        </div>
         {description ? <p className="mt-0.5 text-sm text-muted-foreground">{description}</p> : null}
       </div>
       <div className={cn("shrink-0", stacked && "w-full")}>
