@@ -9,21 +9,27 @@ export type StepId =
   | "check-rules"
   | "open-review";
 
+/** What the step's button does. Never a link to the page you are already on. */
+export type StepGo =
+  | { type: "link"; label: string; route: AppRoute; sub?: string }
+  | { type: "new-task"; label: string }
+  | { type: "plan"; label: string };
+
 export interface ChecklistStep {
   id: StepId;
   label: string;
   hint: string;
-  to: { route: AppRoute; sub?: string };
+  go: StepGo;
 }
 
 /** The Start here checklist, in order. */
 export const STEPS: readonly ChecklistStep[] = [
-  { id: "add-task", label: "Add a task", hint: "Use Quick add on Home or the New task button.", to: { route: "home" } },
-  { id: "schedule-task", label: "Put a task on your calendar", hint: "Drag it onto a day, or press Schedule.", to: { route: "week" } },
-  { id: "lock-task", label: "Lock a task", hint: "Pin one so it never moves. Select it and press L.", to: { route: "week" } },
-  { id: "preview-plan", label: "Preview a plan", hint: "Open Plan my week and read the reasons.", to: { route: "week" } },
-  { id: "check-rules", label: "Check your rules", hint: "See your hours, breaks and daily limit.", to: { route: "settings", sub: "planning" } },
-  { id: "open-review", label: "Open the weekly review", hint: "See your workload and what got done.", to: { route: "review" } },
+  { id: "add-task", label: "Add a task", hint: "Give it a title, then save.", go: { type: "new-task", label: "Add one" } },
+  { id: "schedule-task", label: "Put a task on your calendar", hint: "Drag a task from Unscheduled onto a day.", go: { type: "link", label: "Open My Week", route: "week" } },
+  { id: "lock-task", label: "Lock a task", hint: "Open a task's ⋯ menu and choose Lock in place. It needs a time first.", go: { type: "link", label: "Open Tasks", route: "tasks" } },
+  { id: "preview-plan", label: "Preview a plan", hint: "Read the reasons. Nothing changes until you apply.", go: { type: "plan", label: "Preview it" } },
+  { id: "check-rules", label: "Check your rules", hint: "See your hours, breaks and daily limit.", go: { type: "link", label: "Open Planning", route: "settings", sub: "planning" } },
+  { id: "open-review", label: "Open the weekly review", hint: "See your workload and what got done.", go: { type: "link", label: "Open Review", route: "review" } },
 ];
 
 /**

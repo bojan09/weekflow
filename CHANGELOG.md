@@ -5,6 +5,17 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.10 — Start here fixes
+Date: 2026-10-15
+Summary: Every step in the Start here checklist now does what it says.
+
+- Add a task opens the new task form (it used to link to the page you were already on)
+- Preview a plan opens the plan preview right away (it used to just open My Week)
+- Lock a task takes you to Tasks, where each task's menu has Lock in place
+- Each step now says in one line how to do it
+- The map no longer lists Home, which you are already on, and now includes Team
+- Tests check that no step points at the page you are on and that each button opens what it promises
+
 ## 0.0.9 — Polish and audit
 Date: 2026-10-14
 Summary: A full accessibility, mobile and theme audit of every screen, with the problems it found fixed.

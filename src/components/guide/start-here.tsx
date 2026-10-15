@@ -4,19 +4,40 @@ import Link from "next/link";
 import { BookOpen, Circle, CircleCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SECTIONS } from "@/guide/content";
-import { STEPS } from "@/guide/progress";
+import { STEPS, type StepGo } from "@/guide/progress";
 import { useGuideStore } from "@/guide/store";
 import { termById, type TermId } from "@/guide/terms";
 import { appPath } from "@/lib/routes";
+import { useUiStore } from "@/stores/ui";
 import { Term } from "./term";
 
-const MAP_IDS = ["home", "week", "tasks", "calendar", "review", "settings"] as const;
+const MAP_IDS = ["week", "tasks", "calendar", "review", "settings", "team"] as const;
 const LEARN: readonly TermId[] = ["inbox", "lock", "buffer", "strict-deadline", "stability"];
 
 /**
  * First-run help on Home: a map of the app, a checklist that ticks off as you
  * really do things, and the words people trip on. Collapses when finished.
  */
+/** The button beside a step. A link goes somewhere new; the others do the thing right here. */
+function StepButton({ go }: { go: StepGo }) {
+  const openEditor = useUiStore((s) => s.openEditor);
+  const openPlan = useUiStore((s) => s.openPlan);
+  const className =
+    "inline-flex min-h-11 items-center font-medium text-primary-text underline underline-offset-2 hover:no-underline";
+  if (go.type === "link") {
+    return (
+      <Link href={appPath(go.route, go.sub)} className={className}>
+        {go.label}
+      </Link>
+    );
+  }
+  return (
+    <button type="button" onClick={() => (go.type === "plan" ? openPlan() : openEditor({ kind: "new" }))} className={className}>
+      {go.label}
+    </button>
+  );
+}
+
 export function StartHere() {
   const { hydrated, done, panelHidden, hidePanel } = useGuideStore();
   if (!hydrated) return null;
@@ -101,10 +122,8 @@ export function StartHere() {
                     </span>
                     {complete ? null : (
                       <>
-                        {" "}
-                        <Link href={appPath(step.to.route, step.to.sub)} className="text-primary-text underline underline-offset-2">
-                          Show me
-                        </Link>
+                        <span className="block text-xs text-muted-foreground">{step.hint}</span>
+                        <StepButton go={step.go} />
                       </>
                     )}
                   </span>
