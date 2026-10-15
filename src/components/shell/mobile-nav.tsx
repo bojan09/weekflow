@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Ellipsis } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { EXTRA_NAV, PRIMARY_NAV, SECONDARY_NAV, type NavItem } from "@/lib/nav";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/ui";
 import { isActiveRoute } from "./sidebar";
@@ -19,6 +19,7 @@ const itemClass = (active: boolean): string =>
   );
 
 function MoreLink({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+  const appPath = useAppPath();
   const pathname = usePathname();
   const Icon = item.icon;
   const active = isActiveRoute(pathname, item);
@@ -39,6 +40,7 @@ function MoreLink({ item, onNavigate }: { item: NavItem; onNavigate: () => void 
 }
 
 export function MobileNav() {
+  const appPath = useAppPath();
   const pathname = usePathname();
   const moreOpen = useUiStore((s) => s.moreOpen);
   const setMoreOpen = useUiStore((s) => s.setMoreOpen);

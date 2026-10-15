@@ -7,7 +7,7 @@ import { SECTIONS } from "@/guide/content";
 import { STEPS, type StepGo } from "@/guide/progress";
 import { useGuideStore } from "@/guide/store";
 import { termById, type TermId } from "@/guide/terms";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { useUiStore } from "@/stores/ui";
 import { Term } from "./term";
 
@@ -20,6 +20,7 @@ const LEARN: readonly TermId[] = ["inbox", "lock", "buffer", "strict-deadline", 
  */
 /** The button beside a step. A link goes somewhere new; the others do the thing right here. */
 function StepButton({ go }: { go: StepGo }) {
+  const appPath = useAppPath();
   const openEditor = useUiStore((s) => s.openEditor);
   const openPlan = useUiStore((s) => s.openPlan);
   const className =
@@ -39,6 +40,7 @@ function StepButton({ go }: { go: StepGo }) {
 }
 
 export function StartHere() {
+  const appPath = useAppPath();
   const { hydrated, done, panelHidden, hidePanel } = useGuideStore();
   if (!hydrated) return null;
 

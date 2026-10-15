@@ -1,5 +1,5 @@
 import type { Task } from "@/domain/tasks";
-import { appPath, type AppRoute } from "@/lib/routes";
+import { routeOfPath, subOfPath, type AppRoute } from "@/lib/routes";
 
 export type StepId =
   | "add-task"
@@ -60,7 +60,8 @@ export function stepsFromTaskChange(prev: readonly Task[], next: readonly Task[]
 
 /** Steps completed by visiting a page. */
 export function stepsFromPath(pathname: string): StepId[] {
-  if (pathname === appPath("settings", "planning")) return ["check-rules"];
-  if (pathname === appPath("review")) return ["open-review"];
+  const route = routeOfPath(pathname);
+  if (route === "settings" && subOfPath(pathname) === "planning") return ["check-rules"];
+  if (route === "review" && subOfPath(pathname) === null) return ["open-review"];
   return [];
 }

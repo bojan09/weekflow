@@ -6,15 +6,17 @@ import { Logo } from "@/components/brand/logo";
 import { useConnectivity } from "@/data/use-online";
 import { APP_VERSION, BUILD_DATE } from "@/generated/version";
 import { PRIMARY_NAV, SECONDARY_NAV, type NavItem } from "@/lib/nav";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
+import { appPath as buildPath, baseOfPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export function isActiveRoute(pathname: string, item: NavItem): boolean {
-  const path = appPath(item.route);
+  const path = buildPath(item.route, undefined, baseOfPath(pathname));
   return pathname === path || pathname.startsWith(`${path}/`);
 }
 
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
+  const appPath = useAppPath();
   const Icon = item.icon;
   return (
     <Link
@@ -34,6 +36,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 }
 
 export function Sidebar() {
+  const appPath = useAppPath();
   const pathname = usePathname();
   const { online } = useConnectivity();
 

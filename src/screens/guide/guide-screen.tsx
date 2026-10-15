@@ -12,7 +12,7 @@ import { searchGuide } from "@/guide/search";
 import { useGuideStore } from "@/guide/store";
 import { termById } from "@/guide/terms";
 import type { GuideSection } from "@/guide/types";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 
 function Contents({ sections, showGlossary }: { sections: readonly GuideSection[]; showGlossary: boolean }) {
   return (
@@ -36,6 +36,7 @@ function Contents({ sections, showGlossary }: { sections: readonly GuideSection[
 }
 
 function SectionBlock({ section }: { section: GuideSection }) {
+  const appPath = useAppPath();
   return (
     <section
       id={section.id}
@@ -117,6 +118,7 @@ function SectionBlock({ section }: { section: GuideSection }) {
 }
 
 export function GuideScreen() {
+  const appPath = useAppPath();
   const [query, setQuery] = useState("");
   const replay = useGuideStore((s) => s.replay);
   const result = useMemo(() => searchGuide(query), [query]);

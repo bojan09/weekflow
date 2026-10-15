@@ -6,12 +6,14 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { sectionForRoute } from "@/guide/content";
 import { termById } from "@/guide/terms";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { appPath, routeOfPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
+import { routeOfPath } from "@/lib/routes";
 import { useUiStore } from "@/stores/ui";
 import { Term } from "./term";
 
 /** The guide for the screen you are on: what it is, what to try, shortcuts and words. */
 export function HelpPanel() {
+  const appPath = useAppPath();
   const open = useUiStore((s) => s.helpOpen);
   const setOpen = useUiStore((s) => s.setHelpOpen);
   const route = routeOfPath(usePathname()) ?? "guide";

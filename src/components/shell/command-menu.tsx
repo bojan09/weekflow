@@ -12,12 +12,13 @@ import {
   CommandDialog,
 } from "@/components/ui/command";
 import { ALL_NAV } from "@/lib/nav";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { usePrefsStore } from "@/prefs/store";
 import { PALETTES } from "@/theme/generated/palettes";
 import { useUiStore } from "@/stores/ui";
 
 export function CommandMenu() {
+  const appPath = useAppPath();
   const router = useRouter();
   const open = useUiStore((s) => s.commandOpen);
   const setOpen = useUiStore((s) => s.setCommandOpen);

@@ -17,11 +17,12 @@ import {
 import { profileCollection } from "@/data/profile";
 import { useCollection } from "@/data/use-collection";
 import { initialsOf } from "@/domain/profile";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { usePrefsStore } from "@/prefs/store";
 import type { ThemePref } from "@/prefs/apply";
 
 export function AvatarMenu() {
+  const appPath = useAppPath();
   const profile = useCollection(profileCollection);
   const theme = usePrefsStore((s) => s.prefs.appearance.theme);
   const update = usePrefsStore((s) => s.update);

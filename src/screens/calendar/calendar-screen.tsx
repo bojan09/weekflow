@@ -28,9 +28,10 @@ import { orderedWeekdays } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { usePrefsStore } from "@/prefs/store";
 import { usePlannerStore } from "@/stores/planner";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 
 function MonthBody({ tasks }: { tasks: Task[] }) {
+  const appPath = useAppPath();
   const router = useRouter();
   const now = useNow();
   const weekStart = usePrefsStore((s) => s.prefs.calendar.weekStart);

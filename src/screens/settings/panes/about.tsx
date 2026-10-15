@@ -4,10 +4,11 @@ import { Logo } from "@/components/brand/logo";
 import { SettingRow, SettingsGroup } from "@/components/settings/controls";
 import { buttonVariants } from "@/components/ui/button";
 import { APP_VERSION, BUILD_DATE } from "@/generated/version";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { cn } from "@/lib/utils";
 
 export function AboutPane() {
+  const appPath = useAppPath();
   return (
     <div className="space-y-5">
       <section className="flex flex-col gap-4 rounded-2xl border bg-card p-5 shadow-soft sm:flex-row sm:items-center">

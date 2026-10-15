@@ -5,7 +5,7 @@ import { ChartColumn, Clock } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { Now } from "@/hooks/use-now";
 import { weekdayOf } from "@/lib/dates";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { cn } from "@/lib/utils";
 import { usePrefsStore } from "@/prefs/store";
 import { useUiStore } from "@/stores/ui";
@@ -33,6 +33,7 @@ export function MissedBanner({ count }: { count: number }) {
 
 /** On the chosen weekday, when the weekly review reminder is on, point at the review. */
 export function ReviewPrompt({ now }: { now: Now }) {
+  const appPath = useAppPath();
   const { weeklyReview, weeklyReviewDay } = usePrefsStore((s) => s.prefs.notifications);
   if (!weeklyReview || weekdayOf(now.date) !== weeklyReviewDay) return null;
   return (

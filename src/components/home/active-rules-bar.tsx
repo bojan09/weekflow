@@ -15,7 +15,7 @@ import {
 import { Term } from "@/components/guide/term";
 import { buttonVariants } from "@/components/ui/button";
 import { activeRules, type RuleIcon } from "@/domain/rules";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { cn } from "@/lib/utils";
 import { usePrefsStore } from "@/prefs/store";
 
@@ -31,6 +31,7 @@ const ICONS: Record<RuleIcon, LucideIcon> = {
 
 /** The rules you actually have on, with a shortcut to change them. */
 export function ActiveRulesBar() {
+  const appPath = useAppPath();
   const prefs = usePrefsStore((s) => s.prefs);
   const rules = activeRules(prefs);
   return (

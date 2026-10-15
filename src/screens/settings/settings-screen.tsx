@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/shell/page-header";
 import { LoadingBlocks } from "@/components/states/states";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { cn } from "@/lib/utils";
 import { usePrefsStore } from "@/prefs/store";
 import { AboutPane } from "./panes/about";
@@ -38,6 +38,7 @@ const PANES: Record<SettingsSectionId, () => ReactNode> = {
  * routes stack: /settings lists categories, a category shows its content.
  */
 export function SettingsScreen({ section }: { section?: SettingsSectionId }) {
+  const appPath = useAppPath();
   const hydrated = usePrefsStore((s) => s.hydrated);
   const active: SettingsSectionId = section ?? "appearance";
   const current = SETTINGS_SECTIONS.find((s) => s.id === active) ?? SETTINGS_SECTIONS[0];

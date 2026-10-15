@@ -24,11 +24,12 @@ import { formatDuration, weekStats } from "@/domain/stats";
 import { isInbox, isMissed, type Task } from "@/domain/tasks";
 import { usePlanner } from "@/hooks/use-planner";
 import { firstName, greetingFor } from "@/lib/greeting";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { usePrefsStore } from "@/prefs/store";
 import { useUiStore } from "@/stores/ui";
 
 function HomeBody({ tasks }: { tasks: Task[] }) {
+  const appPath = useAppPath();
   const planner = usePlanner();
   const planning = usePrefsStore((s) => s.prefs.planning);
   const format = usePrefsStore((s) => s.prefs.calendar.timeFormat);

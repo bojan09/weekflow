@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Info, X } from "lucide-react";
 import { Popover, PopoverClose, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
 import { termById, type TermId } from "@/guide/terms";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { cn } from "@/lib/utils";
 
 /**
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
  * works on touch and with a keyboard. The icon is 24px with a 44px tap area.
  */
 export function Term({ id, className }: { id: TermId; className?: string }) {
+  const appPath = useAppPath();
   const term = termById(id);
   return (
     <Popover modal>

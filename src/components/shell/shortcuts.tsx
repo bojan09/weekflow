@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ALL_NAV } from "@/lib/nav";
-import { appPath } from "@/lib/routes";
+import { useAppPath } from "@/hooks/use-app-path";
 import { useUiStore } from "@/stores/ui";
 
 const SEQUENCE_WINDOW_MS = 1200;
@@ -24,6 +24,7 @@ function isTyping(target: EventTarget | null): boolean {
 
 /** Global keyboard shortcuts. Ignored while typing in a field. */
 export function useGlobalShortcuts(): void {
+  const appPath = useAppPath();
   const router = useRouter();
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export function useGlobalShortcuts(): void {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [router]);
+  }, [router, appPath]);
 }
 
 function Kbd({ children }: { children: string }) {
