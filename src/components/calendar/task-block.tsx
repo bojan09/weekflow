@@ -87,7 +87,7 @@ export function TaskBlock({
             "calendar-task-title min-w-0 text-xs font-semibold",
             look.title,
             done && "line-through",
-            compact ? "truncate" : "line-clamp-2 break-words",
+            compact ? "truncate" : "break-words",
           )}
         >
           {task.title}

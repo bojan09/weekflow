@@ -319,12 +319,9 @@ html[data-motion="reduce"] *::after {
 }
 .calendar-task-title {
   line-height: 1.25;
-  -webkit-line-clamp: 1;
+  overflow-wrap: anywhere;
 }
 .calendar-task-time { flex-shrink: 0; line-height: 1.25; }
-@container (min-height: 66px) {
-  .calendar-task-title { -webkit-line-clamp: 2; }
-}
 @container (max-width: 108px) {
   .calendar-task-content { padding-inline: 5px; }
   .calendar-task-range { display: none; }

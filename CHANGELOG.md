@@ -20,6 +20,13 @@ Database schema migrations are tracked separately and never share this file.
 - Account pages wait for private data without spurious navigation notices
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
+## 0.0.14 — Task titles use available space
+Date: 2026-10-16
+Summary: Calendar titles wrap naturally instead of stopping after two lines.
+
+- Taller task blocks show as many title lines as fit, while reserving room for the time and resize grip
+- Short blocks retain their compact title treatment and full accessible details
+
 ## 0.0.13 — Clearer time intervals and task actions
 Date: 2026-10-16
 Summary: Show every selected minute interval on the calendar and edit or delete tasks directly from the list.
