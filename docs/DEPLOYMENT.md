@@ -20,7 +20,15 @@ The server key needs the Users, Sessions, Teams and TablesDB row/transaction ope
 
 Register `weekflow-ashy.vercel.app` as a Web platform in the account service and confirm outbound verification, recovery and invitation email delivery. Register `localhost` for development. Check the redirect allow-list; links must return to `/verify`, `/reset-password`, and `/accept-invitation` on the intended origin.
 
-## Database
+## Google sign-in
+
+Enable Google in Appwrite's authentication providers. Configure its client credentials there, never in public environment variables. Copy the redirect URI displayed by Appwrite into the Google OAuth client's authorized redirect URIs. Register the production hostname as an Appwrite Web platform; Weekflow returns through `/auth/callback`.
+
+The server starts the provider flow with a ten-minute HttpOnly state cookie, validates and consumes it on return, and exchanges the one-time token for the same private session used by email sign-in. Failed attempts return to sign-in without exposing callback credentials. Google-only users can set a password through recovery before password-based account changes or deletion.
+
+Verify both sign-in and sign-up buttons reach Google's account chooser. Complete one real Google sign-in manually and confirm the return to `/app/home`, persistence after reload, and sign-out. Reaching the chooser alone does not prove the completed callback.
+
+## Database setup
 
 Run `npm run db:migrate` with the migration environment. Migration 002 adds `account_data` and `team_states`; it preserves existing rows and removes table-wide client creation permissions. Rows are readable only by their owner or workspace members. Application writes are server-authorized.
 

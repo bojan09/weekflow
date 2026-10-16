@@ -14,15 +14,19 @@ export function json(data: unknown, status = 200): Response {
   return Response.json(data, { status, headers: { "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
 }
 
-/** Every cookie-authenticated mutation must originate from this site. */
-export function assertOrigin(request: Request): string {
-  const actual = request.headers.get("origin");
+/** Canonical origin for authentication redirects and mutation checks. */
+export function siteOrigin(request: Request): string {
   const expected = process.env.APP_URL ? new URL(process.env.APP_URL).origin : new URL(request.url).origin;
   const url = new URL(expected);
   if (process.env.NODE_ENV === "production" && url.protocol !== "https:" && !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) {
     throw new HttpError(503, "The deployment URL must use HTTPS.");
   }
-  if (actual !== expected) throw new HttpError(403, "This request did not come from Weekflow.");
+  return expected;
+}
+
+export function assertOrigin(request: Request): string {
+  const expected = siteOrigin(request);
+  if (request.headers.get("origin") !== expected) throw new HttpError(403, "This request did not come from Weekflow.");
   return expected;
 }
 

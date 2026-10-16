@@ -4,7 +4,7 @@ import { z } from "zod";
 import { adminServices, DATABASE_ID } from "./appwrite";
 import { codeOf, HttpError } from "./http";
 
-const limits: Record<string, number> = { "sign-in": 30, "sign-up": 10, recovery: 10, reset: 30, verify: 30 };
+const limits: Record<string, number> = { "sign-in": 30, "sign-up": 10, google: 30, recovery: 10, reset: 30, verify: 30 };
 const windowMs = 10 * 60 * 1000;
 const counterSchema = z.object({ count: z.number().int().nonnegative(), until: z.number() });
 

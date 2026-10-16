@@ -11,7 +11,7 @@ vi.hoisted(() => {
 vi.unmock("next/navigation");
 vi.mock("@/auth/api", () => ({
   currentUser: vi.fn().mockResolvedValue(null), signIn: vi.fn(), signUp: vi.fn(),
-  requestRecovery: vi.fn(), confirmRecovery: vi.fn(), confirmVerification: vi.fn(),
+  requestRecovery: vi.fn(), confirmRecovery: vi.fn(), confirmVerification: vi.fn(), googleAuthorization: vi.fn(),
 }));
 
 import * as api from "@/auth/api";
@@ -38,6 +38,25 @@ beforeEach(() => {
 });
 
 describe("authentication screens", () => {
+  it.each(["sign-in", "sign-up"] as const)("offers Google on %s without requiring email or password", async mode => {
+    vi.mocked(api.googleAuthorization).mockRejectedValueOnce({ safeMessage: true, message: "Google is not configured yet." });
+    show(mode, "next=/app/week");
+    submit("Continue with Google");
+    await waitFor(() => expect(api.googleAuthorization).toHaveBeenCalledWith("/app/week"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Google is not configured yet.");
+    expect(screen.getByRole("button", { name: "Continue with Google" })).toBeEnabled();
+    expect(api.signIn).not.toHaveBeenCalled();
+  });
+  it("keeps account and demo links inside the readable authentication surface", () => {
+    show("sign-in");
+    const main = screen.getByRole("main");
+    expect(main).toContainElement(screen.getByRole("link", { name: "Create an account" }));
+    expect(main).toContainElement(screen.getByRole("link", { name: "Try the demo" }));
+  });
+  it("explains a failed Google callback without exposing its token", () => {
+    show("sign-in", "error=google");
+    expect(screen.getByRole("alert")).toHaveTextContent("Google sign-in could not be completed");
+  });
   it("validates before sending credentials", () => {
     show("sign-in");
     fill("Email", "invalid");

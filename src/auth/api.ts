@@ -28,3 +28,4 @@ export const confirmRecovery = async (userId: string, secret: string, password: 
 export const changePassword = async (current: string, password: string): Promise<void> => { await request("password", { current, password, confirm: password }); };
 export const renameAccount = async (name: string): Promise<AuthUser> => (await request<{ user: AuthUser }>("rename", { name })).user;
 export const closeAccount = async (password: string): Promise<void> => { await request("delete", { password, confirm: "DELETE" }); };
+export const googleAuthorization = async (next: string): Promise<string> => (await request<{ url: string }>("google", { next })).url;

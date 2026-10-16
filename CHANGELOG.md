@@ -7,6 +7,8 @@ Database schema migrations are tracked separately and never share this file.
 
 ## Unreleased — Accounts and private planning
 
+- Continue with Google on sign-in and sign-up, with protected one-time callbacks and the existing private session
+- Authentication links and the brand sit on readable surfaces over every background
 - Sign up, sign in, verify email, recover a password and manage account security
 - Private personal tasks, projects, templates, schedule history, preferences and guide progress saved to an account
 - Visible save status, stale-device protection and exportable pending changes

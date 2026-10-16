@@ -6,6 +6,7 @@ import { adminServices, baseClient, publicUser, requireUser, SESSION_COOKIE, set
 import { assertOrigin, failure, HttpError, json, readJson } from "@/server/http";
 import { deleteOwnAccount } from "@/server/delete-account";
 import { throttleAuth } from "@/server/auth-throttle";
+import { beginGoogleSignIn } from "@/server/google-oauth";
 
 const tokenSchema = z.object({ userId: z.string().min(1).max(64), secret: z.string().min(1).max(2048) });
 
@@ -23,6 +24,10 @@ export async function POST(request: Request, context: { params: Promise<{ action
     const action = (await context.params).action;
     const body = await readJson(request, 16_384);
     await throttleAuth(request, action);
+    if (action === "google") {
+      const input = z.object({ next: z.string().max(1024).optional() }).strict().parse(body);
+      return json({ url: await beginGoogleSignIn(origin, input.next) });
+    }
     if (action === "sign-in" || action === "sign-up") {
       const input = action === "sign-up" ? signUpSchema.parse(body) : signInSchema.parse(body);
       const service = adminServices().account;

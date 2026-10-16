@@ -14,7 +14,7 @@ export function AuthBoot(): null {
   return null;
 }
 
-/** The frame shared by every sign-in screen: brand, a titled card, and links underneath. */
+/** Shared authentication frame with readable brand and footer surfaces. */
 export function AuthCard({
   title,
   description,
@@ -29,15 +29,15 @@ export function AuthCard({
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-10">
       <AuthBoot />
-      <Link href="/" aria-label="Weekflow home" className="mb-6 flex min-h-11 items-center self-start rounded-lg">
+      <Link href="/" aria-label="Weekflow home" className="surface-panel mb-6 flex min-h-11 items-center self-start rounded-2xl border px-4 py-2 shadow-soft">
         <Logo markClassName="size-9" wordmarkClassName="text-xl" />
       </Link>
       <main id="main" className="surface-panel rounded-3xl border p-6 shadow-soft sm:p-8">
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         {description ? <p className="mt-1.5 text-sm text-muted-foreground">{description}</p> : null}
         <div className="mt-6">{children}</div>
+        {footer ? <div className="mt-6 border-t pt-4 text-center text-sm text-muted-foreground [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center [&_a]:font-medium [&_a]:text-primary-text">{footer}</div> : null}
       </main>
-      {footer ? <div className="mt-5 text-center text-sm text-muted-foreground">{footer}</div> : null}
     </div>
   );
 }

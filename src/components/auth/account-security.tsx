@@ -96,6 +96,7 @@ export function AccountSecurity() {
         </div>
         <form noValidate onSubmit={updatePassword} className="space-y-3 border-t pt-5">
           <h3 className="text-sm font-medium">Change password</h3>
+          <p className="text-sm text-muted-foreground">If you joined with Google and have no password yet, <a className="font-medium text-primary-text underline" href="/forgot-password">set one through password recovery</a> before changing your password or deleting your account.</p>
           <TextField id="security-current" name="current" label="Current password" type="password" autoComplete="current-password" error={errors.current} disabled={disabled} required />
           <TextField id="security-password" name="password" label="New password" type="password" autoComplete="new-password" hint="Use at least 8 characters." error={errors.password} disabled={disabled} required />
           <TextField id="security-confirm" name="confirm" label="Confirm new password" type="password" autoComplete="new-password" error={errors.confirm} disabled={disabled} required />

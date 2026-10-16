@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
-import { signIn, signUp, requestRecovery, confirmRecovery, confirmVerification } from "@/auth/api";
+import { signIn, signUp, requestRecovery, confirmRecovery, confirmVerification, googleAuthorization } from "@/auth/api";
 import { friendlyAuthError } from "@/auth/messages";
 import { fieldErrors, signInSchema, signUpSchema, recoverySchema, resetSchema, safeNext } from "@/auth/schemas";
 import { useAuthStore } from "@/auth/store";
@@ -36,6 +36,13 @@ export function AuthScreen({ mode }: { mode: Mode }) {
   const tokenMode = mode === "reset-password" || mode === "verify";
   const invalidToken = tokenMode && (!userId.trim() || !secret.trim() || params.getAll("userId").length !== 1 || params.getAll("secret").length !== 1);
   const disabled = !ACCOUNTS_ENABLED || busy || invalidToken || !!success;
+
+  async function google() {
+    if (disabled || inFlight.current) return;
+    inFlight.current = true; setBusy(true); setError("");
+    try { window.location.assign(await googleAuthorization(safeNext(params.get("next")))); }
+    catch (failure) { setError(friendlyAuthError(failure)); inFlight.current = false; setBusy(false); }
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -92,10 +99,18 @@ export function AuthScreen({ mode }: { mode: Mode }) {
       </div>}>
       <form noValidate onSubmit={submit} className="space-y-4" aria-busy={busy}>
         {!ACCOUNTS_ENABLED && <Notice tone="info">Accounts are not configured on this deployment. <Link className="underline" href="/demo">Try the demo</Link> to explore Weekflow.</Notice>}
+        {params.get("error") === "google" && !error && <Notice tone="error">Google sign-in could not be completed. Please try again or sign in with email.</Notice>}
         {invalidToken && !success && <Notice tone="error">This link is incomplete or invalid. {mode === "reset-password" ? <Link className="underline" href="/forgot-password">Request a new recovery link.</Link> : "Open the full link from your verification email, or sign in to request a new one."}</Notice>}
         {error && <Notice tone="error">{error}</Notice>}
         {success && <Notice tone="success">{success}</Notice>}
         {!success && <>
+          {(mode === "sign-in" || mode === "sign-up") && <>
+            <button type="button" disabled={disabled} onClick={() => void google()} className="flex min-h-11 w-full items-center justify-center gap-3 rounded-xl border border-input bg-card px-4 font-medium text-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0" fill="currentColor"><path d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.32 2.98-7.36ZM12 22c2.7 0 4.96-.9 6.62-2.41l-3.24-2.51c-.9.6-2.05.97-3.38.97-2.6 0-4.8-1.76-5.58-4.13H3.08v2.6A10 10 0 0 0 12 22ZM6.42 13.92a6 6 0 0 1 0-3.84v-2.6H3.08a10 10 0 0 0 0 9.04l3.34-2.6ZM12 5.95c1.47 0 2.78.51 3.82 1.51l2.86-2.86A9.58 9.58 0 0 0 12 2a10 10 0 0 0-8.92 5.48l3.34 2.6C7.2 7.71 9.4 5.95 12 5.95Z" /></svg>
+              Continue with Google
+            </button>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /><span>or use email</span><span className="h-px flex-1 bg-border" /></div>
+          </>}
           {mode === "sign-up" && <TextField id="name" name="name" label="Name" autoComplete="name" error={errors.name} disabled={busy} required />}
           {!tokenMode && <TextField id="email" name="email" label="Email" type="email" autoComplete="email" error={errors.email} disabled={busy} required />}
           {(mode === "sign-in" || mode === "sign-up" || mode === "reset-password") && <TextField id="password" name="password" label={mode === "reset-password" ? "New password" : "Password"} type="password" autoComplete={mode === "sign-in" ? "current-password" : "new-password"} hint={mode !== "sign-in" ? "Use at least 8 characters." : undefined} error={errors.password} disabled={busy || invalidToken} required />}
