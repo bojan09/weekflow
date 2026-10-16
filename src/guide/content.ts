@@ -309,3 +309,19 @@ export function sectionForRoute(route: AppRoute): GuideSection {
   if (!section) throw new Error(`No guide section for route: ${route}`);
   return section;
 }
+
+/** Account guidance describes live controls; sample-role tools stay in the demo. */
+export function accountGuide(section: GuideSection): GuideSection {
+  if (section.id === "overview") return { ...section, tips: ["Plans are previewed first, and changes can be undone.", "Press / or Ctrl+K to search for any page or command.", "Your planner saves privately to your account. Check the save status before closing a tab."] };
+  if (section.id === "profile") return { ...section,
+    summary: "Your personal details and account security.", hint: "Edit your profile, verify your email, or manage your password and sessions.",
+    whatItIs: "Profile holds your name, bio, time zone and locale. Account security below it lets you verify your email, change your password, sign out of devices, or permanently delete your account.",
+    steps: [{ text: "Edit your name, bio, time zone or locale and press Save." }, { text: "Use Account security below your details to manage verification, password and sessions." }],
+    tips: ["Your email and joined date belong to your account.", "Deletion requires your password and typed confirmation. Make another team member an owner before leaving a shared workspace you own."] };
+  if (section.id === "team") return { ...section,
+    hint: "Create a workspace or choose one you belong to. Your real membership controls what you can change.",
+    whatItIs: "Team workspaces share projects, assigned tasks and comments with invited people. Personal tasks and protected calendar time stay private. Shared tasks do not automatically reserve time in a personal calendar.",
+    steps: [{ text: "Create a workspace, or accept an invitation sent to your email." }, { text: "Add projects and shared tasks. Open a task to assign it, set a deadline, change its status or comment." }, { text: "Owners with verified email addresses can send invitations. Roles and membership changes are checked on the server." }, { text: "Refresh the workspace to see another person's latest changes. A stale edit must be refreshed before retrying." }],
+    tips: ["Members can edit tasks they created or are assigned to, and can only assign work to themselves.", "Viewers can read shared work; owners and admins manage it.", "A workspace keeps at least one owner. Personal protected time is never changed by team actions."], terms: ["role"] };
+  return section;
+}

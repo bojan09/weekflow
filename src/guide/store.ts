@@ -1,19 +1,14 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { z } from "zod";
-import { APP_ROUTES, type AppRoute } from "@/lib/routes";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { demoStorage } from "@/data/demo-storage";
+import { type AppRoute } from "@/lib/routes";
+import { guideSchema as persistedSchema } from "./schema";
 import type { StepId } from "./progress";
 
 export const GUIDE_STORAGE_KEY = "weekflow:demo:guide";
 
-const stepIds = ["add-task", "schedule-task", "lock-task", "preview-plan", "check-rules", "open-review"] as const;
-const persistedSchema = z.object({
-  done: z.partialRecord(z.enum(stepIds), z.literal(true)).default({}),
-  panelHidden: z.boolean().default(false),
-  dismissedHints: z.partialRecord(z.enum(APP_ROUTES), z.literal(true)).default({}),
-});
 
 interface GuideState {
   done: Partial<Record<StepId, true>>;
@@ -53,6 +48,7 @@ export const useGuideStore = create<GuideState>()(
     }),
     {
       name: GUIDE_STORAGE_KEY,
+      storage: createJSONStorage(() => demoStorage),
       version: 1,
       skipHydration: true,
       partialize: (state) => ({

@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { accountSync, resourceForKey } from "./account-client";
 
 /**
  * The persistence port every screen talks to. The demo uses the localStorage
@@ -38,6 +39,8 @@ export function createLocalCollection<T>(options: LocalCollectionOptions<T>): Co
   };
 
   const getSnapshot = (): T => {
+    const resource = resourceForKey(key);
+    if (accountSync.isActive() && resource) return accountSync.read(resource) as T;
     const raw = readRaw();
     if (cache && cache.raw === raw) return cache.value;
     let value: T | undefined;
@@ -62,21 +65,26 @@ export function createLocalCollection<T>(options: LocalCollectionOptions<T>): Co
     getServerSnapshot: () => null,
     subscribe: (listener) => {
       listeners.add(listener);
+      const unsubscribeAccount = accountSync.subscribe(listener);
       const onStorage = (event: StorageEvent): void => {
         if (event.key === key || event.key === null) listener();
       };
       window.addEventListener("storage", onStorage);
       return () => {
+        unsubscribeAccount();
         listeners.delete(listener);
         window.removeEventListener("storage", onStorage);
       };
     },
     write: (next) => {
       const valid = schema.parse(next);
+      const resource = resourceForKey(key);
+      if (accountSync.isActive() && resource) { accountSync.write(resource, valid); return; }
       window.localStorage.setItem(key, JSON.stringify(valid));
       notify();
     },
     reset: () => {
+      if (accountSync.isActive()) throw new Error("Use the account data controls to clear saved data.");
       try {
         window.localStorage.removeItem(key);
       } catch {

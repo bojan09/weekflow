@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { sectionForRoute } from "@/guide/content";
+import { accountGuide, sectionForRoute } from "@/guide/content";
 import { termById } from "@/guide/terms";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAppPath } from "@/hooks/use-app-path";
@@ -16,8 +16,9 @@ export function HelpPanel() {
   const appPath = useAppPath();
   const open = useUiStore((s) => s.helpOpen);
   const setOpen = useUiStore((s) => s.setHelpOpen);
-  const route = routeOfPath(usePathname()) ?? "guide";
-  const section = sectionForRoute(route);
+  const pathname = usePathname();
+  const route = routeOfPath(pathname) ?? "guide";
+  const section = pathname.startsWith("/app/") ? accountGuide(sectionForRoute(route)) : sectionForRoute(route);
   const wide = useMediaQuery("(min-width: 640px)");
 
   return (

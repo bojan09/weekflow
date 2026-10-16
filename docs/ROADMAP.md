@@ -18,7 +18,7 @@ finished and tested (`package.json` + `CHANGELOG.md`).
 | **0.0.7** | **Repeat, organize and remind**: recurring tasks, projects, templates, custom categories, long-task blocks, in-app reminders (spec in `docs/superpowers/specs/2026-10-14-organize-and-repeat-design.md`) | Built |
 | **0.0.8** | **Team workspaces preview** on sample data with a pure permission model (spec in `docs/superpowers/specs/2026-10-14-team-workspaces-design.md`) | Built |
 | **0.0.9** | **UI/UX audit**: accessibility, mobile, performance, regression across every theme, palette and background. Report: `docs/AUDIT-0.0.9.md` | Built |
-| 0.1.0 | **Needs the owner**: Appwrite: auth, schema and migrations, permissions, Functions, adapters, real Profile security | Planned |
+| 0.1.0 | Appwrite authentication, schema and migrations, private adapters, real Profile security, server-authorized workspaces and account deletion | Implementation and release verification in progress |
 | 0.1.1 | Realtime, team authorization tests, security and performance audit | Planned |
 
 ## Architecture rules
@@ -51,7 +51,7 @@ the two disagree.
 - The public site never shows the tech stack.
 
 ## 0.0.6 notes: Guide and onboarding
-Calendar-first refinement (0.0.11): approved 2026-10-16. Home now shows one optional next step below the calendar; the full setup map and checklist live in the Guide. Task-block typography adapts to space, and scrollbars follow the accent palette. Account integration remains a separate unfinished phase.
+Calendar-first refinement (0.0.11): approved 2026-10-16. Home now shows one optional next step below the calendar; the full setup map and checklist live in the Guide. Task-block typography adapts to space, and scrollbars follow the accent palette. Account integration is approved and in release verification; deployment and inbox checks must finish before 0.1.0 is marked released.
 
 Owner request: "there are so many features, we need a phase that will make sure users can see and
 understand everything. A guide page or guide on every part would be useful." Start the phase with

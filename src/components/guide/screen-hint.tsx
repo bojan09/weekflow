@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Lightbulb, X } from "lucide-react";
-import { sectionForRoute } from "@/guide/content";
+import { accountGuide, sectionForRoute } from "@/guide/content";
 import { STEPS } from "@/guide/progress";
 import { useGuideStore } from "@/guide/store";
 import { routeOfPath } from "@/lib/routes";
@@ -11,7 +11,8 @@ const NEVER = new Set(["guide", "changelog"]);
 
 /** One short line the first time a screen is opened. Dismissed once, gone for good. */
 export function ScreenHint() {
-  const route = routeOfPath(usePathname());
+  const pathname = usePathname();
+  const route = routeOfPath(pathname);
   const { hydrated, dismissedHints, done, panelHidden, dismissHint } = useGuideStore();
   if (!hydrated || !route || NEVER.has(route) || dismissedHints[route]) return null;
 
@@ -23,7 +24,7 @@ export function ScreenHint() {
     <p className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-primary-soft px-4 py-2.5 text-sm text-primary-soft-text">
       <span className="flex items-center gap-2">
         <Lightbulb className="size-4 shrink-0" aria-hidden="true" />
-        {sectionForRoute(route).hint}
+        {(pathname.startsWith("/app/") ? accountGuide(sectionForRoute(route)) : sectionForRoute(route)).hint}
       </span>
       <button
         type="button"

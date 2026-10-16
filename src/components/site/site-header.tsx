@@ -76,6 +76,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1">
+          <Link href="/sign-in" className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary-text">Sign in</Link>
           <ThemeToggle />
           <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "hidden h-10 rounded-full px-5 sm:inline-flex")}>
             {SITE_CTA.label}

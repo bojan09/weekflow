@@ -77,16 +77,16 @@ export const teamTaskSchema = z.object({
   priority: z.enum(PRIORITIES),
   deadline: z.string().nullable(),
   durationMin: z.number().int().min(5).max(720),
-  comments: z.array(commentSchema).max(100),
+  comments: z.array(commentSchema),
   createdAt: z.string().min(1),
 });
 
 export const teamStateSchema = z.object({
   workspace: z.object({ id: z.string().min(1), name: z.string().trim().min(1).max(40) }),
-  members: z.array(memberSchema).min(1).max(50),
-  invitations: z.array(invitationSchema).max(50),
-  projects: z.array(teamProjectSchema).max(30),
-  tasks: z.array(teamTaskSchema).max(500),
+  members: z.array(memberSchema).min(1),
+  invitations: z.array(invitationSchema),
+  projects: z.array(teamProjectSchema),
+  tasks: z.array(teamTaskSchema),
   /** Demo only: which member you are acting as. */
   viewerId: z.string().min(1),
 });

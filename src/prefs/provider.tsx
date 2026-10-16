@@ -27,7 +27,7 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     media.addEventListener("change", apply);
     const onStorage = (event: StorageEvent): void => {
-      if (event.key === PREFS_STORAGE_KEY) persist.rehydrate();
+      if (event.key === PREFS_STORAGE_KEY && !window.location.pathname.startsWith("/app")) persist.rehydrate();
     };
     window.addEventListener("storage", onStorage);
 

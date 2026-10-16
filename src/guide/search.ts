@@ -1,4 +1,4 @@
-import { SECTIONS } from "./content";
+import { SECTIONS, accountGuide } from "./content";
 import { TERMS } from "./terms";
 import type { GuideSection, GuideTerm } from "./types";
 
@@ -15,12 +15,13 @@ const sectionText = (s: GuideSection): string =>
 const termText = (t: GuideTerm): string => [t.word, t.plain, t.whyItMatters].join(" ").toLowerCase();
 
 /** Plain substring search. Every word in the query must appear. */
-export function searchGuide(query: string): GuideSearchResult {
+export function searchGuide(query: string, account = false): GuideSearchResult {
+  const sections = account ? SECTIONS.map(accountGuide) : SECTIONS;
   const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return { sections: SECTIONS, terms: TERMS };
+  if (words.length === 0) return { sections, terms: TERMS };
   const hits = (text: string): boolean => words.every((w) => text.includes(w));
   return {
-    sections: SECTIONS.filter((s) => hits(sectionText(s))),
+    sections: sections.filter((s) => hits(sectionText(s))),
     terms: TERMS.filter((t) => hits(termText(t))),
   };
 }

@@ -1,19 +1,21 @@
 "use client";
 
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 import { ConfirmDialog } from "@/components/settings/confirm-dialog";
 import { SettingRow, SettingsGroup, ToggleRow } from "@/components/settings/controls";
 import { ScenarioPicker } from "@/components/settings/scenario-picker";
 import { usePrefsStore } from "@/prefs/store";
 
 export function AdvancedPane() {
+  const account = usePathname().startsWith("/app/");
   const showSimulator = usePrefsStore((s) => s.prefs.advanced.showStateSimulator);
   const update = usePrefsStore((s) => s.update);
   const reset = usePrefsStore((s) => s.reset);
 
   return (
     <div className="space-y-5">
-      <SettingsGroup title="Demo tools">
+      {!account ? <><SettingsGroup title="Demo tools">
         <ToggleRow
           label="Show the demo states control"
           description="The floating button that previews loading, error, offline and permission-denied screens."
@@ -31,7 +33,7 @@ export function AdvancedPane() {
           </p>
         </div>
         <ScenarioPicker />
-      </section>
+      </section></> : null}
       <SettingsGroup title="Reset">
         <SettingRow
           label="Reset all settings"

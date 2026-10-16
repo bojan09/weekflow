@@ -5,6 +5,17 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## Unreleased — Accounts and private planning
+
+- Sign up, sign in, verify email, recover a password and manage account security
+- Private personal tasks, projects, templates, schedule history, preferences and guide progress saved to an account
+- Visible save status, stale-device protection and exportable pending changes
+- Account-bound requests prevent an old tab from saving into another signed-in account
+- Real team workspaces with invitations, roles, shared projects, assignments and comments
+- Ownership safeguards preserve shared work during account deletion; personal protected time stays private
+- The public demo remains separate, with account guidance reflecting real controls
+- Release verification is in progress; the current app version remains unchanged until sign-off
+
 ## 0.0.11 — A clearer calendar-first workspace
 Date: 2026-10-16
 Summary: Your calendar comes first, with quieter setup help, better-fitting task blocks and accent-colored scrollbars.
@@ -42,6 +53,7 @@ Summary: A full accessibility, mobile and theme audit of every screen, with the 
 - New automated accessibility checks on the main screens and dialogs, plus a repeatable browser audit script and a written report in the docs
 - Known limits are documented: seven-column calendar cells on a phone are slightly narrower than 44px but much taller
 
+## 0.0.8 — Team workspaces preview
 Date: 2026-10-14
 Summary: A free team workspace on sample data: shared tasks and projects, assignment, comments, people and roles, and team availability.
 

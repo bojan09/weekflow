@@ -1,7 +1,8 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { demoStorage } from "@/data/demo-storage";
 import { PREFS_STORAGE_KEY } from "./boot-script";
 import {
   DEFAULT_PREFS,
@@ -47,6 +48,7 @@ export const usePrefsStore = create<PrefsState>()(
     }),
     {
       name: PREFS_STORAGE_KEY,
+      storage: createJSONStorage(() => demoStorage),
       version: 1,
       skipHydration: true,
       partialize: (state) => ({ prefs: state.prefs }),

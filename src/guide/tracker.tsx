@@ -18,9 +18,11 @@ export function GuideTracker(): null {
 
   // Load saved progress first, before any step can be ticked.
   useLayoutEffect(() => {
-    useGuideStore.persist.rehydrate();
-    useGuideStore.setState({ hydrated: true });
-  }, []);
+    if (!pathname.startsWith("/app/")) {
+      useGuideStore.persist.rehydrate();
+      useGuideStore.setState({ hydrated: true });
+    }
+  }, [pathname]);
 
   useLayoutEffect(() => {
     let previous = tasksCollection.getSnapshot();

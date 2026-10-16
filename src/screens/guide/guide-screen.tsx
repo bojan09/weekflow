@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { RotateCcw, Search } from "lucide-react";
 import { toast } from "sonner";
@@ -119,10 +120,11 @@ function SectionBlock({ section }: { section: GuideSection }) {
 }
 
 export function GuideScreen() {
+  const account = usePathname().startsWith("/app/");
   const appPath = useAppPath();
   const [query, setQuery] = useState("");
   const replay = useGuideStore((s) => s.replay);
-  const result = useMemo(() => searchGuide(query), [query]);
+  const result = useMemo(() => searchGuide(query, account), [query, account]);
   const empty = result.sections.length === 0 && result.terms.length === 0;
 
   return (

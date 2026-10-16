@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { AccountSecurity } from "@/components/auth/account-security";
 import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shell/page-header";
@@ -61,6 +63,7 @@ function ProfileSkeleton() {
 }
 
 function ProfileForm({ profile, onDone }: { profile: Profile; onDone: () => void }) {
+  const isAccount = usePathname().startsWith("/app/");
   const [draft, setDraft] = useState<ProfileEdit>({
     fullName: profile.fullName,
     bio: profile.bio,
@@ -82,7 +85,7 @@ function ProfileForm({ profile, onDone }: { profile: Profile; onDone: () => void
       return;
     }
     profileCollection.write({ ...profile, ...parsed.data });
-    toast.success("Profile saved");
+    toast.success(isAccount ? "Profile updated. Changes are syncing." : "Profile saved");
     onDone();
   };
 
@@ -112,7 +115,7 @@ function ProfileForm({ profile, onDone }: { profile: Profile; onDone: () => void
         <Row label="Email">
           <span className="block">{profile.email}</span>
           <span className="mt-1 block text-xs text-muted-foreground">
-            Your email belongs to your account and can be changed once accounts launch.
+            {isAccount ? "Your email is your account sign-in address and cannot be changed here." : "Your email belongs to your account and can be changed once accounts launch."}
           </span>
         </Row>
         <Row label="Bio" htmlFor="pf-bio">
@@ -207,6 +210,7 @@ function SecurityCard() {
 }
 
 export function ProfileScreen() {
+  const isAccount = usePathname().startsWith("/app/");
   const state = useCollection(profileCollection);
   const [editing, setEditing] = useState(false);
   const ready = state.status === "ready";
@@ -252,7 +256,7 @@ export function ProfileScreen() {
                   <ProfileDetails profile={profile} />
                 )}
               </section>
-              <SecurityCard />
+              {isAccount ? <AccountSecurity /> : <SecurityCard />}
             </>
           )}
         </ResourceView>

@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { signOut } from "@/auth/api";
+import { accountSync } from "@/data/account-client";
 import { LogOut, Monitor, Moon, Sun } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -22,6 +25,7 @@ import { usePrefsStore } from "@/prefs/store";
 import type { ThemePref } from "@/prefs/apply";
 
 export function AvatarMenu() {
+  const account = usePathname().startsWith("/app/");
   const appPath = useAppPath();
   const profile = useCollection(profileCollection);
   const theme = usePrefsStore((s) => s.prefs.appearance.theme);
@@ -75,9 +79,12 @@ export function AvatarMenu() {
           </DropdownMenuRadioGroup>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href="/" />}>
+        {account ? <DropdownMenuItem disabled={accountSync.hasPending()} onClick={async () => {
+          try { await signOut(); window.location.assign(new URL("/sign-in", window.location.origin).href); }
+          catch { window.alert("Could not sign out. Please try again."); }
+        }}><LogOut aria-hidden="true" /> Sign out</DropdownMenuItem> : <DropdownMenuItem render={<Link href="/" />}>
           <LogOut aria-hidden="true" /> Exit demo
-        </DropdownMenuItem>
+        </DropdownMenuItem>}
       </DropdownMenuContent>
     </DropdownMenu>
   );
