@@ -51,6 +51,8 @@ the two disagree.
 - The public site never shows the tech stack.
 
 ## 0.0.6 notes: Guide and onboarding
+Calendar-first refinement (0.0.11): approved 2026-10-16. Home now shows one optional next step below the calendar; the full setup map and checklist live in the Guide. Task-block typography adapts to space, and scrollbars follow the accent palette. Account integration remains a separate unfinished phase.
+
 Owner request: "there are so many features, we need a phase that will make sure users can see and
 understand everything. A guide page or guide on every part would be useful." Start the phase with
 the brainstorming skill (decisions first, then a blueprint), as the owner asked.

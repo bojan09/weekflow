@@ -260,3 +260,58 @@ html[data-motion="reduce"] *::after {
 .float-card {
   animation: float-card 6s ease-in-out infinite;
 }
+
+/* Native scrolling stays native; the thumb follows the selected button color. */
+:root {
+  --scrollbar-thumb: var(--primary-text);
+  --scrollbar-hover: color-mix(in oklab, var(--primary-text) 85%, var(--foreground));
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--scrollbar-thumb);
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-hover); }
+*::-webkit-scrollbar-corner { background: transparent; }
+
+/* Layout responds to the actual task rectangle, including narrow overlap lanes. */
+.calendar-task { container-type: size; }
+.calendar-task-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  height: 100%;
+  padding: 6px 7px 10px;
+}
+.calendar-task-title {
+  line-height: 1.25;
+  -webkit-line-clamp: 1;
+}
+.calendar-task-time { flex-shrink: 0; line-height: 1.25; }
+@container (min-height: 66px) {
+  .calendar-task-title { -webkit-line-clamp: 2; }
+}
+@container (max-width: 108px) {
+  .calendar-task-content { padding-inline: 5px; }
+  .calendar-task-range { display: none; }
+  .calendar-task-start { display: inline; }
+}
+@container (max-height: 50px) {
+  .calendar-task-content { gap: 1px; padding-top: 2px; padding-bottom: 11px; }
+}
+/* Short blocks reserve a slim strip on the right for resizing instead of
+   taking the title's only line away with a bottom handle. */
+.calendar-task-compact { padding: 1px 11px 1px 5px; gap: 0; }
+@media (forced-colors: active) {
+  * { scrollbar-color: auto; scrollbar-width: auto; }
+  [data-slot="scroll-area-thumb"] { background: CanvasText; }
+}

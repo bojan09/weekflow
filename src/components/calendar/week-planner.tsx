@@ -159,6 +159,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
           bodyRef={bodyRef}
           drag={dnd.drag}
           heightClass={heightClass}
+          startAtWork={compact}
           onBlockPointerDown={dnd.beginMove}
           onResizePointerDown={dnd.beginResize}
           onOpenTask={(id) => openEditor({ kind: "edit", id })}

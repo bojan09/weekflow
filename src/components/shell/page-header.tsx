@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { HelpButton } from "@/components/guide/help-button";
 import { useUiStore } from "@/stores/ui";
 import { AvatarMenu } from "./avatar-menu";
+import { cn } from "@/lib/utils";
 
 function SearchButton() {
   const setCommandOpen = useUiStore((s) => s.setCommandOpen);
@@ -26,14 +27,15 @@ interface PageHeaderProps {
   subtitle?: string;
   /** Page-specific controls, shown before the search and avatar buttons. */
   actions?: ReactNode;
+  compact?: boolean;
 }
 
-export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, actions, compact = false }: PageHeaderProps) {
   return (
-    <header className="mb-6 flex flex-wrap items-start justify-between gap-x-6 gap-y-4 md:mb-8">
+    <header className={cn("flex flex-wrap items-start justify-between gap-x-6 gap-y-3", compact ? "mb-4 md:mb-5" : "mb-6 md:mb-8")}>
       <div className="min-w-0">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
-        {subtitle ? <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p> : null}
+        <h1 className={cn("font-semibold tracking-tight md:text-3xl", compact ? "text-xl sm:text-2xl" : "text-2xl")}>{title}</h1>
+        {subtitle ? <p className={cn("mt-1.5 text-sm text-muted-foreground", compact && "sr-only sm:not-sr-only")}>{subtitle}</p> : null}
       </div>
       <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2">
         {actions}

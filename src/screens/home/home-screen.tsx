@@ -43,14 +43,12 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
     () => (now ? detectConflicts(tasks, planning, now, format) : []),
     [tasks, planning, now, format],
   );
-  const openPlan = useUiStore((s) => s.openPlan);
   const inboxCount = tasks.filter(isInbox).length;
   const missedCount = now ? tasks.filter((t) => !t.locked && isMissed(t, now)).length : 0;
 
   return (
     <>
-      <StartHere />
-      <section aria-label="This week in numbers" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section aria-label="This week in numbers" className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
         {stats ? (
           <>
             <StatCard tone="neutral" icon={ListChecks} label="Tasks this week" value={String(stats.total)} />
@@ -69,41 +67,42 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
         )}
       </section>
 
-      {now ? <ReviewPrompt now={now} /> : null}
-      <MissedBanner count={missedCount} />
-
-      <QuickAdd className="max-w-2xl" placeholder="Quick add a task to your inbox…" />
-
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_18rem]">
         <section aria-label="Week calendar" className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold">Your schedule</h2>
+            <Link href={appPath("week")} className="inline-flex min-h-11 items-center text-sm font-medium text-primary-text hover:underline">Open My Week →</Link>
+          </div>
           <WeekPlanner variant="compact" />
+          <QuickAdd className="mt-3" placeholder="Add a task to your inbox…" />
         </section>
-        <div className="space-y-4">
+        <aside aria-label="Needs attention" className="min-w-0 space-y-4">
+          {now ? <ReviewPrompt now={now} /> : null}
+          <MissedBanner count={missedCount} />
           <ConflictsPanel conflicts={conflicts} />
-          <Button onClick={() => openPlan()} className="h-11 w-full rounded-2xl">
-            <Wand2 aria-hidden="true" /> Plan my week
-          </Button>
           <Link
             href={appPath("week")}
             className="flex items-center justify-between rounded-2xl border bg-card px-4 py-3 text-sm shadow-soft hover:border-primary-border"
           >
             <span>
-              <span className="block font-medium">Unscheduled</span>
+              <span className="block font-medium">Inbox</span>
               <span className="text-muted-foreground">
                 {inboxCount === 0 ? "Inbox is clear" : `${inboxCount} ${inboxCount === 1 ? "task" : "tasks"} waiting for a time`}
               </span>
             </span>
             <span className="text-primary-text">Open My Week</span>
           </Link>
-        </div>
+        </aside>
       </div>
 
       <ActiveRulesBar />
+      <StartHere />
     </>
   );
 }
 
 export function HomeScreen() {
+  const openPlan = useUiStore((s) => s.openPlan);
   const planner = usePlanner();
   const profile = useCollection(profileCollection);
   const tasks = useCollection(tasksCollection);
@@ -114,9 +113,10 @@ export function HomeScreen() {
   return (
     <>
       <PageHeader
+        compact
         title={name ? `${greeting}, ${name} 👋` : `${greeting} 👋`}
         subtitle="Here's your week at a glance, based on your rules and priorities."
-        actions={<WeekNav planner={planner} />}
+        actions={<><WeekNav planner={planner} compact /><Button onClick={() => openPlan()} className="min-h-11 rounded-xl"><Wand2 aria-hidden="true" /> Preview a plan</Button></>}
       />
       <div className="space-y-5">
         <ResourceView state={tasks} loading={<LoadingBlocks rows={4} />}>

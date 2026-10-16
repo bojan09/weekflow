@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Term } from "@/components/guide/term";
+import { SetupChecklist } from "@/components/guide/start-here";
 import { searchGuide } from "@/guide/search";
 import { useGuideStore } from "@/guide/store";
 import { termById } from "@/guide/terms";
@@ -173,6 +174,7 @@ export function GuideScreen() {
         </nav>
 
         <div className="space-y-5">
+          {!query.trim() ? <SetupChecklist /> : null}
           {empty ? (
             <p className="rounded-2xl border bg-card p-6 text-sm text-muted-foreground">
               Nothing matches “{query}”. Try a shorter word, or clear the search.

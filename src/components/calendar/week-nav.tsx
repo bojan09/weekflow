@@ -9,7 +9,7 @@ import { formatLong } from "@/lib/dates";
 import { usePlannerStore, type PlannerView } from "@/stores/planner";
 
 /** Previous / next arrows, the visible range, and a Today button. */
-export function WeekNav({ planner }: { planner: Planner }) {
+export function WeekNav({ planner, compact = false }: { planner: Planner; compact?: boolean }) {
   const day = planner.view === "day";
   const label = day && planner.anchor ? formatLong(planner.anchor) : planner.rangeLabel;
   const unit = day ? "day" : "week";
@@ -18,8 +18,8 @@ export function WeekNav({ planner }: { planner: Planner }) {
       <Button variant="outline" size="icon-lg" aria-label={`Previous ${unit}`} onClick={() => planner.step(-1)}>
         <ChevronLeft aria-hidden="true" />
       </Button>
-      <p aria-live="polite" className="min-w-36 px-1 text-center text-sm font-medium tabular-nums">
-        {label || " "}
+      <p aria-live="polite" className={compact ? "px-0.5 text-center text-xs font-medium tabular-nums sm:text-sm" : "min-w-36 px-1 text-center text-sm font-medium tabular-nums"}>
+        {compact ? <><span className="sm:hidden">{label?.replace(/, \d{4}$/, "") || " "}</span><span className="hidden sm:inline">{label || " "}</span></> : label || " "}
       </p>
       <Button variant="outline" size="icon-lg" aria-label={`Next ${unit}`} onClick={() => planner.step(1)}>
         <ChevronRight aria-hidden="true" />

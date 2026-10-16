@@ -43,23 +43,41 @@ export function StartHere() {
   const appPath = useAppPath();
   const { hydrated, done, panelHidden, hidePanel } = useGuideStore();
   if (!hydrated) return null;
+  const count = STEPS.filter((step) => done[step.id]).length;
+  const next = STEPS.find((step) => !done[step.id]);
+  const guide = (
+    <Link href={`${appPath("guide")}#setup`} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary-text hover:underline">
+      <BookOpen className="size-4" aria-hidden="true" /> Open the Guide
+    </Link>
+  );
+  if (panelHidden || !next) return <div>{guide}</div>;
+  return (
+    <section aria-labelledby="next-step-title" className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-2xl border bg-card px-4 py-3">
+      <div className="min-w-0">
+        <h2 id="next-step-title" className="text-xs font-medium text-muted-foreground">Start here</h2>
+        <p className="mt-1 text-sm font-semibold">{next.label}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">{next.hint}</p>
+      </div>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span className="text-xs text-muted-foreground tabular-nums">{count} of {STEPS.length} done</span>
+        <StepButton go={next.go} />
+        {guide}
+        <Button variant="ghost" size="sm" onClick={hidePanel}>Hide</Button>
+      </div>
+    </section>
+  );
+}
+
+/** The complete setup map, checklist and glossary live in the Guide. */
+export function SetupChecklist() {
+  const appPath = useAppPath();
+  const { hydrated, done } = useGuideStore();
+  if (!hydrated) return null;
 
   const count = STEPS.filter((s) => done[s.id]).length;
-  const finished = count === STEPS.length;
-
-  if (panelHidden || finished) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {finished ? "You have done the basics. " : ""}
-        <Link href={appPath("guide")} className="inline-flex min-h-11 items-center font-medium text-primary-text hover:underline">
-          <BookOpen className="mr-1.5 size-4" aria-hidden="true" /> Open the Guide
-        </Link>
-      </p>
-    );
-  }
 
   return (
-    <section aria-labelledby="start-title" className="rounded-2xl border border-primary-border bg-primary-soft/50 p-4 shadow-soft md:p-5">
+    <section id="setup" aria-labelledby="start-title" className="scroll-mt-8 rounded-2xl border border-primary-border bg-primary-soft/50 p-4 shadow-soft md:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 id="start-title" className="text-base font-semibold">
@@ -71,9 +89,6 @@ export function StartHere() {
           <span className="rounded-full bg-card px-3 py-1 text-xs font-medium tabular-nums">
             {count} of {STEPS.length} done
           </span>
-          <Button variant="ghost" size="sm" onClick={hidePanel}>
-            Hide
-          </Button>
         </div>
       </div>
 

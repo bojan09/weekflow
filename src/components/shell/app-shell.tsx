@@ -40,8 +40,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           aria-label="Demo mode"
           className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 surface-panel rounded-2xl px-4 py-2 text-xs text-muted-foreground shadow-soft"
         >
-          <p>Demo mode. Everything you change stays in this browser.</p>
-          <div className="flex items-center gap-3">
+          <p><span className="sm:hidden" title="Everything you change stays in this browser.">Demo · local data</span><span className="hidden sm:inline">Demo mode. Everything you change stays in this browser.</span></p>
+          <div className="flex items-center gap-2 sm:gap-3">
             <StateSimulator />
             <Link href="/" className="inline-flex min-h-11 items-center font-medium text-primary-text underline-offset-4 hover:underline">
               Exit demo

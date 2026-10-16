@@ -40,6 +40,7 @@ interface TimeGridProps {
   bodyRef: RefObject<HTMLDivElement | null>;
   drag: DragState | null;
   heightClass: string;
+  startAtWork?: boolean;
   onBlockPointerDown: (event: React.PointerEvent<HTMLElement>, task: Task, grabOffsetMin: number) => void;
   onResizePointerDown: (event: React.PointerEvent<HTMLElement>, task: Task) => void;
   onOpenTask: (id: string) => void;
@@ -79,8 +80,8 @@ export function TimeGrid(props: TimeGridProps) {
   // Open at the start of the working day; the rest of the day stays scrollable.
   useLayoutEffect(() => {
     const scroller = scrollerRef.current;
-    if (scroller) scroller.scrollTop = minutesToPx(Math.max(0, workStartMin - 60), hourHeight);
-  }, [scrollerRef, workStartMin, hourHeight]);
+    if (scroller) scroller.scrollTop = minutesToPx(Math.max(0, workStartMin - (props.startAtWork ? 0 : 60)), hourHeight);
+  }, [scrollerRef, workStartMin, hourHeight, props.startAtWork]);
 
   const timed = tasks.filter(isTimed);
   const dayOnly = tasks.filter(isDayOnly);

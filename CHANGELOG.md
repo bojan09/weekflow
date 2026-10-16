@@ -5,6 +5,18 @@ version timeline. Each entry is `## <version> — <title>`, then a `Date:` line,
 a `Summary:` line, and bullet changes. `package.json` must match the newest entry.
 Database schema migrations are tracked separately and never share this file.
 
+## 0.0.11 — A clearer calendar-first workspace
+Date: 2026-10-16
+Summary: Your calendar comes first, with quieter setup help, better-fitting task blocks and accent-colored scrollbars.
+
+- Home shows a compact weekly summary and the calendar before attention items and optional setup help
+- Preview a plan is available in the header; quick add sits below the calendar
+- Setup shows only the next unfinished step; the full checklist, map and explanations remain in the Guide
+- Calendar titles and time labels fit independently; narrow blocks show the start time and reveal full details on hover or keyboard focus
+- Short task blocks reserve a resize strip on the right so titles stay readable without changing their time footprint
+- Thin, rounded scrollbars follow the selected accent in both themes, with a system-color fallback for high-contrast mode
+- Compact phone header and demo banner keep the schedule easier to reach
+
 ## 0.0.10 — Start here fixes
 Date: 2026-10-15
 Summary: Every step in the Start here checklist now does what it says.

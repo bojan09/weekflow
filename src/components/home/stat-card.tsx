@@ -33,13 +33,13 @@ export function StatCard({
 }) {
   const style = TONES[tone];
   return (
-    <div className={cn("flex items-center gap-4 rounded-2xl border p-4", style.card)}>
-      <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl shadow-soft", style.tile)}>
-        <Icon className="size-5" aria-hidden="true" />
+    <div className={cn("flex min-w-0 items-center gap-2 rounded-xl border p-2.5 sm:gap-3 sm:p-3", style.card)}>
+      <span className={cn("hidden size-8 shrink-0 items-center justify-center rounded-lg sm:flex", style.tile)}>
+        <Icon className="size-4" aria-hidden="true" />
       </span>
       <div className="min-w-0">
-        <p className="truncate text-xs text-muted-foreground">{label}</p>
-        <p className={cn("text-2xl leading-tight font-semibold tabular-nums", VALUE_TONE[tone])}>{value}</p>
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className={cn("text-xl leading-tight font-semibold tabular-nums", VALUE_TONE[tone])}>{value}</p>
         {hint ? <p className="truncate text-xs text-muted-foreground">{hint}</p> : null}
       </div>
     </div>

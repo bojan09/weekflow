@@ -43,11 +43,11 @@ export const SECTIONS: readonly GuideSection[] = [
     summary: "Your week at a glance, with conflicts and your active rules.",
     hint: "Home is your overview. Anything that needs attention shows up here first.",
     whatItIs:
-      "Home answers 'how is my week looking?'. It shows weekly numbers, a compact calendar, scheduling conflicts with fixes you can apply, and the rules the planner follows.",
+      "Home puts your calendar first, with a compact weekly summary. Preview a plan from the header, add tasks below the calendar, and check anything that needs attention beside or below it. Optional setup help shows just your next step; the full checklist is in this Guide.",
     steps: [
       { text: "Read the four numbers at the top: tasks, completed, overdue and free time." },
       { text: "Use Quick add to drop a task into your inbox in one line." },
-      { text: "Open Plan my week to let Weekflow propose times for your inbox.", to: { route: "week", label: "Go to My Week" } },
+      { text: "Press Preview a plan in the header to propose times for your inbox. Nothing changes until you apply it." },
       { text: "Check Scheduling conflicts and press a fix button to apply it." },
     ],
     tips: [
@@ -81,6 +81,7 @@ export const SECTIONS: readonly GuideSection[] = [
       "Everything also works by keyboard: Enter to edit, arrows to move, Shift plus arrows to resize.",
       "Shaded areas are outside your working hours. You can still place tasks there, but you will get a warning.",
       "The bar under each day shows how full it is against your daily limit.",
+      "Narrow blocks show a shorter time label. Hover or focus a task to read its full title and time range; press Enter to edit it.",
     ],
     shortcuts: [
       { keys: "[ and ]", label: "Previous and next week" },
