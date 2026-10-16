@@ -159,7 +159,7 @@ function WorkspaceBody({ workspace, disabled, save, invite }: { workspace: TeamW
       </section>
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_18rem]">
-      <Tabs defaultValue="members" className="min-w-0 gap-5">
+      <Tabs defaultValue="members" className="min-w-0 flex-col gap-5">
         <TabsList aria-label="Team sections" variant="line" className="grid h-auto! w-full grid-cols-3 justify-start gap-0 border-b p-0 pb-1 sm:flex sm:gap-2">
           <TabsTrigger value="members" className="min-h-11 min-w-0 flex-none px-1 text-xs sm:px-4 sm:text-sm"><Users aria-hidden="true" className="hidden sm:block" /><span>Members</span></TabsTrigger>
           <TabsTrigger value="projects" className="min-h-11 min-w-0 flex-none px-1 text-xs sm:px-4 sm:text-sm"><FolderKanban aria-hidden="true" className="hidden sm:block" /><span>Projects</span></TabsTrigger>

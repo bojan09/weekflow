@@ -14,6 +14,7 @@ Database schema migrations are tracked separately and never share this file.
 - Real team workspaces with invitations, roles, shared projects, assignments and comments
 - Ownership safeguards preserve shared work during account deletion; personal protected time stays private
 - The public demo remains separate, with account guidance reflecting real controls
+- Team tabs stack their active content cleanly, with accurate workspace stats and member identities
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
 ## 0.0.11 — A clearer calendar-first workspace

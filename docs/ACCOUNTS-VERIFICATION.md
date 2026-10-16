@@ -1,6 +1,6 @@
 # Account integration verification — 2026-10-16
 
-Release 0.1.0 remains pending deployment and inbox sign-off. No version increment has been claimed.
+Release 0.1.0 remains pending production configuration and inbox sign-off. No version increment has been claimed.
 
 ## Live service checks
 
@@ -39,7 +39,10 @@ Review found and prompted fixes for cross-account stale tabs, discarded queues o
 
 ## Remaining release checks
 
-- Confirm the deployed commit and real production account routes after publishing.
-- Confirm the production environment and allowed hostname.
+- Commit `541fdba` deployed successfully through the existing Vercel integration. `/sign-in` and `/api/auth/session` return successfully on production.
+- The deployed sign-in page explicitly reports **accounts are not configured**. The local configuration was not present in Vercel's build environment. Add the values in `DEPLOYMENT.md` and redeploy.
+- Vercel project settings require the owner's login in this browser session. A sign-in handoff was left open; no credentials were requested in chat.
 - Follow verification, recovery and invitation emails in a real inbox. Automated one-time token checks prove the token flow, not actual inbox delivery.
 - Complete the production steps in `DEPLOYMENT.md` before marking 0.1.0 released.
+
+Final visual follow-up: the real Members/Projects/Shared Tasks layout needed an explicit column direction for its tab container. This was corrected and checked after a fresh browser load; the narrow member panel no longer crowds beside the tab bar.
