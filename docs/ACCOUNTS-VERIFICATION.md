@@ -46,3 +46,5 @@ Review found and prompted fixes for cross-account stale tabs, discarded queues o
 - Complete the production steps in `DEPLOYMENT.md` before marking 0.1.0 released.
 
 Final visual follow-up: the real Members/Projects/Shared Tasks layout needed an explicit column direction for its tab container. This was corrected and checked after a fresh browser load; the narrow member panel no longer crowds beside the tab bar.
+
+Development follow-up: private leaf pages explicitly opt out of instant-navigation validation while their account data loads. The layout-level setting does not exempt child page segments in this framework version. A fresh unauthenticated development request produced the expected sign-in response without the dropped-segment notice.
