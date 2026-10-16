@@ -3,6 +3,8 @@
 import { useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { AccountSecurity } from "@/components/auth/account-security";
+import { AvatarPicker } from "@/components/profile/avatar-picker";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shell/page-header";
@@ -62,9 +64,10 @@ function ProfileSkeleton() {
   );
 }
 
-function ProfileForm({ profile, onDone }: { profile: Profile; onDone: () => void }) {
+function ProfileForm({ profile, onDone, onBusyChange, busy }: { profile: Profile; onDone: () => void; onBusyChange: (busy: boolean) => void; busy: boolean }) {
   const isAccount = usePathname().startsWith("/app/");
   const [draft, setDraft] = useState<ProfileEdit>({
+    avatarImage: profile.avatarImage ?? null,
     fullName: profile.fullName,
     bio: profile.bio,
     timeZone: profile.timeZone,
@@ -74,6 +77,7 @@ function ProfileForm({ profile, onDone }: { profile: Profile; onDone: () => void
 
   const submit = (event: React.FormEvent): void => {
     event.preventDefault();
+    if (busy) return;
     const parsed = profileEditSchema.safeParse(draft);
     if (!parsed.success) {
       const next: Partial<Record<keyof ProfileEdit, string>> = {};
@@ -97,6 +101,7 @@ function ProfileForm({ profile, onDone }: { profile: Profile; onDone: () => void
   return (
     <form id={FORM_ID} onSubmit={submit} noValidate>
       <dl>
+        <Row label="Profile photo"><AvatarPicker value={draft.avatarImage ?? null} name={draft.fullName} onChange={(value) => field("avatarImage", value)} onBusyChange={onBusyChange} /></Row>
         <Row label="Full name" htmlFor="pf-name">
           <Input
             id="pf-name"
@@ -213,6 +218,7 @@ export function ProfileScreen() {
   const isAccount = usePathname().startsWith("/app/");
   const state = useCollection(profileCollection);
   const [editing, setEditing] = useState(false);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const ready = state.status === "ready";
 
   const actions = !ready ? null : editing ? (
@@ -220,7 +226,7 @@ export function ProfileScreen() {
       <Button variant="outline" size="lg" onClick={() => setEditing(false)}>
         Cancel
       </Button>
-      <Button type="submit" form={FORM_ID} size="lg">
+      <Button type="submit" form={FORM_ID} size="lg" disabled={photoBusy}>
         Save
       </Button>
     </>
@@ -239,19 +245,17 @@ export function ProfileScreen() {
             <>
               <section className="rounded-3xl border bg-card p-6 shadow-soft">
                 <div className="flex items-center gap-5 border-b pb-6">
-                  <span
-                    aria-hidden="true"
-                    className="flex size-20 shrink-0 items-center justify-center rounded-full bg-primary-soft text-2xl font-semibold text-primary-soft-text ring-4 ring-background"
-                  >
-                    {initialsOf(profile.fullName)}
-                  </span>
+                  <Avatar className="size-20 ring-4 ring-background">
+                    {profile.avatarImage && <AvatarImage src={profile.avatarImage} alt={`${profile.fullName}'s profile photo`} />}
+                    <AvatarFallback className="bg-primary-soft text-2xl font-semibold text-primary-soft-text">{initialsOf(profile.fullName)}</AvatarFallback>
+                  </Avatar>
                   <div className="min-w-0">
                     <p className="truncate text-xl font-semibold">{profile.fullName}</p>
                     <p className="truncate text-sm text-muted-foreground">{profile.email}</p>
                   </div>
                 </div>
                 {editing ? (
-                  <ProfileForm profile={profile} onDone={() => setEditing(false)} />
+                  <ProfileForm profile={profile} onDone={() => setEditing(false)} onBusyChange={setPhotoBusy} busy={photoBusy} />
                 ) : (
                   <ProfileDetails profile={profile} />
                 )}

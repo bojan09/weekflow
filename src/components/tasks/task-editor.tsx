@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { Clock3, Minus, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { NativeSelect, SegmentedControl, ToggleRow } from "@/components/settings/controls";
 import { Term } from "@/components/guide/term";
@@ -28,6 +28,7 @@ import {
 } from "@/domain/tasks";
 import { useProjects, useTemplates } from "@/hooks/use-lists";
 import { useNow } from "@/hooks/use-now";
+import { formatDuration } from "@/domain/stats";
 import { localISO } from "@/lib/dates";
 import { timeToMinutes, orderedWeekdays } from "@/lib/time";
 import { usePlannerStore } from "@/stores/planner";
@@ -68,7 +69,7 @@ interface Draft {
   repeat: RepeatDraft;
 }
 
-const DURATION_CHIPS = [15, 30, 45, 60, 90, 120] as const;
+const DURATION_CHIPS = [15, 30, 60, 120] as const;
 
 const pad = (n: number): string => String(n).padStart(2, "0");
 const toTime = (min: number): string => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
@@ -124,8 +125,8 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 function Field({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="text-sm font-medium">
+    <div className="min-w-0 space-y-1.5">
+      <label htmlFor={htmlFor} className="block text-sm font-medium">
         {label}
       </label>
       {children}
@@ -137,6 +138,9 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
   const now = useNow();
   const closeEditor = useUiStore((s) => s.closeEditor);
   const workspace = usePrefsStore((s) => s.prefs.workspace);
+  const stepMin = usePrefsStore((s) => s.prefs.calendar.timeStepMin);
+  const updatePrefs = usePrefsStore((s) => s.update);
+  const setEditorTiming = useUiStore((s) => s.setEditorTiming);
   const anchor = usePlannerStore((s) => s.anchor);
   const all = tasksCollection.getSnapshot();
   const existing = target.kind === "edit" ? all.find((t) => t.id === target.id) : undefined;
@@ -174,10 +178,19 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [labelInput, setLabelInput] = useState("");
   const [checkInput, setCheckInput] = useState("");
+  const startMin = timeToMinutes(draft.time);
+  const finishMin = startMin + draft.durationMin;
+
+  useEffect(() => {
+    if (!existing) return;
+    const placement = draft.mode === "none" ? null : { date: draft.date, startMin: draft.mode === "day" ? null : timeToMinutes(draft.time) };
+    const valid = taskSchema.safeParse({ ...existing, durationMin: draft.durationMin, placement });
+    setEditorTiming(valid.success ? { id: existing.id, durationMin: valid.data.durationMin, placement: valid.data.placement } : null);
+  }, [existing, draft.durationMin, draft.mode, draft.date, draft.time, setEditorTiming]);
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]): void => {
     setDraft((d) => ({ ...d, [key]: value }));
-    setErrors((e) => (key in e ? Object.fromEntries(Object.entries(e).filter(([k]) => k !== key)) : e));
+    setErrors((errors) => Object.fromEntries(Object.entries(errors).filter(([field]) => field !== key && !(field === "end" && (key === "time" || key === "durationMin" || key === "mode")))));
   };
 
   const addLabel = (): void => {
@@ -196,6 +209,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
 
   const submit = (event: FormEvent): void => {
     event.preventDefault();
+    if (errors.end) return;
     const placement =
       draft.mode === "none"
         ? null
@@ -253,7 +267,8 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
 
   return (
     <form onSubmit={submit} noValidate className="flex min-h-0 flex-1 flex-col">
-      <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-4">
+      <div className="task-editor-fields flex-1 space-y-5 overflow-y-auto px-5 pb-6">
+        {Object.entries(errors).filter(([, message]) => Boolean(message)).length > 0 && <div role="alert" className="rounded-xl border border-danger-border bg-danger-soft p-3 text-sm text-danger-text">Please check the highlighted fields. {Object.values(errors).filter(Boolean).join(" ")}</div>}
         {!existing && templates.length > 0 ? (
           <Field label="Start from a template" htmlFor="te-template">
             <NativeSelect
@@ -289,15 +304,54 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
           <FieldError id="te-title-error" message={errors.title} />
         </Field>
 
-        <Field label="Notes" htmlFor="te-notes">
-          <Textarea
-            id="te-notes"
-            value={draft.notes}
-            rows={3}
-            onChange={(e) => set("notes", e.target.value)}
-            className="rounded-xl border-input bg-card"
+        <fieldset className="space-y-3 rounded-2xl border p-4">
+          <legend className="flex items-center gap-2 px-1 text-sm font-semibold"><Clock3 className="size-4" aria-hidden="true" /> Schedule and duration</legend>
+          <SegmentedControl<Mode>
+            label="Placement"
+            value={draft.mode}
+            onChange={(mode) => set("mode", mode)}
+            options={[
+              { value: "none", label: "Inbox" },
+              { value: "day", label: "Any time" },
+              { value: "time", label: "Set time" },
+            ]}
+            className="grid grid-cols-3 [&>button]:min-w-0 [&>button]:px-2 [&>button]:text-xs"
           />
-        </Field>
+          {draft.mode !== "none" ? (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Field label="Day" htmlFor="te-date">
+                <Input
+                  id="te-date"
+                  type="date"
+                  value={draft.date}
+                  onChange={(e) => set("date", e.target.value)}
+                  className="h-10 rounded-xl border-input bg-card"
+                />
+              </Field></div>
+              {draft.mode === "time" ? (
+                <Field label="Start time" htmlFor="te-time">
+                  <Input
+                    id="te-time"
+                    type="time"
+                    step={stepMin * 60}
+                    value={draft.time}
+                    onChange={(e) => set("time", e.target.value)}
+                    className="h-10 rounded-xl border-input bg-card"
+                  />
+                </Field>
+              ) : null}
+              {draft.mode === "time" ? <Field label="End time" htmlFor="te-end">
+                <Input id="te-end" type="time" step={stepMin * 60} value={finishMin < 1440 ? toTime(finishMin) : "00:00"} onChange={(e) => {
+                  const end = e.target.value === "00:00" ? 1440 : timeToMinutes(e.target.value);
+                  const duration = end - startMin;
+                  if (duration >= 5 && duration <= 720) { set("durationMin", duration); }
+                  else setErrors((errors) => ({ ...errors, end: "Choose an end at least 5 minutes after the start, up to 12 hours later." }));
+                }} className="h-10 rounded-xl border-input bg-card" />
+                <FieldError id="te-end-error" message={errors.end} />
+              </Field> : null}
+            </div>
+          ) : null}
+          <FieldError id="te-place-error" message={errors.placement ?? errors.locked} />
 
         <Field label="Estimated length" htmlFor="te-duration">
           <div className="flex flex-wrap items-center gap-2">
@@ -322,7 +376,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
                 type="number"
                 min={5}
                 max={720}
-                step={5}
+                step={stepMin}
                 value={draft.durationMin}
                 onChange={(e) => set("durationMin", Number(e.target.value))}
                 aria-invalid={Boolean(errors.durationMin)}
@@ -334,6 +388,40 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
           <FieldError id="te-duration-error" message={errors.durationMin} />
         </Field>
 
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3">
+            <div className="flex items-center gap-2">
+              <Button type="button" variant="outline" size="icon" aria-label={`Shorten by ${stepMin} minutes`} disabled={draft.durationMin <= 5} onClick={() => set("durationMin", Math.max(5, draft.durationMin - stepMin))}><Minus aria-hidden="true" /></Button>
+              <span className="min-w-16 text-center text-sm font-semibold tabular-nums">{formatDuration(draft.durationMin)}</span>
+              <Button type="button" variant="outline" size="icon" aria-label={`Extend by ${stepMin} minutes`} disabled={draft.durationMin + stepMin > Math.min(720, draft.mode === "time" ? 1440 - startMin : 720)} onClick={() => set("durationMin", draft.durationMin + stepMin)}><Plus aria-hidden="true" /></Button>
+            </div>
+            <label className="flex items-center gap-2 text-xs text-muted-foreground">Adjust by
+              <NativeSelect aria-label="Time increments" value={stepMin} onChange={(e) => updatePrefs("calendar", { timeStepMin: Number(e.target.value) as 5 | 10 | 15 | 30 })} className="min-w-0">
+                {[5, 10, 15, 30].map((value) => <option key={value} value={value}>{value} min</option>)}
+              </NativeSelect>
+            </label>
+          </div>
+          {draft.mode !== "none" ? (
+            <ToggleRow
+              label={draft.mode === "day" ? "Pin to this day" : "Lock in place"}
+              description="Protect this placement from dragging and replanning."
+              checked={draft.locked}
+              onChange={(locked) => set("locked", locked)}
+            />
+          ) : null}
+          {existing && <p className="text-xs text-muted-foreground">Calendar preview updates as you edit. Save applies it; Cancel restores the original.</p>}
+        </fieldset>
+
+        <Field label="Notes" htmlFor="te-notes">
+          <Textarea
+            id="te-notes"
+            value={draft.notes}
+            rows={3}
+            onChange={(e) => set("notes", e.target.value)}
+            className="rounded-xl border-input bg-card"
+          />
+        </Field>
+
+
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Priority">
             <SegmentedControl
@@ -341,7 +429,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
               value={draft.priority}
               onChange={(priority) => set("priority", priority)}
               options={PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABEL[p] }))}
-              className="flex-nowrap [&>button]:min-w-0 [&>button]:px-2"
+              className="grid grid-cols-3 [&>button]:min-w-0 [&>button]:px-2"
             />
           </Field>
           <Field label="Category" htmlFor="te-category">
@@ -371,6 +459,9 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
           </NativeSelect>
         </Field>
 
+        <details className="rounded-2xl border p-4">
+          <summary className="text-sm font-semibold">More options · deadlines, repeat, checklist</summary>
+          <div className="mt-4 space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Deadline" htmlFor="te-deadline">
             <Input
@@ -392,54 +483,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
           </Field>
         </div>
 
-        <fieldset className="space-y-3 rounded-2xl border p-4">
-          <legend className="px-1 text-sm font-medium">Where it goes</legend>
-          <SegmentedControl<Mode>
-            label="Placement"
-            value={draft.mode}
-            onChange={(mode) => set("mode", mode)}
-            options={[
-              { value: "none", label: "Inbox" },
-              { value: "day", label: "Any time on a day" },
-              { value: "time", label: "At a time" },
-            ]}
-            className="flex-nowrap [&>button]:min-w-0 [&>button]:px-2 [&>button]:text-xs"
-          />
-          {draft.mode !== "none" ? (
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Day" htmlFor="te-date">
-                <Input
-                  id="te-date"
-                  type="date"
-                  value={draft.date}
-                  onChange={(e) => set("date", e.target.value)}
-                  className="h-10 rounded-xl border-input bg-card"
-                />
-              </Field>
-              {draft.mode === "time" ? (
-                <Field label="Start time" htmlFor="te-time">
-                  <Input
-                    id="te-time"
-                    type="time"
-                    step={300}
-                    value={draft.time}
-                    onChange={(e) => set("time", e.target.value)}
-                    className="h-10 rounded-xl border-input bg-card"
-                  />
-                </Field>
-              ) : null}
-            </div>
-          ) : null}
-          <FieldError id="te-place-error" message={errors.placement ?? errors.locked} />
-          {draft.mode !== "none" ? (
-            <ToggleRow
-              label={draft.mode === "day" ? "Pin to this day" : "Lock in place"}
-              description="Locked tasks never move, whether you drag or the planner reshuffles."
-              checked={draft.locked}
-              onChange={(locked) => set("locked", locked)}
-            />
-          ) : null}
-        </fieldset>
+
 
         <fieldset className="space-y-3 rounded-2xl border p-4">
           <legend className="flex items-center gap-1 px-1 text-sm font-medium">
@@ -649,7 +693,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
                   type="number"
                   min={0}
                   max={1440}
-                  step={5}
+                  step={stepMin}
                   value={draft.actualMin}
                   placeholder="Optional"
                   onChange={(e) => set("actualMin", e.target.value)}
@@ -661,9 +705,11 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
             </Field>
           </div>
         ) : null}
+          </div>
+        </details>
       </div>
 
-      <SheetFooter className="flex-row flex-wrap items-center justify-between gap-2 border-t">
+      <SheetFooter className="grid grid-cols-2 items-center gap-2 border-t bg-popover px-5">
         {existing ? (
           <Button
             type="button"
@@ -693,7 +739,7 @@ function EditorForm({ target }: { target: Exclude<EditorTarget, null> }) {
             Save as template
           </Button>
         ) : null}
-        <span className="flex gap-2">
+        <span className="col-span-2 grid grid-cols-2 gap-2">
           <Button type="button" variant="outline" size="lg" onClick={closeEditor}>
             Cancel
           </Button>
@@ -716,11 +762,11 @@ export function TaskEditor() {
 
   return (
     <Sheet open={editor !== null && ready} onOpenChange={(open) => !open && closeEditor()}>
-      <SheetContent side="right" className="w-full gap-0 sm:max-w-lg">
-        <SheetHeader>
+      <SheetContent side="right" overlayClassName="bg-black/5 supports-backdrop-filter:backdrop-blur-none" className="gap-0 data-[side=right]:w-full sm:max-w-[34rem]">
+        <SheetHeader className="shrink-0 border-b px-5 pt-5 pb-4">
           <SheetTitle>{editor?.kind === "edit" ? "Edit task" : "New task"}</SheetTitle>
           <SheetDescription>
-            {editor?.kind === "edit" ? "Change anything, then save." : "Capture it now, schedule it later."}
+            {editor?.kind === "edit" ? "Adjust the details and preview your schedule before saving." : "Capture it now, schedule it later."}
           </SheetDescription>
         </SheetHeader>
         {editor ? <EditorForm key={key} target={editor} /> : null}

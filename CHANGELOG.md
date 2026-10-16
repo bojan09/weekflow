@@ -20,6 +20,19 @@ Database schema migrations are tracked separately and never share this file.
 - Account pages wait for private data without spurious navigation notices
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
+## 0.0.12 — A more comfortable planner
+Date: 2026-10-16
+Summary: Better mobile planning, clearer task editing, flexible time adjustments, sidebar colors and your own profile photo.
+
+- Compact mobile dashboard, a single day selector and five navigation tabs, with Team under More
+- My Week opens the current Monday–Sunday week and focuses the current or upcoming task
+- Choose 5, 10, 15 or 30 minute increments for moving, resizing and adjusting tasks
+- Start, end and duration stay in sync; editor changes preview the calendar before Save, and Cancel restores it
+- Larger visible resize grips, quick delete on task blocks and Undo
+- Choose Navy, Light, Accent or theme-matching sidebar colors
+- Upload, preview, replace and remove a profile photo; account photos stay private
+- Clear pointer cursors and a refined Google sign-in button
+
 ## 0.0.11 — A clearer calendar-first workspace
 Date: 2026-10-16
 Summary: Your calendar comes first, with quieter setup help, better-fitting task blocks and accent-colored scrollbars.

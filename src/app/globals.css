@@ -3,6 +3,27 @@
 @import "../theme/generated/tokens.css";
 @import "../theme/backgrounds.css";
 
+:root {
+  --brand-google-blue: #4285f4;
+  --brand-google-green: #34a853;
+  --brand-google-yellow: #fbbc05;
+  --brand-google-red: #ea4335;
+  --brand-google-surface: #fff;
+}
+
+@layer base {
+  :where(button, a[href], [role="button"], [role="radio"], [role="tab"], [role="menuitem"], [role="option"], select, summary, input[type="checkbox"], input[type="radio"], label[for]) {
+    cursor: pointer;
+  }
+  :where(button:disabled, input:disabled, select:disabled, [aria-disabled="true"], [data-disabled]) {
+    cursor: not-allowed;
+  }
+}
+
+.task-editor-fields > :first-child { margin-top: 1.25rem; }
+.task-editor-fields select { width: 100%; }
+.task-editor-fields input, .task-editor-fields textarea { min-width: 0; }
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -171,6 +192,9 @@
   backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
 }
 
+.surface-sidebar :focus-visible { outline-color: var(--sidebar-foreground); }
+.surface-sidebar [aria-current="page"] { box-shadow: inset 0 0 0 1px var(--sidebar-foreground); }
+
 html {
   color-scheme: light;
 }
@@ -290,7 +314,7 @@ html[data-motion="reduce"] *::after {
   flex-direction: column;
   gap: 3px;
   height: 100%;
-  padding: 6px 7px 10px;
+  padding: 6px 7px 17px;
 }
 .calendar-task-title {
   line-height: 1.25;
@@ -306,11 +330,11 @@ html[data-motion="reduce"] *::after {
   .calendar-task-start { display: inline; }
 }
 @container (max-height: 50px) {
-  .calendar-task-content { gap: 1px; padding-top: 2px; padding-bottom: 11px; }
+  .calendar-task-content { gap: 1px; padding-top: 2px; padding-bottom: 17px; }
 }
 /* Short blocks reserve a slim strip on the right for resizing instead of
    taking the title's only line away with a bottom handle. */
-.calendar-task-compact { padding: 1px 11px 1px 5px; gap: 0; }
+.calendar-task-compact { padding: 1px 18px 1px 5px; gap: 0; }
 @media (forced-colors: active) {
   * { scrollbar-color: auto; scrollbar-width: auto; }
   [data-slot="scroll-area-thumb"] { background: CanvasText; }

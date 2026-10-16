@@ -61,6 +61,19 @@ export function AppearancePane() {
           />
         </SettingRow>
 
+        <SettingRow label="Sidebar color" description="Choose the navigation color independently of your background. Accent follows your selected color; Match theme follows Light or Dark." stacked>
+          <SegmentedControl
+            label="Sidebar color"
+            value={appearance.sidebar}
+            onChange={(sidebar) => update("appearance", { sidebar })}
+            options={[
+              { value: "navy", label: "Navy" },
+              { value: "light", label: "Light" },
+              { value: "accent", label: "Accent" },
+              { value: "theme", label: "Match theme" },
+            ]}
+          />
+        </SettingRow>
         <SettingRow label="Density" description="Compact fits more on screen." stacked>
           <SegmentedControl
             label="Density"

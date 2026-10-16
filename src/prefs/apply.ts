@@ -29,6 +29,7 @@ export function applyPrefs(
   root.setAttribute("data-bg", appearance.background);
   root.setAttribute("data-density", appearance.density);
   root.setAttribute("data-glass", appearance.glass);
+  root.setAttribute("data-sidebar", appearance.sidebar);
   root.setAttribute("data-motion", accessibility.motion);
   root.style.fontSize = `${accessibility.textScale}%`;
 }

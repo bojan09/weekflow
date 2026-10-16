@@ -52,9 +52,9 @@ export function MobileNav() {
     <>
       <nav
         aria-label="Primary"
-        className="fixed inset-x-2 bottom-3 z-40 surface-sidebar rounded-3xl p-1 shadow-lift lg:hidden"
+        className="fixed inset-x-2 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-40 surface-sidebar rounded-2xl border border-sidebar-border p-1 shadow-lift lg:hidden"
       >
-        <ul className="grid grid-cols-6 gap-0.5">
+        <ul className="grid grid-cols-5 gap-0.5">
           {tabItems.map((item) => {
             const Icon = item.icon;
             const active = isActiveRoute(pathname, item);

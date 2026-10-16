@@ -29,7 +29,7 @@ export const PRIMARY_NAV: readonly NavItem[] = [
   { route: "tasks", label: "Tasks", icon: ListChecks, shortcut: "t" },
   { route: "calendar", label: "Calendar", icon: CalendarDays, shortcut: "c" },
   { route: "review", label: "Review", icon: ChartColumn, shortcut: "r", tab: false },
-  { route: "team", label: "Team", icon: Users, shortcut: "m" },
+  { route: "team", label: "Team", icon: Users, shortcut: "m", tab: false },
 ];
 
 export const SECONDARY_NAV: readonly NavItem[] = [

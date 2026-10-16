@@ -74,9 +74,9 @@ export function AccountProvider({ user, children }: { user: AuthUser; children: 
   );
 
   return <>
-    <div role="status" className="flex flex-wrap items-center justify-between gap-3 px-6 pt-3 text-sm text-muted-foreground">
+    <div role="status" className="flex flex-wrap items-center justify-between gap-2 px-4 pt-2 text-xs text-muted-foreground sm:px-6 sm:pt-3 sm:text-sm">
       <span>{state.status === "error" ? "Changes are not saved" : state.status === "saving" ? "Saving changes…" : "All changes saved"}</span>
-      <Button variant="ghost" disabled={accountSync.hasPending()} onClick={async () => {
+      <Button className="hidden sm:inline-flex" variant="ghost" disabled={accountSync.hasPending()} onClick={async () => {
         try { await signOut(); window.location.assign(new URL("/sign-in", window.location.origin).href); }
         catch { window.alert("Could not sign out. Please try again."); }
       }}>Sign out</Button>

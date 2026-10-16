@@ -23,6 +23,7 @@ describe("prefs schema", () => {
       background: "default",
       density: "comfortable",
       glass: "off",
+      sidebar: "navy",
     });
   });
 
@@ -43,6 +44,16 @@ describe("prefs schema", () => {
 
   it("rejects an unknown accent", () => {
     expect(prefsSchema.shape.appearance.safeParse({ accent: "hotpink" }).success).toBe(false);
+  });
+  it("preserves old preferences and validates sidebar and time increment additions", () => {
+    const prefs = sanitizePrefs({ appearance: { sidebar: "accent", theme: "dark" }, calendar: { timeStepMin: 10 } });
+    expect(prefs.appearance.sidebar).toBe("accent");
+    expect(prefs.calendar.timeStepMin).toBe(10);
+    const root = freshRoot();
+    applyPrefs(prefs, root, false);
+    expect(root.getAttribute("data-sidebar")).toBe("accent");
+    expect(sanitizePrefs({ appearance: { sidebar: "bad", theme: "dark" }, calendar: { timeStepMin: 7 } }).appearance.theme).toBe("dark");
+    expect(sanitizePrefs({ calendar: { timeStepMin: 7 } }).calendar.timeStepMin).toBe(15);
   });
 });
 
@@ -128,7 +139,7 @@ describe("boot script", () => {
     const expected = freshRoot();
     applyPrefs(prefs, expected, false);
     const root = document.documentElement;
-    for (const attr of ["data-accent", "data-bg", "data-density", "data-motion"]) {
+    for (const attr of ["data-accent", "data-bg", "data-density", "data-motion", "data-sidebar"]) {
       expect(root.getAttribute(attr), attr).toBe(expected.getAttribute(attr));
     }
     expect(root.classList.contains("dark")).toBe(true);

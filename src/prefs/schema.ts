@@ -20,6 +20,7 @@ const appearance = z.object({
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
   /** Translucent, blurred surfaces so the background shows through. */
   glass: z.enum(["off", "subtle", "frosted"]).default("off"),
+  sidebar: z.enum(["navy", "light", "accent", "theme"]).default("navy"),
 });
 
 const planning = z.object({
@@ -60,6 +61,7 @@ const engine = z.object({
 });
 
 const calendar = z.object({
+  timeStepMin: z.union([z.literal(5), z.literal(10), z.literal(15), z.literal(30)]).default(15),
   defaultView: z.enum(["day", "week", "agenda"]).default("week"),
   weekStart: z.enum(["monday", "sunday", "saturday"]).default("monday"),
   timeFormat: z.enum(["12h", "24h"]).default("24h"),

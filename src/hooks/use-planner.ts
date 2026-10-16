@@ -26,12 +26,11 @@ export function usePlanner(): Planner {
   const viewState = usePlannerStore((s) => s.view);
   const setAnchorState = usePlannerStore((s) => s.setAnchor);
   const setViewState = usePlannerStore((s) => s.setView);
-  const weekStart = usePrefsStore((s) => s.prefs.calendar.weekStart);
   const defaultView = usePrefsStore((s) => s.prefs.calendar.defaultView);
 
   const anchor = anchorState ?? now?.date ?? null;
   const view = viewState ?? defaultView;
-  const week = anchor ? weekDates(anchor, weekStart) : [];
+  const week = anchor ? weekDates(anchor, "monday") : [];
   const first = week[0];
   const last = week[6];
 

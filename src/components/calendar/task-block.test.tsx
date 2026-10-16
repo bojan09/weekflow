@@ -9,6 +9,15 @@ const task = {
 };
 
 describe("calendar task blocks", () => {
+  it("offers quick delete separately from dragging or opening the task", () => {
+    const remove = vi.fn(); const move = vi.fn();
+    render(<TaskBlock task={task} format="24h" label="Proposal" style={{ height: 110 }} onDelete={remove} onPointerDown={move} />);
+    const button = screen.getByRole("button", { name: "Delete Write the proposal" });
+    fireEvent.pointerDown(button);
+    fireEvent.click(button);
+    expect(remove).toHaveBeenCalledOnce();
+    expect(move).not.toHaveBeenCalled();
+  });
   it("keeps the full title, time and priority available without crowding the time label", () => {
     render(<TaskBlock task={task} format="24h" label="Write the proposal, Friday 13:30 – 15:30, High priority" style={{ height: 110 }} />);
     expect(screen.getByRole("button")).toHaveAccessibleDescription(/Write the proposal.*13:30 – 15:30.*High priority/);
@@ -18,7 +27,7 @@ describe("calendar task blocks", () => {
 
   it("provides full details for short blocks without inflating their height", () => {
     render(<TaskBlock task={task} format="12h" label="Proposal" style={{ height: 18 }} />);
-    expect(screen.getByRole("button")).toHaveStyle({ height: "18px" });
+    expect(screen.getByRole("button").parentElement).toHaveStyle({ height: "18px" });
     expect(screen.getByRole("button")).toHaveAccessibleDescription(/1:30 PM – 3:30 PM/);
   });
 

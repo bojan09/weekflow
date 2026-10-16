@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, type KeyboardEvent, type RefObject } from "react";
+import { useLayoutEffect, useRef, type KeyboardEvent, type RefObject } from "react";
 import { Pin } from "lucide-react";
 import { styleOf } from "@/components/tasks/task-style";
 import {
@@ -16,9 +16,10 @@ import { formatDayNumber, formatWeekdayLong, formatWeekdayShort, type ISODate } 
 import { formatClock, timeToMinutes, type TimeFormat } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { formatDuration } from "@/domain/stats";
-import { HOUR_HEIGHT, MIN_BLOCK_MIN, SNAP_MIN, layoutDay, minutesToPx, pxToMinutes } from "./geometry";
+import { HOUR_HEIGHT, SNAP_MIN, layoutDay, minutesToPx, pxToMinutes } from "./geometry";
 import { TaskBlock, describeTimes } from "./task-block";
 import type { DragState } from "./use-calendar-dnd";
+import { focusMinute } from "./focus-time";
 
 /** Width of the hour-label gutter. Keep in sync with GUTTER_CLASS. */
 export const GUTTER_PX = 56;
@@ -33,6 +34,7 @@ interface TimeGridProps {
   allTasks: Task[];
   planning: PlanningPrefs;
   format: TimeFormat;
+  stepMin?: number;
   density: "comfortable" | "compact";
   now: Now | null;
   conflictedIds: ReadonlySet<string>;
@@ -47,6 +49,7 @@ interface TimeGridProps {
   onMoveTask: (task: Task, placement: Placement) => void;
   onResizeTask: (task: Task, durationMin: number) => void;
   onToggleLock: (task: Task) => void;
+  onDeleteTask?: (task: Task) => void;
   onCreateAt: (date: ISODate, startMin: number) => void;
   onSelectDay?: (date: ISODate) => void;
   announce: (message: string) => void;
@@ -76,12 +79,19 @@ export function TimeGrid(props: TimeGridProps) {
   const hourHeight = HOUR_HEIGHT[density];
   const count = days.length;
   const workStartMin = timeToMinutes(planning.workStart);
+  const stepMin = props.stepMin ?? SNAP_MIN;
+  const openedRange = useRef("");
+  const rangeKey = `${days.join(",")}:${density}`;
 
-  // Open at the start of the working day; the rest of the day stays scrollable.
+  // Focus once per visible range. Editing, resizing and minute ticks never steal scroll.
   useLayoutEffect(() => {
+    if (!now || openedRange.current === rangeKey) return;
     const scroller = scrollerRef.current;
-    if (scroller) scroller.scrollTop = minutesToPx(Math.max(0, workStartMin - (props.startAtWork ? 0 : 60)), hourHeight);
-  }, [scrollerRef, workStartMin, hourHeight, props.startAtWork]);
+    if (!scroller) return;
+    openedRange.current = rangeKey;
+    const minute = focusMinute(tasks, days, now, workStartMin);
+    scroller.scrollTop = minutesToPx(Math.max(0, minute - 30), hourHeight);
+  }, [scrollerRef, workStartMin, hourHeight, rangeKey, tasks, days, now]);
 
   const timed = tasks.filter(isTimed);
   const dayOnly = tasks.filter(isDayOnly);
@@ -107,6 +117,9 @@ export function TimeGrid(props: TimeGridProps) {
       .join(", ");
 
   const onBlockKeyDown = (event: KeyboardEvent<HTMLElement>, task: Task): void => {
+    if (event.key === "Delete" && props.onDeleteTask) {
+      event.preventDefault(); props.onDeleteTask(task); return;
+    }
     const placement = task.placement;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -128,9 +141,9 @@ export function TimeGrid(props: TimeGridProps) {
     }
     const dayIndex = days.indexOf(placement.date);
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      const delta = event.key === "ArrowUp" ? -SNAP_MIN : SNAP_MIN;
+      const delta = event.key === "ArrowUp" ? -stepMin : stepMin;
       if (event.shiftKey) {
-        const next = Math.max(MIN_BLOCK_MIN, task.durationMin + delta);
+        const next = Math.min(720, 1440 - placement.startMin, Math.max(stepMin, task.durationMin + delta));
         props.onResizeTask(task, next);
         props.announce(`${task.title} now ${formatDuration(next)} long`);
       } else {
@@ -186,7 +199,7 @@ export function TimeGrid(props: TimeGridProps) {
                 </>
               );
               return (
-                <div key={date} className="flex flex-col items-center gap-1.5 border-l px-1 pt-2 pb-2">
+                <div key={date} className={cn("flex flex-col items-center gap-1.5 border-l px-1", count === 1 ? "py-1.5" : "py-2")}>
                   {props.onSelectDay ? (
                     <button
                       type="button"
@@ -197,7 +210,7 @@ export function TimeGrid(props: TimeGridProps) {
                       {content}
                     </button>
                   ) : (
-                    <div className="flex flex-col items-center">{content}</div>
+                    <div className={count === 1 ? "sr-only" : "flex flex-col items-center"}>{content}</div>
                   )}
                   <div role="img" aria-label={label} className="w-full max-w-24">
                     <div className="h-1 overflow-hidden rounded-full bg-muted">
@@ -206,7 +219,7 @@ export function TimeGrid(props: TimeGridProps) {
                         style={{ width: `${Math.min(100, ratio * 100)}%` }}
                       />
                     </div>
-                    <p className="mt-1 hidden text-center text-[11px] leading-none text-muted-foreground tabular-nums md:block">
+                    <p className={cn("mt-1 text-center text-[11px] leading-none text-muted-foreground tabular-nums", count !== 1 && "hidden md:block")}>
                       {available === 0 && scheduled === 0 ? "Day off" : `${formatDuration(scheduled)} / ${formatDuration(cap)}`}
                     </p>
                   </div>
@@ -282,7 +295,7 @@ export function TimeGrid(props: TimeGridProps) {
                   if ((event.target as HTMLElement).closest("[data-task-id]")) return;
                   const rect = event.currentTarget.getBoundingClientRect();
                   const minutes = pxToMinutes(event.clientY - rect.top, hourHeight);
-                  props.onCreateAt(date, Math.min(1440 - SNAP_MIN, Math.floor(minutes / SNAP_MIN) * SNAP_MIN));
+                  props.onCreateAt(date, Math.min(1440 - stepMin, Math.floor(minutes / stepMin) * stepMin));
                 }}
               >
                 {offHours(planning, date).map((seg) => (
@@ -335,6 +348,7 @@ export function TimeGrid(props: TimeGridProps) {
                       }}
                       onResizePointerDown={(e) => props.onResizePointerDown(e, task)}
                       onKeyDown={(e) => onBlockKeyDown(e, task)}
+                      onDelete={props.onDeleteTask ? () => props.onDeleteTask?.(task) : undefined}
                     />
                 );
               })}

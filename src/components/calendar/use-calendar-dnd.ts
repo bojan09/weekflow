@@ -23,6 +23,7 @@ export interface DragState {
 }
 
 interface Options {
+  stepMin?: number;
   /** Current grid geometry, read fresh on every pointer move (it changes on scroll). */
   getMetrics: () => GridMetrics | null;
   /** The scrolling element that clips the grid, for edge auto-scroll. */
@@ -76,17 +77,17 @@ export function useCalendarDnd(options: Options) {
       s.y >= rect.top &&
       s.y <= rect.bottom;
     if (!inside) return null;
-    const cell = pointToCell(s.x, s.y, metrics);
+    const cell = pointToCell(s.mode === "resize" ? s.startX : s.x, s.y, metrics);
     if (s.mode === "resize") {
       const start = s.task.placement?.startMin ?? 0;
       return {
         dayIndex: cell.dayIndex,
         startMin: start,
         // grabOffsetMin = how far past the bottom edge the pointer grabbed, so the edge follows the pointer.
-        durationMin: computeResize(cell.minutes - s.grabOffsetMin, start),
+        durationMin: computeResize(cell.minutes - s.grabOffsetMin, start, optionsRef.current.stepMin),
       };
     }
-    const move = computeMove(cell, s.grabOffsetMin, s.task.durationMin);
+    const move = computeMove(cell, s.grabOffsetMin, s.task.durationMin, optionsRef.current.stepMin);
     return { ...move, durationMin: s.task.durationMin };
   }, []);
 

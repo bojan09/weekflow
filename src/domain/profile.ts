@@ -23,6 +23,8 @@ function isValidTimeZone(value: string): boolean {
 }
 
 export const profileSchema = z.object({
+  /** Small re-encoded JPEG; private account data, never a public upload URL. */
+  avatarImage: z.string().max(120_000).regex(/^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]*={0,2}$/).nullable().optional(),
   fullName: z.string().trim().min(1, "Enter your name").max(80, "Keep it under 80 characters"),
   email: z.email("Enter a valid email"),
   bio: z.string().trim().max(280, "Keep it under 280 characters"),
@@ -36,6 +38,7 @@ export type Profile = z.infer<typeof profileSchema>;
 
 /** Fields a user can edit. Email and join date belong to the account. */
 export const profileEditSchema = profileSchema.pick({
+  avatarImage: true,
   fullName: true,
   bio: true,
   timeZone: true,

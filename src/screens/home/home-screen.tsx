@@ -67,7 +67,7 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
         )}
       </section>
 
-      <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_18rem]">
+      <div className="grid gap-3 sm:gap-5 2xl:grid-cols-[minmax(0,1fr)_18rem]">
         <section aria-label="Week calendar" className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">Your schedule</h2>
@@ -116,9 +116,9 @@ export function HomeScreen() {
         compact
         title={name ? `${greeting}, ${name} 👋` : `${greeting} 👋`}
         subtitle="Here's your week at a glance, based on your rules and priorities."
-        actions={<><WeekNav planner={planner} compact /><Button onClick={() => openPlan()} className="min-h-11 rounded-xl"><Wand2 aria-hidden="true" /> Preview a plan</Button></>}
+        navigation={<><WeekNav planner={planner} compact /><Button onClick={() => openPlan()} aria-label="Preview a plan" className="min-h-11 rounded-xl"><Wand2 aria-hidden="true" /><span className="hidden sm:inline">Preview a plan</span></Button></>}
       />
-      <div className="space-y-5">
+      <div className="space-y-3 sm:space-y-5">
         <ResourceView state={tasks} loading={<LoadingBlocks rows={4} />}>
           {(data) => <HomeBody tasks={data} />}
         </ResourceView>

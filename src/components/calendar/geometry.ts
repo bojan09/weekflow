@@ -57,15 +57,15 @@ export function computeMove(
   cell: Cell,
   grabOffsetMin: number,
   durationMin: number,
+  step: number = SNAP_MIN,
 ): MovePreview {
-  const startMin = clampStart(snapMinutes(cell.minutes - grabOffsetMin), durationMin);
+  const startMin = clampStart(snapMinutes(cell.minutes - grabOffsetMin, step), durationMin);
   return { dayIndex: cell.dayIndex, startMin };
 }
 
 /** New duration when the bottom edge is dragged to `pointerMin`. */
-export function computeResize(pointerMin: number, startMin: number): number {
-  const end = snapMinutes(pointerMin);
-  const raw = Math.max(MIN_BLOCK_MIN, end - startMin);
+export function computeResize(pointerMin: number, startMin: number, step: number = SNAP_MIN): number {
+  const raw = Math.max(step, snapMinutes(pointerMin - startMin, step));
   return Math.min(clampDuration(raw), MINUTES_PER_DAY - startMin);
 }
 

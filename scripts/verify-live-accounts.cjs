@@ -41,13 +41,17 @@ async function main() {
   assert.equal(initial.status,200,JSON.stringify(initial.data));
   assert.deepEqual(initial.data.tasks.value,[]);
   assert.equal(initial.data.profile.value.email,a.email);
-  const profile = {...initial.data.profile.value,bio:'Only account A can see this'};
+  const profile = {...initial.data.profile.value,bio:'Only account A can see this',avatarImage:'data:image/jpeg;base64,/9j/2Q=='};
   const save = await call('/api/data/profile',{revision:0,value:profile},a.cookie,'PUT');
   assert.equal(save.status,200,JSON.stringify(save.data));
+  assert.equal((await call('/api/data',undefined,a.cookie,'GET')).data.profile.value.avatarImage,profile.avatarImage);
+  assert.equal((await call('/api/data/profile',{revision:1,value:{...profile,avatarImage:'https://untrusted.invalid/photo.svg'}},a.cookie,'PUT')).status,400);
   const stale = await call('/api/data/profile',{revision:0,value:{...profile,bio:'stale overwrite'}},a.cookie,'PUT');
   assert.equal(stale.status,409,JSON.stringify(stale.data));
   const bData = await call('/api/data',undefined,b.cookie,'GET');
   assert.equal(bData.data.profile.value.bio,'');
+  assert.equal(bData.data.profile.value.avatarImage ?? null,null);
+  checks.push('avatar persists privately and arbitrary image URLs are rejected');
   assert.equal((await call('/api/data/profile',{revision:0,value:profile,ownerId:a.id},b.cookie,'PUT')).status,400);
   checks.push('empty new planner, account isolation, spoofed owner denied and stale writes rejected');
   const changedAccount=await fetch(origin+'/api/data/tasks',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',Cookie:b.cookie,'X-Weekflow-Account':a.id},body:JSON.stringify({revision:0,value:[]})});

@@ -2,7 +2,7 @@
 
 import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 import { useId } from "react";
-import { Lock } from "lucide-react";
+import { Lock, Trash2 } from "lucide-react";
 import { styleOf } from "@/components/tasks/task-style";
 import { PRIORITY_LABEL, endMin, type Task } from "@/domain/tasks";
 import { formatClock, type TimeFormat } from "@/lib/time";
@@ -30,6 +30,7 @@ export interface BlockProps {
   onPointerDown?: (event: PointerEvent<HTMLElement>) => void;
   onResizePointerDown?: (event: PointerEvent<HTMLElement>) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
+  onDelete?: () => void;
 }
 
 /** A task on the calendar: soft tint, strong left bar, readable title and time. */
@@ -44,6 +45,7 @@ export function TaskBlock({
   onPointerDown,
   onResizePointerDown,
   onKeyDown,
+  onDelete,
 }: BlockProps) {
   const look = styleOf(task);
   const done = task.status === "done";
@@ -60,17 +62,17 @@ export function TaskBlock({
       tabIndex={preview ? -1 : 0}
       aria-label={label}
       aria-describedby={detailsId}
-      aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Shift+ArrowUp Shift+ArrowDown L"
+      aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Shift+ArrowUp Shift+ArrowDown L Delete"
       data-task-id={task.id}
       onPointerDown={onPointerDown}
       onKeyDown={onKeyDown}
-      style={style}
+      style={preview ? style : { height: "100%", width: "100%", top: 0, left: 0 }}
       className={cn(
         "calendar-task group/block absolute overflow-hidden rounded-lg border-l-[3px] text-left shadow-soft outline-none select-none focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-ring",
         look.surface,
         look.bar,
         preview ? "pointer-events-none" : "pointer-events-auto",
-        task.locked ? "cursor-default" : "cursor-grab touch-none active:cursor-grabbing",
+        task.locked ? "cursor-pointer" : "cursor-grab touch-none active:cursor-grabbing",
        
         ghosted && "opacity-35",
         preview && "z-30 cursor-grabbing opacity-95 shadow-lift ring-2 ring-primary-text",
@@ -78,7 +80,7 @@ export function TaskBlock({
       )}
     >
       <span id={detailsId} className="sr-only">{task.title}, {timeRange}, {PRIORITY_LABEL[task.priority]} priority{task.locked ? ", locked in place" : ""}</span>
-      <div className={cn("calendar-task-content", compact && "calendar-task-compact")}>
+      <div className={cn("calendar-task-content", compact && "calendar-task-compact", onDelete && !compact && "max-md:pr-9")}>
       <div className="flex min-h-0 min-w-0 shrink items-start justify-between gap-1 overflow-hidden">
         <p
           className={cn(
@@ -106,22 +108,27 @@ export function TaskBlock({
           aria-hidden="true"
           data-resize-handle
           onPointerDown={onResizePointerDown}
-          className={compact ? "absolute inset-y-0 right-0 flex w-2 cursor-ns-resize touch-none items-center justify-center" : "absolute inset-x-0 bottom-0 flex h-2.5 cursor-ns-resize touch-none items-end justify-center"}
+          title="Drag to resize · Shift + ↑ / ↓ for precise changes"
+          className={compact ? "calendar-resize absolute inset-y-0 right-0 flex w-4 cursor-ns-resize touch-none items-center justify-center bg-card/20 hover:bg-card/50" : "calendar-resize absolute inset-x-0 bottom-0 flex h-4 cursor-ns-resize touch-none items-center justify-center bg-card/20 hover:bg-card/50"}
         >
-          <span className={cn("rounded-full opacity-0 group-hover/block:opacity-60 group-focus-visible/block:opacity-60", compact ? "h-3 w-0.5" : "mb-0.5 h-0.5 w-6", look.dot)} />
+          <span className={cn("rounded-full opacity-80", compact ? "h-3 w-1" : "h-1 w-8", look.dot)} />
         </span>
       ) : null}
     </div>
   );
   if (preview) return block;
   return (
+    <div className="group/task pointer-events-auto absolute" style={style}>
     <Tooltip>
       <TooltipTrigger render={block} delay={350} />
       <TooltipContent className="block max-w-64 bg-popover text-popover-foreground shadow-lift ring-1 ring-border">
         <p className="font-semibold break-words">{task.title}</p>
         <p className="mt-1">{timeRange}</p>
         <p className="mt-1 text-muted-foreground">{PRIORITY_LABEL[task.priority]} priority{task.locked ? " · Locked" : ""}</p>
+        {!task.locked && <p className="mt-1 text-xs text-muted-foreground">Drag the grip to resize · Shift + ↑ / ↓</p>}
       </TooltipContent>
     </Tooltip>
+    {onDelete && !compact && <button type="button" aria-label={`Delete ${task.title}`} title="Delete task · Undo available" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onDelete(); }} className="absolute top-1 right-1 z-20 flex size-7 items-center justify-center rounded-lg border border-danger-border bg-card text-danger-text opacity-0 shadow-xs transition-opacity group-hover/task:opacity-100 group-focus-within/task:opacity-100 hover:bg-danger-soft focus-visible:opacity-100 max-md:opacity-100"><Trash2 className="size-3.5" aria-hidden="true" /></button>}
+    </div>
   );
 }

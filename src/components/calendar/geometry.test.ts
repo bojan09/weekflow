@@ -13,6 +13,12 @@ import {
 const grid: GridMetrics = { left: 100, top: -200, width: 700, dayCount: 7, hourHeight: 60 };
 
 describe("geometry", () => {
+  it.each([5, 10, 15, 30])("uses %i-minute increments for movement and resizing without jumping an off-grid start", (step) => {
+    expect(computeMove({ dayIndex: 1, minutes: 608 }, 0, 45, step).startMin).toBe(Math.round(608 / step) * step);
+    expect(computeResize(547 + 2 * step, 547, step)).toBe(2 * step);
+    expect(computeResize(547, 547, step)).toBe(step);
+    expect(computeResize(1500, 1430, step)).toBe(10);
+  });
   it("converts between minutes and pixels", () => {
     expect(minutesToPx(90, 60)).toBe(90);
     expect(pxToMinutes(56, 56)).toBe(60);

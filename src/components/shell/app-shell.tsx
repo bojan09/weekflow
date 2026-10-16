@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { online, simulated } = useConnectivity();
 
   return (
-    <div className="flex min-h-dvh gap-4 p-3 lg:p-4">
+    <div className="flex min-h-dvh gap-2 p-2 sm:gap-4 sm:p-3 lg:p-4">
       <a
         href="#main"
         className="sr-only z-50 rounded-lg bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main
           id="main"
           tabIndex={-1}
-          className="surface-panel flex-1 rounded-3xl p-5 pb-28 shadow-soft outline-none md:p-8 md:pb-28 lg:pb-8"
+          className="surface-panel flex-1 rounded-2xl p-3 pb-28 shadow-soft outline-none sm:rounded-3xl sm:p-5 sm:pb-28 md:p-8 md:pb-28 lg:pb-8"
         >
           <ScreenHint />
           {children}

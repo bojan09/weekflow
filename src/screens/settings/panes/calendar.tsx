@@ -16,6 +16,14 @@ export function CalendarPane() {
   return (
     <div className="space-y-5">
       <SettingsGroup>
+        <SettingRow label="Time increments" description="Used when moving or resizing tasks and adjusting times in the editor." stacked>
+          <SegmentedControl
+            label="Time increments"
+            value={String(calendar.timeStepMin)}
+            onChange={(value) => update("calendar", { timeStepMin: Number(value) as 5 | 10 | 15 | 30 })}
+            options={[5, 10, 15, 30].map((value) => ({ value: String(value), label: `${value} min` }))}
+          />
+        </SettingRow>
         <SettingRow label="Default view" description="What My Week opens to." stacked>
           <SegmentedControl
             label="Default view"
@@ -28,7 +36,7 @@ export function CalendarPane() {
             ]}
           />
         </SettingRow>
-        <SettingRow label="Week starts on" description="Preview:">
+        <SettingRow label="Month calendar starts on" description="My Week always runs Monday to Sunday. Month calendar preview:">
           {(id) => (
             <div className="space-y-2">
               <NativeSelect

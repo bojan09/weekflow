@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import { useLayoutEffect } from "react";
 import { CategoryFilter, ViewSwitch, WeekNav } from "@/components/calendar/week-nav";
 import { WeekPlanner } from "@/components/calendar/week-planner";
 import { PageHeader } from "@/components/shell/page-header";
@@ -8,8 +9,11 @@ import { Button } from "@/components/ui/button";
 import { usePlanner } from "@/hooks/use-planner";
 import { usePlannerShortcuts } from "@/hooks/use-planner-shortcuts";
 import { useUiStore } from "@/stores/ui";
+import { usePlannerStore } from "@/stores/planner";
 
 export function WeekScreen() {
+  // Returning to My Week starts at today; in-page navigation remains unrestricted.
+  useLayoutEffect(() => { usePlannerStore.getState().setAnchor(null); }, []);
   const planner = usePlanner();
   const openEditor = useUiStore((s) => s.openEditor);
   usePlannerShortcuts(planner);

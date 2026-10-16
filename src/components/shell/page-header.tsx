@@ -28,11 +28,12 @@ interface PageHeaderProps {
   /** Page-specific controls, shown before the search and avatar buttons. */
   actions?: ReactNode;
   compact?: boolean;
+  navigation?: ReactNode;
 }
 
-export function PageHeader({ title, subtitle, actions, compact = false }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, actions, compact = false, navigation }: PageHeaderProps) {
   return (
-    <header className={cn("flex flex-wrap items-start justify-between gap-x-6 gap-y-3", compact ? "mb-4 md:mb-5" : "mb-6 md:mb-8")}>
+    <header className={cn("flex flex-wrap items-start justify-between gap-x-4 gap-y-3", compact ? "mb-3 grid grid-cols-[minmax(0,1fr)_auto] sm:flex md:mb-5" : "mb-4 md:mb-8")}>
       <div className="min-w-0">
         <h1 className={cn("font-semibold tracking-tight md:text-3xl", compact ? "text-xl sm:text-2xl" : "text-2xl")}>{title}</h1>
         {subtitle ? <p className={cn("mt-1.5 text-sm text-muted-foreground", compact && "sr-only sm:not-sr-only")}>{subtitle}</p> : null}
@@ -40,11 +41,12 @@ export function PageHeader({ title, subtitle, actions, compact = false }: PageHe
       <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2">
         {actions}
         <div className="flex items-center gap-2">
-          <HelpButton />
+          <span className="hidden sm:inline-flex"><HelpButton /></span>
           <SearchButton />
           <AvatarMenu />
         </div>
       </div>
+      {navigation ? <div className="col-span-2 flex w-full flex-wrap items-center justify-between gap-2">{navigation}</div> : null}
     </header>
   );
 }

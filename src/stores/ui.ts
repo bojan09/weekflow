@@ -27,6 +27,9 @@ export type EditorTarget =
 
 /** Transient UI state only. Domain data never lives here. */
 interface UiState {
+  /** Unsaved editor timing, used only to preview the calendar. Never persisted. */
+  editorTiming: { id: string; durationMin: number; placement: Placement | null } | null;
+  setEditorTiming: (timing: UiState["editorTiming"]) => void;
   commandOpen: boolean;
   shortcutsOpen: boolean;
   moreOpen: boolean;
@@ -49,6 +52,8 @@ interface UiState {
 }
 
 export const useUiStore = create<UiState>()((set) => ({
+  editorTiming: null,
+  setEditorTiming: (editorTiming) => set({ editorTiming }),
   commandOpen: false,
   shortcutsOpen: false,
   moreOpen: false,
@@ -66,6 +71,6 @@ export const useUiStore = create<UiState>()((set) => ({
   setHistoryOpen: (historyOpen) => set({ historyOpen }),
   setHelpOpen: (helpOpen) => set({ helpOpen }),
   setOrganizeOpen: (organizeOpen) => set({ organizeOpen }),
-  openEditor: (editor) => set({ editor }),
-  closeEditor: () => set({ editor: null }),
+  openEditor: (editor) => set({ editor, editorTiming: null }),
+  closeEditor: () => set({ editor: null, editorTiming: null }),
 }));

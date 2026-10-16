@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "@/auth/api";
 import { accountSync } from "@/data/account-client";
 import { LogOut, Monitor, Moon, Sun } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,7 @@ import { initialsOf } from "@/domain/profile";
 import { useAppPath } from "@/hooks/use-app-path";
 import { usePrefsStore } from "@/prefs/store";
 import type { ThemePref } from "@/prefs/apply";
+import { useUiStore } from "@/stores/ui";
 
 export function AvatarMenu() {
   const account = usePathname().startsWith("/app/");
@@ -30,6 +31,7 @@ export function AvatarMenu() {
   const profile = useCollection(profileCollection);
   const theme = usePrefsStore((s) => s.prefs.appearance.theme);
   const update = usePrefsStore((s) => s.update);
+  const openHelp = useUiStore((state) => state.setHelpOpen);
   const initials = profile.status === "ready" ? initialsOf(profile.data.fullName) : "";
 
   return (
@@ -39,6 +41,7 @@ export function AvatarMenu() {
         className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <Avatar className="size-11 sm:size-10">
+          {profile.status === "ready" && profile.data.avatarImage && <AvatarImage src={profile.data.avatarImage} alt="Your profile photo" />}
           <AvatarFallback className="bg-primary-soft text-sm font-semibold text-primary-soft-text">
             {initials || " "}
           </AvatarFallback>
@@ -59,6 +62,7 @@ export function AvatarMenu() {
         <DropdownMenuItem render={<Link href={appPath("profile")} />}>Profile</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={appPath("settings")} />}>Settings</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={appPath("guide")} />}>Guide</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => openHelp(true)}>Help for this page</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={appPath("changelog")} />}>Version history</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

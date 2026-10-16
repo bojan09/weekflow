@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState, type TouchEvent } from "react";
 import { LoadingBlocks } from "@/components/states/states";
 import { ResourceView } from "@/components/states/resource-view";
-import { placeTask, toggleLock } from "@/components/tasks/actions";
+import { placeTask, removeTask, toggleLock } from "@/components/tasks/actions";
 import { mutateTasks, tasksCollection } from "@/data/tasks";
 import { useCollection } from "@/data/use-collection";
 import { detectConflicts } from "@/domain/conflicts";
@@ -35,6 +35,8 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
   const planner = usePlanner();
   const planning = usePrefsStore((s) => s.prefs.planning);
   const format = usePrefsStore((s) => s.prefs.calendar.timeFormat);
+  const stepMin = usePrefsStore((s) => s.prefs.calendar.timeStepMin);
+  const editorTiming = useUiStore((s) => s.editorTiming);
   const density = usePrefsStore((s) => s.prefs.appearance.density);
   const category = usePlannerStore((s) => s.category);
   const setAnchor = usePlannerStore((s) => s.setAnchor);
@@ -54,8 +56,9 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
   }, [anchor, view, wide, planner.week]);
 
   const visible = useMemo(
-    () => (category === "all" ? tasks : tasks.filter((t) => t.category === category)),
-    [tasks, category],
+    () => tasks.map((task) => task.id === editorTiming?.id ? { ...task, durationMin: editorTiming.durationMin, placement: editorTiming.placement } : task)
+      .filter((task) => category === "all" || task.category === category),
+    [tasks, category, editorTiming],
   );
 
   const conflictedIds = useMemo(() => {
@@ -68,6 +71,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
   const byId = (id: string): Task | undefined => tasks.find((t) => t.id === id);
 
   const dnd = useCalendarDnd({
+    stepMin,
     getScroller: () => scrollerRef.current,
     getMetrics: (): GridMetrics | null => {
       const body = bodyRef.current;
@@ -87,6 +91,8 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
     },
     onResize: (taskId, durationMin) => {
       mutateTasks((t) => resizeTask(t, taskId, durationMin));
+      const task = tasksCollection.getSnapshot().find((task) => task.id === taskId);
+      if (task) setAnnouncement(`${task.title} resized to ${task.durationMin} minutes`);
     },
     onClick: (id) => openEditor({ kind: "edit", id }),
   });
@@ -152,6 +158,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
           allTasks={tasks}
           planning={planning}
           format={format}
+          stepMin={stepMin}
           density={density}
           now={now}
           conflictedIds={conflictedIds}
@@ -171,6 +178,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
             toggleLock(task);
             setAnnouncement(`${task.title} ${task.locked ? "unlocked" : "locked in place"}`);
           }}
+          onDeleteTask={removeTask}
           onCreateAt={(date, startMin) =>
             openEditor({ kind: "new", defaults: { placement: { date, startMin } } })
           }
