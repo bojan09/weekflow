@@ -18,7 +18,7 @@ import { usePrefsStore } from "@/prefs/store";
 import { usePlannerStore } from "@/stores/planner";
 import { useUiStore } from "@/stores/ui";
 import { AgendaView } from "./agenda-view";
-import { HOUR_HEIGHT, type GridMetrics } from "./geometry";
+import { calendarHourHeight, type GridMetrics } from "./geometry";
 import { GUTTER_PX, TimeGrid } from "./time-grid";
 import { UnscheduledTray } from "./unscheduled-tray";
 import { useCalendarDnd } from "./use-calendar-dnd";
@@ -67,7 +67,7 @@ function Planner({ tasks, variant }: { tasks: Task[]; variant: "full" | "compact
     return new Set(important.flatMap((c) => c.taskIds));
   }, [tasks, planning, now, format]);
 
-  const hourHeight = HOUR_HEIGHT[density];
+  const hourHeight = calendarHourHeight(density, stepMin);
   const byId = (id: string): Task | undefined => tasks.find((t) => t.id === id);
 
   const dnd = useCalendarDnd({

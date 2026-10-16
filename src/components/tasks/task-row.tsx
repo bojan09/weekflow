@@ -17,6 +17,7 @@ import { formatClock, type TimeFormat } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { removeTask, toggleDone, toggleLock } from "./actions";
 import { TaskFacts } from "./task-meta";
+import { Button } from "@/components/ui/button";
 
 export function scheduleLabel(task: Task, format: TimeFormat): string {
   if (!task.placement) return "Unscheduled";
@@ -78,6 +79,9 @@ export function TaskRow({ task, today, format, onOpen, showSchedule = true, sche
         </span>
       ) : null}
 
+      <div className="flex shrink-0 items-center gap-1">
+      <Button type="button" variant="ghost" size="icon-lg" aria-label={`Edit ${task.title}`} title="Edit task" onClick={() => onOpen(task.id)}><Pencil aria-hidden="true" /></Button>
+      <Button type="button" variant="ghost" size="icon-lg" aria-label={`Delete ${task.title}`} title="Delete task · Undo available" className="text-danger-text hover:bg-danger-soft hover:text-danger-text" onClick={() => removeTask(task)}><Trash2 aria-hidden="true" /></Button>
       <DropdownMenu>
         <DropdownMenuTrigger
           aria-label={`Actions for ${task.title}`}
@@ -106,6 +110,7 @@ export function TaskRow({ task, today, format, onOpen, showSchedule = true, sche
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      </div>
     </li>
   );
 }

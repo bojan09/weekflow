@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useLayoutEffect } from "react";
-import { CategoryFilter, ViewSwitch, WeekNav } from "@/components/calendar/week-nav";
+import { CategoryFilter, TimeScaleControl, ViewSwitch, WeekNav } from "@/components/calendar/week-nav";
 import { WeekPlanner } from "@/components/calendar/week-planner";
 import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ export function WeekScreen() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <WeekNav planner={planner} />
         <div className="flex flex-wrap items-center gap-2">
+          <TimeScaleControl />
           <CategoryFilter />
           <ViewSwitch planner={planner} />
         </div>

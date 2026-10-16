@@ -16,7 +16,7 @@ import { formatDayNumber, formatWeekdayLong, formatWeekdayShort, type ISODate } 
 import { formatClock, timeToMinutes, type TimeFormat } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { formatDuration } from "@/domain/stats";
-import { HOUR_HEIGHT, SNAP_MIN, layoutDay, minutesToPx, pxToMinutes } from "./geometry";
+import { calendarHourHeight, SNAP_MIN, layoutDay, minutesToPx, pxToMinutes } from "./geometry";
 import { TaskBlock, describeTimes } from "./task-block";
 import type { DragState } from "./use-calendar-dnd";
 import { focusMinute } from "./focus-time";
@@ -76,21 +76,25 @@ export function TimeGrid(props: TimeGridProps) {
     drag,
     heightClass,
   } = props;
-  const hourHeight = HOUR_HEIGHT[density];
   const count = days.length;
   const workStartMin = timeToMinutes(planning.workStart);
   const stepMin = props.stepMin ?? SNAP_MIN;
-  const openedRange = useRef("");
-  const rangeKey = `${days.join(",")}:${density}`;
+  const hourHeight = calendarHourHeight(density, stepMin);
+  const openedRange = useRef<{ key: string; hourHeight: number } | null>(null);
+  const rangeKey = days.join(",");
 
   // Focus once per visible range. Editing, resizing and minute ticks never steal scroll.
   useLayoutEffect(() => {
-    if (!now || openedRange.current === rangeKey) return;
+    if (!now) return;
+    const previous = openedRange.current;
+    if (previous?.key === rangeKey && previous.hourHeight === hourHeight) return;
     const scroller = scrollerRef.current;
     if (!scroller) return;
-    openedRange.current = rangeKey;
-    const minute = focusMinute(tasks, days, now, workStartMin);
-    scroller.scrollTop = minutesToPx(Math.max(0, minute - 30), hourHeight);
+    const minute = previous?.key === rangeKey
+      ? pxToMinutes(scroller.scrollTop, previous.hourHeight)
+      : Math.max(0, focusMinute(tasks, days, now, workStartMin) - 30);
+    openedRange.current = { key: rangeKey, hourHeight };
+    scroller.scrollTop = minutesToPx(minute, hourHeight);
   }, [scrollerRef, workStartMin, hourHeight, rangeKey, tasks, days, now]);
 
   const timed = tasks.filter(isTimed);
@@ -273,13 +277,13 @@ export function TimeGrid(props: TimeGridProps) {
         <div ref={bodyRef} className="relative" style={{ height: 24 * hourHeight }}>
           <div className="absolute inset-0 grid" style={{ gridTemplateColumns: templateColumns }}>
             <div className={cn(GUTTER_CLASS, "relative")} aria-hidden="true">
-              {Array.from({ length: 23 }, (_, i) => i + 1).map((hour) => (
+              {Array.from({ length: 1440 / stepMin - 1 }, (_, i) => (i + 1) * stepMin).map((minute) => (
                 <span
-                  key={hour}
-                  className="absolute right-2 -translate-y-1/2 text-[11px] text-muted-foreground tabular-nums"
-                  style={{ top: hour * hourHeight }}
+                  key={minute}
+                  className={cn("absolute right-2 -translate-y-1/2 text-[11px] tabular-nums", minute % 60 === 0 ? "font-semibold text-foreground" : "text-muted-foreground")}
+                  style={{ top: minutesToPx(minute, hourHeight) }}
                 >
-                  {formatClock(hour, 0, format)}
+                  {formatClock(Math.floor(minute / 60), minute % 60, format)}
                 </span>
               ))}
             </div>
@@ -288,8 +292,8 @@ export function TimeGrid(props: TimeGridProps) {
                 key={date}
                 className={cn("relative border-l", now?.date === date && "bg-primary-soft/40")}
                 style={{
-                  backgroundImage: "linear-gradient(to bottom, var(--border) 1px, transparent 1px)",
-                  backgroundSize: `100% ${hourHeight}px`,
+                  backgroundImage: "linear-gradient(to bottom, var(--input) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px)",
+                  backgroundSize: `100% ${hourHeight}px, 100% ${minutesToPx(stepMin, hourHeight)}px`,
                 }}
                 onDoubleClick={(event) => {
                   if ((event.target as HTMLElement).closest("[data-task-id]")) return;

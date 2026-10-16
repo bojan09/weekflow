@@ -22,6 +22,7 @@
 
 .task-editor-fields > :first-child { margin-top: 1.25rem; }
 .task-editor-fields select { width: 100%; }
+.task-editor-fields span:has(> select) { width: 100%; }
 .task-editor-fields input, .task-editor-fields textarea { min-width: 0; }
 
 @custom-variant dark (&:is(.dark *));

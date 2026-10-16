@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { CircleCheck, Clock, Hourglass, ListChecks, Wand2 } from "lucide-react";
-import { WeekNav } from "@/components/calendar/week-nav";
+import { TimeScaleControl, WeekNav } from "@/components/calendar/week-nav";
 import { WeekPlanner } from "@/components/calendar/week-planner";
 import { StartHere } from "@/components/guide/start-here";
 import { MissedBanner, ReviewPrompt } from "@/components/home/attention-cards";
@@ -71,6 +71,7 @@ function HomeBody({ tasks }: { tasks: Task[] }) {
         <section aria-label="Week calendar" className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">Your schedule</h2>
+            <TimeScaleControl />
             <Link href={appPath("week")} className="inline-flex min-h-11 items-center text-sm font-medium text-primary-text hover:underline">Open My Week →</Link>
           </div>
           <WeekPlanner variant="compact" />

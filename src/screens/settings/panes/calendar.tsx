@@ -16,7 +16,7 @@ export function CalendarPane() {
   return (
     <div className="space-y-5">
       <SettingsGroup>
-        <SettingRow label="Time increments" description="Used when moving or resizing tasks and adjusting times in the editor." stacked>
+        <SettingRow label="Time increments" description="Choose the distance between calendar labels and gridlines. Also used when moving, resizing and adjusting tasks." stacked>
           <SegmentedControl
             label="Time increments"
             value={String(calendar.timeStepMin)}

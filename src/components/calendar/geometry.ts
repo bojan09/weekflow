@@ -11,6 +11,11 @@ export const HOUR_HEIGHT: Record<"comfortable" | "compact", number> = {
   compact: 44,
 };
 
+/** Keep every selected interval readable; all pointer geometry uses this scale too. */
+export function calendarHourHeight(density: "comfortable" | "compact", stepMin: number): number {
+  return Math.max(HOUR_HEIGHT[density], (60 / stepMin) * (density === "compact" ? 20 : 24));
+}
+
 export const snapMinutes = (minutes: number, step: number = SNAP_MIN): number =>
   Math.round(minutes / step) * step;
 

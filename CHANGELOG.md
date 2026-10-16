@@ -20,6 +20,17 @@ Database schema migrations are tracked separately and never share this file.
 - Account pages wait for private data without spurious navigation notices
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
+## 0.0.13 — Clearer time intervals and task actions
+Date: 2026-10-16
+Summary: Show every selected minute interval on the calendar and edit or delete tasks directly from the list.
+
+- Time spacing controls beside Home and My Week calendars offer 5, 10, 15 or 30 minutes
+- Each interval has its own readable time label and gridline; task placement and resizing use the same scale
+- Changing spacing preserves the time you were viewing
+- Tasks have visible Edit and Delete buttons, with Undo after deletion
+- Account loading uses a planner-shaped skeleton instead of a separate sign-in-style window; failures retain recovery controls
+- Editor priority controls and project/category fields have room to fit cleanly
+
 ## 0.0.12 — A more comfortable planner
 Date: 2026-10-16
 Summary: Better mobile planning, clearer task editing, flexible time adjustments, sidebar colors and your own profile photo.

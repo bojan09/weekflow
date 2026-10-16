@@ -7,6 +7,18 @@ import { allCategories, type CategoryId } from "@/domain/tasks";
 import type { Planner } from "@/hooks/use-planner";
 import { formatLong } from "@/lib/dates";
 import { usePlannerStore, type PlannerView } from "@/stores/planner";
+import { usePrefsStore } from "@/prefs/store";
+
+export function TimeScaleControl() {
+  const step = usePrefsStore((state) => state.prefs.calendar.timeStepMin);
+  const update = usePrefsStore((state) => state.update);
+  return <label className="flex items-center gap-2 text-xs text-muted-foreground">
+    <span>Time spacing</span>
+    <NativeSelect aria-label="Calendar time spacing" value={step} className="h-9 min-w-0" onChange={(event) => update("calendar", { timeStepMin: Number(event.target.value) as 5 | 10 | 15 | 30 })}>
+      {[5, 10, 15, 30].map((minutes) => <option key={minutes} value={minutes}>{minutes} min</option>)}
+    </NativeSelect>
+  </label>;
+}
 
 /** Previous / next arrows, the visible range, and a Today button. */
 export function WeekNav({ planner, compact = false }: { planner: Planner; compact?: boolean }) {

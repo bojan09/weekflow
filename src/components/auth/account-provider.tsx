@@ -11,6 +11,7 @@ import { useGuideStore } from "@/guide/store";
 import { guideSchema } from "@/guide/schema";
 import { useSimulator } from "@/data/simulator";
 import { Button } from "@/components/ui/button";
+import { AccountLoading } from "./account-loading";
 
 function exportChanges() {
   const url = URL.createObjectURL(new Blob([accountSync.exportPending()], { type: "application/json" }));
@@ -64,9 +65,10 @@ export function AccountProvider({ user, children }: { user: AuthUser; children: 
     };
   }, [id]);
 
+  if ((!state.snapshot || !ready) && state.status !== "error") return <AccountLoading />;
   if (!state.snapshot || !ready) return (
     <main className="mx-auto my-16 max-w-xl space-y-4 rounded-3xl border bg-card p-8">
-      <h1 className="text-2xl font-semibold">Your Weekflow</h1>
+      <h1 className="text-2xl font-semibold">Could not open your planner</h1>
       <p role={state.status === "error" ? "alert" : "status"}>{state.status === "error" ? state.message : "Loading your planner…"}</p>
       {state.status === "error" ? <Button onClick={() => window.location.reload()}>Try again</Button> : null}
       <Link className="block text-primary-text underline" href="/sign-in">Back to sign in</Link>
