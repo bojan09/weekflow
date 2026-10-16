@@ -54,7 +54,7 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-title"
-      className="surface-panel relative overflow-hidden rounded-3xl border px-5 pt-16 pb-14 text-center shadow-soft sm:px-10 sm:pt-24 sm:pb-20"
+      className="surface-panel relative overflow-hidden rounded-3xl border px-4 pt-10 pb-8 text-center shadow-soft sm:px-10 sm:pt-24 sm:pb-20"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="hero-grid absolute inset-0 opacity-70" />
@@ -76,12 +76,12 @@ export function Hero() {
           <br />
           <span className="text-primary-text">Work better.</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground text-pretty sm:mt-6 sm:text-lg">
           A flexible weekly planner built around your deadlines, priorities and the time you actually have. Drag
           tasks, lock what must not move, and stay in control.
         </p>
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "h-12 rounded-full px-8 text-base")}>
+        <div className="mt-6 flex flex-col items-center justify-center gap-2 sm:mt-9 sm:flex-row sm:gap-3">
+          <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "h-12 w-full rounded-full px-8 text-base sm:w-auto")}>
             {SITE_CTA.label} <ArrowRight aria-hidden="true" />
           </Link>
           <Link

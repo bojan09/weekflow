@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FolderKanban, ListChecks, Plus, Search } from "lucide-react";
+import { FolderKanban, ListChecks, Plus, Search, SlidersHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/shell/page-header";
 import { LoadingBlocks } from "@/components/states/states";
 import { EmptyState } from "@/components/states/states";
@@ -26,6 +26,8 @@ const TABS: TaskTab[] = ["open", "inbox", "done", "all"];
 
 function TasksBody({ tasks }: { tasks: Task[] }) {
   const [filter, setFilter] = useState<TaskFilter>(DEFAULT_FILTER);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const advancedCount = Number(filter.priority !== "all") + Number(filter.category !== "all") + Number(filter.project !== "all") + Number(filter.overdueOnly);
   const now = useNow();
   const format = usePrefsStore((s) => s.prefs.calendar.timeFormat);
   const openEditor = useUiStore((s) => s.openEditor);
@@ -42,7 +44,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
     filter.query !== "" || filter.priority !== "all" || filter.category !== "all" || filter.project !== "all" || filter.overdueOnly;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3 sm:space-y-5">
       <QuickAdd className="max-w-2xl" placeholder="Add a task to your inbox…" />
 
       <SegmentedControl<TaskTab>
@@ -54,7 +56,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
       />
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-48 flex-1 sm:max-w-sm">
+        <div className="relative min-w-0 flex-1 sm:max-w-sm">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <Input
             type="search"
@@ -65,11 +67,16 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
             className="h-9 rounded-xl border-input bg-card pl-9"
           />
         </div>
+        <Button type="button" variant="outline" size="lg" className="min-h-11 sm:hidden" aria-expanded={filtersOpen} aria-controls="task-filters" onClick={() => setFiltersOpen(!filtersOpen)}>
+          <SlidersHorizontal aria-hidden="true" /> Filters{advancedCount > 0 ? ` (${advancedCount})` : ""}
+        </Button>
+      </div>
+      <div id="task-filters" className={cn("grid grid-cols-2 items-center gap-2 sm:flex sm:flex-wrap", !filtersOpen && "hidden sm:flex")}>
         <NativeSelect
           aria-label="Filter by priority"
           value={filter.priority}
           onChange={(e) => set("priority", e.target.value as Priority | "all")}
-          className="h-9 min-w-32"
+          className="h-11 min-w-0 sm:h-9 sm:min-w-32"
         >
           <option value="all">Any priority</option>
           {PRIORITIES.map((p) => (
@@ -82,7 +89,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
           aria-label="Filter by category"
           value={filter.category}
           onChange={(e) => set("category", e.target.value as CategoryId | "all")}
-          className="h-9 min-w-36"
+          className="h-11 min-w-0 sm:h-9 sm:min-w-36"
         >
           <option value="all">All categories</option>
           {allCategories().map((c) => (
@@ -95,7 +102,7 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
           aria-label="Filter by project"
           value={filter.project}
           onChange={(e) => set("project", e.target.value)}
-          className="h-9 min-w-36"
+          className="h-11 min-w-0 sm:h-9 sm:min-w-36"
         >
           <option value="all">All projects</option>
           <option value="none">No project</option>
@@ -118,16 +125,11 @@ function TasksBody({ tasks }: { tasks: Task[] }) {
         >
           Overdue only
         </button>
-        {filtered ? (
-          <Button variant="ghost" size="lg" className="h-9" onClick={() => setFilter({ ...DEFAULT_FILTER, tab: filter.tab })}>
-            Clear filters
-          </Button>
-        ) : null}
       </div>
 
-      <p role="status" className="text-sm text-muted-foreground">
+      <div className="flex items-center justify-between gap-2"><p role="status" className="text-sm text-muted-foreground">
         {visible.length} {visible.length === 1 ? "task" : "tasks"}
-      </p>
+      </p>{filtered && <Button variant="ghost" size="lg" onClick={() => setFilter({ ...DEFAULT_FILTER, tab: filter.tab })}>Clear filters</Button>}</div>
 
       {visible.length === 0 ? (
         filtered ? (
@@ -172,7 +174,7 @@ export function TasksScreen() {
         actions={
           <>
             <Button variant="outline" size="lg" className="h-10" onClick={() => setOrganizeOpen(true)}>
-              <FolderKanban aria-hidden="true" /> Projects and templates
+              <FolderKanban aria-hidden="true" /><span className="sm:hidden">Projects</span><span className="hidden sm:inline">Projects and templates</span>
             </Button>
             <Button size="lg" className="h-10" onClick={() => openEditor({ kind: "new" })}>
               <Plus aria-hidden="true" /> New task

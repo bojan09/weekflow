@@ -46,7 +46,7 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <header className="sticky top-3 z-40 mx-auto w-full max-w-6xl px-3 sm:px-5">
+    <header className="sticky top-2 z-40 mx-auto w-full max-w-6xl px-2 sm:top-3 sm:px-5">
       <a
         href="#main"
         className="sr-only rounded-lg bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:top-2 focus:left-5"
@@ -55,7 +55,7 @@ export function SiteHeader() {
       </a>
       <div
         className={cn(
-          "surface-panel flex h-16 items-center justify-between rounded-2xl border px-3 pl-4 transition-shadow duration-200 sm:px-4",
+          "surface-panel flex h-14 items-center justify-between rounded-2xl border px-2 pl-3 transition-shadow duration-200 sm:h-16 sm:px-4",
           scrolled ? "shadow-lift" : "shadow-soft",
         )}
       >
@@ -76,7 +76,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <Link href="/sign-in" className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary-text">Sign in</Link>
+          <Link href="/sign-in" className="hidden min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary-text sm:inline-flex">Sign in</Link>
           <ThemeToggle />
           <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "hidden h-10 rounded-full px-5 sm:inline-flex")}>
             {SITE_CTA.label}
@@ -96,7 +96,7 @@ export function SiteHeader() {
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" showCloseButton={false} className="w-full gap-0 sm:max-w-sm">
+        <SheetContent side="right" showCloseButton={false} className="gap-0 data-[side=right]:w-full sm:max-w-sm">
           <SheetHeader className="flex-row items-center justify-between">
             <div>
               <SheetTitle>Menu</SheetTitle>
@@ -107,6 +107,7 @@ export function SiteHeader() {
             </Button>
           </SheetHeader>
           <nav aria-label="Mobile" className="flex flex-1 flex-col gap-1 overflow-y-auto px-4">
+            <Link href="/sign-in" onClick={() => setOpen(false)} className="flex min-h-12 items-center rounded-xl bg-primary-soft px-3 text-base font-medium text-primary-soft-text">Sign in to your workspace</Link>
             {SITE_LINKS.map((link) => (
               <Link
                 key={link.href}

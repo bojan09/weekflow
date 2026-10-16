@@ -10,7 +10,7 @@ export default function LandingPage() {
   return (
     <>
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-3 pt-4 pb-4 outline-none sm:gap-5 sm:px-5">
+      <main id="main" tabIndex={-1} className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-2 pt-3 pb-4 outline-none sm:gap-5 sm:px-5 sm:pt-4">
         <Hero />
         <div id="hero-end" aria-hidden="true" />
         <section aria-label="Product preview" className="surface-panel rounded-3xl border p-3 shadow-soft sm:p-6">

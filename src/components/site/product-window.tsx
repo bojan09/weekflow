@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useRef } from "react";
+import Link from "next/link";
 import { TimeGrid } from "@/components/calendar/time-grid";
 import { buildScenario } from "@/domain/scenarios";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useNow } from "@/hooks/use-now";
-import { addDays, startOfWeek, weekDates } from "@/lib/dates";
+import { startOfWeek, weekDates } from "@/lib/dates";
 import { usePrefsStore } from "@/prefs/store";
 
 const noop = (): void => undefined;
@@ -33,7 +34,7 @@ export function ProductWindow() {
 
   const days = useMemo(() => {
     if (!now) return [];
-    return wide ? weekDates(now.date, "monday") : [0, 1, 2].map((i) => addDays(now.date, i));
+    return wide ? weekDates(now.date, "monday") : [startOfWeek(now.date, "monday")];
   }, [now, wide]);
 
   return (
@@ -44,7 +45,7 @@ export function ProductWindow() {
           <span className="size-2.5 rounded-full bg-warning/70" />
           <span className="size-2.5 rounded-full bg-success/70" />
         </span>
-        <p className="text-xs font-medium text-muted-foreground">Your week in Weekflow</p>
+        <p className="text-xs font-medium text-muted-foreground"><span className="md:hidden">Monday · sample schedule</span><span className="hidden md:inline">Your week in Weekflow</span></p>
       </div>
       <p className="sr-only">
         A preview of the Weekflow week calendar showing meetings, focus blocks and tasks arranged across the working
@@ -59,7 +60,7 @@ export function ProductWindow() {
             planning={planning}
             format={format}
             density={density}
-            now={now}
+            now={{ date: startOfWeek(now.date, "monday"), minutes: 540 }}
             conflictedIds={new Set<string>()}
             scrollerRef={scrollerRef}
             bodyRef={bodyRef}
@@ -78,6 +79,7 @@ export function ProductWindow() {
       ) : (
         <div aria-hidden="true" className={`${HEIGHT} animate-pulse rounded-2xl border bg-card`} />
       )}
+      <Link href="/demo/week" className="mt-3 flex min-h-11 items-center justify-center rounded-xl bg-primary-soft px-4 text-sm font-medium text-primary-soft-text hover:bg-muted">Try the interactive calendar →</Link>
     </div>
   );
 }

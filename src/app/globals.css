@@ -337,3 +337,10 @@ html[data-motion="reduce"] *::after {
   * { scrollbar-color: auto; scrollbar-width: auto; }
   [data-slot="scroll-area-thumb"] { background: CanvasText; }
 }
+
+/* Let the keyboard and focused field use the phone viewport without a floating tab bar. */
+@media (max-width: 767px) {
+  body:has(input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, [contenteditable="true"]:focus) .app-mobile-nav {
+    display: none;
+  }
+}

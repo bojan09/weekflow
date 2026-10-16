@@ -38,7 +38,7 @@ function LinkList({ title, links }: { title: string; links: readonly { href: str
  */
 export function SiteFooter() {
   return (
-    <footer className="surface-panel rounded-3xl border p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-soft sm:p-10">
+    <footer className="surface-panel rounded-3xl border p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-soft sm:p-10">
       <div className="grid gap-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="space-y-4">
           <Logo markClassName="size-9" wordmarkClassName="text-xl" />

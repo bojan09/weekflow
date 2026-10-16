@@ -20,6 +20,17 @@ Database schema migrations are tracked separately and never share this file.
 - Account pages wait for private data without spurious navigation notices
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
+## 0.0.15 — More comfortable on phones
+Date: 2026-10-16
+Summary: A clearer mobile landing page and more room for everyday planning.
+
+- Compact landing navigation, full-width phone menu with sign-in, and a readable sample day in the calendar preview
+- Tighter mobile spacing across the hero, sections and footer
+- Consistent page headers with search and account controls beside the title
+- Task search stays visible, with additional filters behind a button showing the active count
+- Compact week navigation and calendar controls fit narrow screens
+- Bottom navigation steps aside while typing and returns when the field loses focus
+
 ## 0.0.14 — Task titles use available space
 Date: 2026-10-16
 Summary: Calendar titles wrap naturally instead of stopping after two lines.

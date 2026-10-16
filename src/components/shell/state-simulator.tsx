@@ -24,13 +24,14 @@ export function StateSimulator() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        aria-label={mode === "none" ? "Demo states" : `State: ${SIMULATED_STATES.find((state) => state.id === mode)?.label}`}
         className={cn(
           "flex h-8 min-h-11 items-center gap-1.5 rounded-full border bg-card px-3 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8",
           mode !== "none" && "border-warning-border bg-warning-soft text-warning-text",
         )}
       >
         <FlaskConical className="size-4" aria-hidden="true" />
-        {mode === "none" ? "Demo states" : `State: ${SIMULATED_STATES.find((s) => s.id === mode)?.label}`}
+        <span className="hidden sm:inline">{mode === "none" ? "Demo states" : `State: ${SIMULATED_STATES.find((s) => s.id === mode)?.label}`}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" side="bottom" className="w-64">
         <DropdownMenuGroup>

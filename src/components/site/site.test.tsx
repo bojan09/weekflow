@@ -73,8 +73,15 @@ describe("site header", () => {
     expect(button).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(button);
     const nav = screen.getByRole("navigation", { name: "Mobile" });
+    expect(nav).toHaveTextContent("Sign in to your workspace");
     for (const link of SITE_LINKS) expect(nav).toHaveTextContent(link.label);
     expect(screen.getByRole("button", { name: "Close menu" })).toBeInTheDocument();
+  });
+  it("closes the mobile menu when a destination is chosen", () => {
+    render(<SiteHeader />);
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    fireEvent.click(screen.getByRole("navigation", { name: "Mobile" }).querySelector('a[href="/sign-in"]')!);
+    expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
   });
 });
 

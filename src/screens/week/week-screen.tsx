@@ -31,10 +31,10 @@ export function WeekScreen() {
       />
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <WeekNav planner={planner} />
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <TimeScaleControl />
           <CategoryFilter />
-          <ViewSwitch planner={planner} />
+          <div className="col-span-2 sm:contents"><ViewSwitch planner={planner} /></div>
         </div>
       </div>
       <WeekPlanner variant="full" />

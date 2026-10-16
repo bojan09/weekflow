@@ -38,13 +38,13 @@ export function Panel({
     <section
       id={id}
       aria-labelledby={headingId}
-      className={cn("surface-panel scroll-mt-24 rounded-3xl border p-6 shadow-soft sm:p-10", className)}
+      className={cn("surface-panel scroll-mt-20 rounded-3xl border p-4 shadow-soft sm:scroll-mt-24 sm:p-10", className)}
     >
-      <h2 id={headingId} className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+      <h2 id={headingId} className="text-2xl font-semibold tracking-tight text-balance sm:text-4xl">
         {title}
       </h2>
       {intro ? <p className="mt-3 max-w-2xl text-base text-muted-foreground text-pretty">{intro}</p> : null}
-      <div className="mt-8">{children}</div>
+      <div className="mt-5 sm:mt-8">{children}</div>
     </section>
   );
 }

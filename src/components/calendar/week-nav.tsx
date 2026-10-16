@@ -5,7 +5,8 @@ import { SegmentedControl, NativeSelect } from "@/components/settings/controls";
 import { Button } from "@/components/ui/button";
 import { allCategories, type CategoryId } from "@/domain/tasks";
 import type { Planner } from "@/hooks/use-planner";
-import { formatLong } from "@/lib/dates";
+import { formatLong, formatShort } from "@/lib/dates";
+import { cn } from "@/lib/utils";
 import { usePlannerStore, type PlannerView } from "@/stores/planner";
 import { usePrefsStore } from "@/prefs/store";
 
@@ -13,7 +14,7 @@ export function TimeScaleControl() {
   const step = usePrefsStore((state) => state.prefs.calendar.timeStepMin);
   const update = usePrefsStore((state) => state.update);
   return <label className="flex items-center gap-2 text-xs text-muted-foreground">
-    <span>Time spacing</span>
+    <span className="sm:hidden">Grid</span><span className="hidden sm:inline">Time spacing</span>
     <NativeSelect aria-label="Calendar time spacing" value={step} className="h-9 min-w-0" onChange={(event) => update("calendar", { timeStepMin: Number(event.target.value) as 5 | 10 | 15 | 30 })}>
       {[5, 10, 15, 30].map((minutes) => <option key={minutes} value={minutes}>{minutes} min</option>)}
     </NativeSelect>
@@ -26,12 +27,12 @@ export function WeekNav({ planner, compact = false }: { planner: Planner; compac
   const label = day && planner.anchor ? formatLong(planner.anchor) : planner.rangeLabel;
   const unit = day ? "day" : "week";
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1 sm:flex-none sm:flex-wrap sm:gap-1.5">
       <Button variant="outline" size="icon-lg" aria-label={`Previous ${unit}`} onClick={() => planner.step(-1)}>
         <ChevronLeft aria-hidden="true" />
       </Button>
-      <p aria-live="polite" className={compact ? "px-0.5 text-center text-xs font-medium tabular-nums sm:text-sm" : "min-w-36 px-1 text-center text-sm font-medium tabular-nums"}>
-        {compact ? <><span className="sm:hidden">{label?.replace(/, \d{4}$/, "") || " "}</span><span className="hidden sm:inline">{label || " "}</span></> : label || " "}
+      <p aria-live="polite" className={cn("min-w-0 flex-1 text-center text-[11px] font-medium tabular-nums sm:flex-none sm:text-sm", !compact && "sm:min-w-36 sm:px-1")}>
+        <span className="sm:hidden">{day && planner.anchor ? formatShort(planner.anchor) : label?.replace(/, \d{4}$/, "") || " "}</span><span className="hidden sm:inline">{label || " "}</span>
       </p>
       <Button variant="outline" size="icon-lg" aria-label={`Next ${unit}`} onClick={() => planner.step(1)}>
         <ChevronRight aria-hidden="true" />
@@ -67,7 +68,7 @@ export function CategoryFilter() {
       aria-label="Filter by category"
       value={category}
       onChange={(e) => setCategory(e.target.value as CategoryId | "all")}
-      className="h-9 min-w-36"
+      className="h-9 min-w-0 sm:min-w-36"
     >
       <option value="all">All categories</option>
       {allCategories().map((c) => (
