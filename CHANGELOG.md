@@ -20,6 +20,15 @@ Database schema migrations are tracked separately and never share this file.
 - Account pages wait for private data without spurious navigation notices
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
+## 0.0.16 — More project colors
+Date: 2026-10-18
+Summary: Give personal and shared projects their own colors with 16 solids and six gradients.
+
+- Visual swatches with named colors, clear selection and keyboard access
+- Sunset, Ocean, Aurora, Blossom, Forest and Twilight gradients
+- Existing project colors are preserved; task categories keep their existing palette
+- Project markers use the chosen color in task lists and shared projects
+
 ## 0.0.15 — More comfortable on phones
 Date: 2026-10-16
 Summary: A clearer mobile landing page and more room for everyday planning.

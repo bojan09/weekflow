@@ -1,5 +1,6 @@
 import { z } from "zod";
-import type { Priority, TaskHue } from "../tasks";
+import type { ProjectHue } from "../project-colors";
+import type { Priority } from "../tasks";
 import {
   can,
   canAssign,
@@ -93,7 +94,7 @@ export function removeMember(state: TeamState, actorId: string, memberId: string
   });
 }
 
-export function addProject(state: TeamState, actorId: string, id: string, name: string, hue: TaskHue): Result {
+export function addProject(state: TeamState, actorId: string, id: string, name: string, hue: ProjectHue): Result {
   const actor = guard(state, actorId, (a) => (can(a.role, "project.manage") ? { ok: true } : { ok: false, reason: "Only owners and admins can manage projects." }));
   if (isResult(actor)) return actor;
   const trimmed = name.trim();

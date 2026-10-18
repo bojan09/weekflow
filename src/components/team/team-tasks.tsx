@@ -3,7 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { CalendarClock, FolderKanban, MessageSquare, Plus, Trash2 } from "lucide-react";
 import { NativeSelect } from "@/components/settings/controls";
-import { TASK_STYLE } from "@/components/tasks/task-style";
+import { ProjectColorPicker } from "@/components/tasks/project-color";
 import { PriorityBadge } from "@/components/tasks/task-meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { applyTeam, newId } from "@/data/team-actions";
 import { can } from "@/domain/team/permissions";
 import * as ops from "@/domain/team/ops";
 import { STATUS_LABEL, TASK_STATUSES, type Member, type TeamState, type TeamTask } from "@/domain/team/types";
-import { TASK_HUES, type TaskHue } from "@/domain/tasks";
+import type { ProjectHue } from "@/domain/project-colors";
 import { formatShort } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 import { MemberAvatar } from "./common";
@@ -75,7 +75,7 @@ function AddTask({ state, viewer }: { state: TeamState; viewer: Member }) {
 
 function Projects({ state, viewer }: { state: TeamState; viewer: Member }) {
   const [name, setName] = useState("");
-  const [hue, setHue] = useState<TaskHue>("teal");
+  const [hue, setHue] = useState<ProjectHue>("teal");
   const manage = can(viewer.role, "project.manage");
   return (
     <details className="rounded-2xl border bg-card px-4 py-3">
@@ -85,7 +85,7 @@ function Projects({ state, viewer }: { state: TeamState; viewer: Member }) {
       <ul className="mt-2 space-y-1.5">
         {state.projects.map((p) => (
           <li key={p.id} className="flex items-center gap-2 text-sm">
-            <span className={cn("size-3 rounded-sm", TASK_STYLE[p.hue].dot)} aria-hidden="true" />
+            <span className={cn("size-3 rounded-sm", `project-color-${p.hue}`)} aria-hidden="true" />
             <span className="flex-1">{p.name}</span>
             {manage ? (
               <Button variant="ghost" size="icon-lg" aria-label={`Delete project ${p.name}`} onClick={() => applyTeam((s, a) => ops.deleteProject(s, a, p.id))}>
@@ -105,14 +105,7 @@ function Projects({ state, viewer }: { state: TeamState; viewer: Member }) {
           }}
         >
           <Input aria-label="New project name" placeholder="New project" value={name} maxLength={40} onChange={(e) => setName(e.target.value)} className="h-9 min-w-40 flex-1 rounded-xl border-input bg-card" />
-          <NativeSelect aria-label="New project colour" value={hue} onChange={(e) => setHue(e.target.value as TaskHue)} className="h-9 min-w-28">
-            {TASK_HUES.map((h) => (
-              <option key={h} value={h}>
-                {h[0]?.toUpperCase()}
-                {h.slice(1)}
-              </option>
-            ))}
-          </NativeSelect>
+          <div className="w-full"><ProjectColorPicker label="New project colour" value={hue} onChange={setHue} /></div>
           <Button type="submit" size="lg" className="h-9">
             Add
           </Button>
@@ -134,7 +127,7 @@ function TaskCard({ task, state, onOpen }: { task: TeamTask; state: TeamState; o
         <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {project ? (
             <span className="inline-flex items-center gap-1.5">
-              <span className={cn("size-2 rounded-sm", TASK_STYLE[project.hue].dot)} aria-hidden="true" />
+              <span className={cn("size-2 rounded-sm", `project-color-${project.hue}`)} aria-hidden="true" />
               {project.name}
             </span>
           ) : null}

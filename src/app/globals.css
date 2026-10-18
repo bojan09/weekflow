@@ -344,3 +344,27 @@ html[data-motion="reduce"] *::after {
     display: none;
   }
 }
+
+/* Project identity colors use existing theme-aware semantic tokens. */
+.project-color-lavender { background: var(--task-lavender-bar); }
+.project-color-blue { background: var(--task-blue-bar); }
+.project-color-teal { background: var(--task-teal-bar); }
+.project-color-green { background: var(--task-green-bar); }
+.project-color-amber { background: var(--task-amber-bar); }
+.project-color-orange { background: var(--task-orange-bar); }
+.project-color-pink { background: var(--task-pink-bar); }
+.project-color-slate { background: var(--task-slate-bar); }
+.project-color-rose { background: color-mix(in oklch, var(--task-pink-bar) 60%, var(--task-orange-bar)); }
+.project-color-violet { background: color-mix(in oklch, var(--task-lavender-bar) 60%, var(--task-pink-bar)); }
+.project-color-cyan { background: color-mix(in oklch, var(--task-blue-bar) 60%, var(--task-teal-bar)); }
+.project-color-lime { background: color-mix(in oklch, var(--task-green-bar) 60%, var(--task-amber-bar)); }
+.project-color-gold { background: color-mix(in oklch, var(--task-amber-bar) 60%, var(--task-orange-bar)); }
+.project-color-coral { background: color-mix(in oklch, var(--task-orange-bar) 60%, var(--task-pink-bar)); }
+.project-color-indigo { background: color-mix(in oklch, var(--task-blue-bar) 60%, var(--task-lavender-bar)); }
+.project-color-mint { background: color-mix(in oklch, var(--task-teal-bar) 60%, var(--task-green-bar)); }
+.project-color-sunset { background: linear-gradient(135deg, var(--task-orange-bar), var(--task-pink-bar)); }
+.project-color-ocean { background: linear-gradient(135deg, var(--task-blue-bar), var(--task-teal-bar)); }
+.project-color-aurora { background: linear-gradient(135deg, var(--task-teal-bar), var(--task-lavender-bar)); }
+.project-color-blossom { background: linear-gradient(135deg, var(--task-pink-bar), var(--task-lavender-bar)); }
+.project-color-forest { background: linear-gradient(135deg, var(--task-green-bar), var(--task-teal-bar)); }
+.project-color-twilight { background: linear-gradient(135deg, var(--task-lavender-bar), var(--task-blue-bar)); }

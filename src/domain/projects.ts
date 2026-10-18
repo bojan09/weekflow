@@ -1,12 +1,14 @@
 import { z } from "zod";
-import { TASK_HUES, type Task, type TaskHue } from "./tasks";
+import { type Task } from "./tasks";
+
+import { PROJECT_HUES, type ProjectHue } from "./project-colors";
 
 export const MAX_PROJECTS = 30;
 
 export const projectSchema = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1, "Give the project a name").max(40, "Keep the name under 40 characters"),
-  hue: z.enum(TASK_HUES),
+  hue: z.enum(PROJECT_HUES),
 });
 
 export type Project = z.infer<typeof projectSchema>;
@@ -18,7 +20,7 @@ export function projectById(projects: readonly Project[], id: string | null): Pr
 }
 
 /** Add a project. Returns the same list for an empty or duplicate name, or when full. */
-export function addProject(projects: readonly Project[], id: string, name: string, hue: TaskHue): Project[] {
+export function addProject(projects: readonly Project[], id: string, name: string, hue: ProjectHue): Project[] {
   const trimmed = name.trim();
   const clash = projects.some((p) => p.name.toLowerCase() === trimmed.toLowerCase());
   if (trimmed === "" || clash || projects.length >= MAX_PROJECTS) return projects as Project[];

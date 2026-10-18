@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { ID, Permission, Query, Role as AppwriteRole, type Models } from "node-appwrite";
 import { z } from "zod";
-import { TASK_HUES } from "@/domain/tasks";
+import { PROJECT_HUES } from "@/domain/project-colors";
 import { isValidISO } from "@/lib/dates";
 import * as ops from "@/domain/team/ops";
 import { can, canChangeRole, canRemoveMember } from "@/domain/team/permissions";
@@ -19,8 +19,8 @@ const taskInput = teamTaskSchema.pick({ title: true, notes: true, projectId: tru
   .extend({ deadline: z.string().refine(isValidISO, "Use a valid deadline").nullable() }).partial().required({ title: true }).strict();
 const taskPatch = taskInput.extend({ status: teamTaskSchema.shape.status }).partial().strict().refine((p) => Object.keys(p).length > 0);
 const sharedCommand = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("project.add"), name: nameSchema, hue: z.enum(TASK_HUES) }).strict(),
-  z.object({ type: z.literal("project.update"), projectId: idSchema, name: nameSchema, hue: z.enum(TASK_HUES) }).strict(),
+  z.object({ type: z.literal("project.add"), name: nameSchema, hue: z.enum(PROJECT_HUES) }).strict(),
+  z.object({ type: z.literal("project.update"), projectId: idSchema, name: nameSchema, hue: z.enum(PROJECT_HUES) }).strict(),
   z.object({ type: z.literal("project.delete"), projectId: idSchema }).strict(),
   z.object({ type: z.literal("task.add"), input: taskInput }).strict(),
   z.object({ type: z.literal("task.update"), taskId: idSchema, patch: taskPatch }).strict(),

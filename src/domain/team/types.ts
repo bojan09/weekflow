@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { PRIORITIES, TASK_HUES } from "../tasks";
 
+import { PROJECT_HUES } from "../project-colors";
+
 export const ROLES = ["owner", "admin", "member", "viewer"] as const;
 export type Role = (typeof ROLES)[number];
 
@@ -56,7 +58,7 @@ export const invitationSchema = z.object({
 export const teamProjectSchema = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1, "Give the project a name").max(40),
-  hue: z.enum(TASK_HUES),
+  hue: z.enum(PROJECT_HUES),
 });
 
 export const commentSchema = z.object({

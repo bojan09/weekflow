@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoleBadge } from "@/components/team/common";
 import { initialsOf } from "@/domain/profile";
-import { PRIORITIES, PRIORITY_LABEL, TASK_HUES, type Priority, type TaskHue } from "@/domain/tasks";
+import type { ProjectHue } from "@/domain/project-colors";
+import { ProjectColorPicker } from "@/components/tasks/project-color";
+import { PRIORITIES, PRIORITY_LABEL, type Priority } from "@/domain/tasks";
 import { can, canAssign, canChangeRole, canCommentDelete, canEditTask, canRemoveMember } from "@/domain/team/permissions";
 import { ROLE_LABEL, ROLES, STATUS_LABEL, TASK_STATUSES, type Member, type Role, type TeamProject, type TeamTask, type TeamTaskStatus } from "@/domain/team/types";
 import type { TeamCommand, TeamWorkspace } from "@/server/team";
@@ -68,12 +70,13 @@ function TeamStats({ workspace }: { workspace: TeamWorkspace }) {
 }
 
 function ProjectForm({ project, disabled, save }: { project?: TeamProject; disabled: boolean; save: Save }) {
+  const [color, setColor] = useState<ProjectHue>(project?.hue ?? "blue");
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const values = new FormData(form);
     const name = text(values, "name");
-    const hue = text(values, "hue") as TaskHue;
+    const hue = text(values, "hue") as ProjectHue;
     const success = await save(project ? { type: "project.update", projectId: project.id, name, hue } : { type: "project.add", name, hue });
     if (success && !project) form.reset();
   }
@@ -81,7 +84,8 @@ function ProjectForm({ project, disabled, save }: { project?: TeamProject; disab
     <form onSubmit={submit} className="flex flex-wrap items-end gap-3">
       <fieldset disabled={disabled} className="contents">
         <Field label={project ? `Project name: ${project.name}` : "New project name"}><Input className="h-11" name="name" defaultValue={project?.name ?? ""} required maxLength={40} /></Field>
-        <Field label={project ? `Project color: ${project.name}` : "Project color"}><select className={selectClass} name="hue" defaultValue={project?.hue ?? "blue"}>{TASK_HUES.map((h) => <option key={h} value={h}>{h}</option>)}</select></Field>
+        <input type="hidden" name="hue" value={color} />
+        <div className="w-full"><ProjectColorPicker label={project ? `Project color: ${project.name}` : "Project color"} value={color} onChange={setColor} disabled={disabled} /></div>
         <Button className="min-h-11" type="submit">{project ? "Save project" : "Add project"}</Button>
         {project ? <Button className="min-h-11" variant="outline" type="button" onClick={() => { if (window.confirm(`Delete project “${project.name}”? Its tasks will remain without a project.`)) void save({ type: "project.delete", projectId: project.id }); }}>Delete project</Button> : null}
       </fieldset>

@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { FolderKanban, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { NativeSelect, SegmentedControl } from "@/components/settings/controls";
+import { SegmentedControl } from "@/components/settings/controls";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -12,29 +12,19 @@ import { mutateTemplates } from "@/data/templates";
 import { mutateTasks } from "@/data/tasks";
 import { addProject, clearProject, updateProject, removeProject } from "@/domain/projects";
 import { removeTemplate } from "@/domain/templates";
-import { categoryOf, TASK_HUES, type TaskHue } from "@/domain/tasks";
+import { categoryOf } from "@/domain/tasks";
 import { useProjects, useTemplates } from "@/hooks/use-lists";
-import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/ui";
-import { TASK_STYLE } from "./task-style";
+import { ProjectColorPicker, ProjectDot } from "./project-color";
+import type { ProjectHue } from "@/domain/project-colors";
 
 type Tab = "projects" | "templates";
 
-const HUE_LABEL: Record<TaskHue, string> = {
-  lavender: "Lavender",
-  blue: "Blue",
-  teal: "Teal",
-  green: "Green",
-  amber: "Amber",
-  orange: "Orange",
-  pink: "Pink",
-  slate: "Slate",
-};
 
 function ProjectsTab() {
   const projects = useProjects();
   const [name, setName] = useState("");
-  const [hue, setHue] = useState<TaskHue>("blue");
+  const [hue, setHue] = useState<ProjectHue>("blue");
   const [error, setError] = useState("");
 
   const add = (event: FormEvent): void => {
@@ -62,8 +52,8 @@ function ProjectsTab() {
       ) : (
         <ul className="max-h-64 space-y-2 overflow-y-auto pr-1">
           {projects.map((project) => (
-            <li key={project.id} className="flex items-center gap-2 rounded-xl border p-2">
-              <span className={cn("ml-1 size-3 shrink-0 rounded-sm", TASK_STYLE[project.hue].dot)} aria-hidden="true" />
+            <li key={project.id} className="flex flex-wrap items-center gap-2 rounded-xl border p-2">
+              <ProjectDot hue={project.hue} className="ml-1" />
               <Input
                 aria-label={`Name of ${project.name}`}
                 defaultValue={project.name}
@@ -80,18 +70,7 @@ function ProjectsTab() {
                 }}
                 className="h-9 min-w-0 flex-1 rounded-lg border-input bg-card"
               />
-              <NativeSelect
-                aria-label={`Colour of ${project.name}`}
-                value={project.hue}
-                onChange={(e) => mutateProjects((list) => updateProject(list, project.id, { hue: e.target.value as TaskHue }))}
-                className="h-9 min-w-28"
-              >
-                {TASK_HUES.map((h) => (
-                  <option key={h} value={h}>
-                    {HUE_LABEL[h]}
-                  </option>
-                ))}
-              </NativeSelect>
+              <div className="order-last w-full border-t pt-2"><ProjectColorPicker label={`Colour of ${project.name}`} value={project.hue} onChange={(hue) => mutateProjects((list) => updateProject(list, project.id, { hue }))} /></div>
               <Button
                 variant="ghost"
                 size="icon-lg"
@@ -123,13 +102,7 @@ function ProjectsTab() {
             }}
             className="h-10 min-w-40 flex-1 rounded-xl border-input bg-card"
           />
-          <NativeSelect aria-label="New project colour" value={hue} onChange={(e) => setHue(e.target.value as TaskHue)} className="h-10 min-w-28">
-            {TASK_HUES.map((h) => (
-              <option key={h} value={h}>
-                {HUE_LABEL[h]}
-              </option>
-            ))}
-          </NativeSelect>
+          <div className="order-last w-full"><ProjectColorPicker label="New project colour" value={hue} onChange={setHue} /></div>
           <Button type="submit" size="lg" className="h-10">
             <Plus aria-hidden="true" /> Add project
           </Button>

@@ -8,7 +8,7 @@ import { formatDuration } from "@/domain/stats";
 import { useProjects } from "@/hooks/use-lists";
 import { formatShort, type ISODate } from "@/lib/dates";
 import { cn } from "@/lib/utils";
-import { styleOf, TASK_STYLE } from "./task-style";
+import { styleOf } from "./task-style";
 
 const PRIORITY_TONE: Record<Priority, string> = {
   high: "bg-danger-soft text-danger-text",
@@ -44,7 +44,7 @@ export function TaskFacts({ task, today }: { task: Task; today: ISODate | null }
       <CategoryChip task={task} />
       {project ? (
         <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className={cn("size-2 rounded-sm", TASK_STYLE[project.hue].dot)} aria-hidden="true" />
+          <span className={cn("size-2 rounded-sm", `project-color-${project.hue}`)} aria-hidden="true" />
           {project.name}
         </span>
       ) : null}
