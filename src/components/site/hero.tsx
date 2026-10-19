@@ -66,7 +66,7 @@ export function Hero() {
       <div className="relative mx-auto max-w-3xl">
         <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
           <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
-          Free forever. Now in open preview.
+          Free forever. Your week, your rules.
         </p>
         <h1
           id="hero-title"
@@ -77,21 +77,22 @@ export function Hero() {
           <span className="text-primary-text">Work better.</span>
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground text-pretty sm:mt-6 sm:text-lg">
-          A flexible weekly planner built around your deadlines, priorities and the time you actually have. Drag
-          tasks, lock what must not move, and stay in control.
+          A flexible weekly planner shaped around your deadlines, priorities and real availability. Make a plan that
+          works for your life, and stay in control of every change.
         </p>
-        <div className="mt-6 flex flex-col items-center justify-center gap-2 sm:mt-9 sm:flex-row sm:gap-3">
-          <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "h-12 w-full rounded-full px-8 text-base sm:w-auto")}>
-            {SITE_CTA.label} <ArrowRight aria-hidden="true" />
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row sm:gap-3">
+          <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "h-12 w-full rounded-full px-8 text-base shadow-lift sm:w-auto")}>
+            Create your free account <ArrowRight aria-hidden="true" />
           </Link>
           <Link
-            href="/#how"
-            className="flex h-12 items-center rounded-full px-5 text-base font-medium text-primary-text hover:bg-primary-soft"
+            href="/sign-in"
+            className="flex h-11 items-center rounded-full border bg-card/80 px-6 text-sm font-medium text-foreground hover:bg-muted sm:h-12 sm:text-base"
           >
-            See how it works
+            Already have an account? Sign in
           </Link>
         </div>
-        <p className="mt-4 text-sm text-muted-foreground">No credit card. No account needed to try it.</p>
+        <Link href="/#how" className="mt-4 inline-flex min-h-11 items-center rounded-full px-4 text-sm font-medium text-primary-text hover:bg-primary-soft">See how it works</Link>
+        <p className="mt-1 text-xs text-muted-foreground">No credit card · No paid tiers · Free forever</p>
       </div>
     </section>
   );

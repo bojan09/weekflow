@@ -87,7 +87,7 @@ const FEATURES: Feature[] = [
   { icon: BarChart3, title: "Workload at a glance", text: "See planned hours against your daily limit, and spot overloaded days early.", available: true, tone: "bg-success-soft text-success-text" },
   { icon: Palette, title: "Make it yours", text: "Light and dark, 15 colors, 12 backgrounds and optional glass surfaces.", available: true, tone: "bg-info-soft text-info-text" },
   { icon: Workflow, title: "A planner that explains itself", text: "A deterministic engine: the same inputs give the same plan, with every decision explained.", available: true, tone: "bg-primary-soft text-primary-soft-text" },
-  { icon: Users, title: "Free team workspaces", text: "Shared projects, tasks and comments, with personal time always kept private. Preview it in the demo; real sharing comes with accounts.", available: false, tone: "bg-danger-soft text-danger-text" },
+  { icon: Users, title: "Free team workspaces", text: "Shared projects, tasks and comments, with personal time always kept private.", available: false, tone: "bg-danger-soft text-danger-text" },
 ];
 
 export function Features() {
@@ -183,9 +183,8 @@ export function Roadmap() {
 
 const FAQ: Array<{ q: string; a: string }> = [
   { q: "Is Weekflow really free?", a: "Yes. There are no subscriptions, paid tiers or limits, and team features will be free as well." },
-  { q: "Do I need an account to try it?", a: "No. The demo runs entirely in your browser on sample data, and its Guide explains every part. Accounts and sync arrive in a later release." },
-  { q: "Where is my data kept?", a: "In the demo, only in your browser. Nothing is sent to a server and there is no tracking." },
-  { q: "What is the scheduling engine?", a: "A deterministic planner: the same tasks and rules always give the same plan, and every decision is explained in plain language. Try it with Plan my week in the demo." },
+  { q: "Where is my data kept?", a: "Your personal planning data is saved privately to your account and is available when you sign in." },
+  { q: "What is the scheduling engine?", a: "A deterministic planner: the same tasks and rules always give the same plan, and every decision is explained in plain language. Preview a proposed week before you apply it." },
   { q: "Can I plan with a team?", a: "Team workspaces are on the roadmap. Your personal tasks will always stay private, and team scheduling will never override your protected time." },
 ];
 
@@ -219,7 +218,7 @@ export function FinalCta() {
       <h2 id="final-title" className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
         Your time. Your rules.
       </h2>
-      <p className="mx-auto mt-4 max-w-lg text-muted-foreground">Try the whole app in your browser in a few seconds.</p>
+      <p className="mx-auto mt-4 max-w-lg text-muted-foreground">Create your free account and start shaping a week around your priorities.</p>
       <Link href={SITE_CTA.href} className={cn(buttonVariants({ size: "lg" }), "mt-8 h-12 rounded-full px-8 text-base")}>
         {SITE_CTA.label} <ArrowRight aria-hidden="true" />
       </Link>

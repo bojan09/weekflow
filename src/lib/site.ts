@@ -1,4 +1,4 @@
-import { DEMO_BASE, appPath } from "./routes";
+import { appPath } from "./routes";
 
 /** Public navigation. Anchors use "/#id" so the header works from any page. */
 export const SITE_LINKS = [
@@ -9,7 +9,7 @@ export const SITE_LINKS = [
   { href: appPath("changelog"), label: "Version history" },
 ] as const;
 
-export const SITE_CTA = { href: DEMO_BASE, label: "Open the demo" } as const;
+export const SITE_CTA = { href: "/sign-up", label: "Get started free" } as const;
 
 /** Section ids on the landing page; tests check every anchor link has a target. */
 export const LANDING_SECTION_IDS = ["features", "how", "customize", "roadmap", "faq"] as const;

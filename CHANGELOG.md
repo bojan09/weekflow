@@ -20,6 +20,15 @@ Database schema migrations are tracked separately and never share this file.
 - Account pages wait for private data without spurious navigation notices
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
+## 0.0.17 — Get started from the landing page
+Date: 2026-10-19
+Summary: Make account creation and sign-in the clear next step from the public site.
+
+- Primary calls to action open account creation; existing users can sign in from the hero and mobile menu
+- The hero explains the planner more clearly and highlights free account setup
+- Calendar preview and lower-page calls to action lead into Weekflow instead of the demo
+- Updated public copy to focus on private account planning
+
 ## 0.0.16 — More project colors
 Date: 2026-10-18
 Summary: Give personal and shared projects their own colors with 16 solids and six gradients.

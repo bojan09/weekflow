@@ -79,7 +79,7 @@ export function ProductWindow() {
       ) : (
         <div aria-hidden="true" className={`${HEIGHT} animate-pulse rounded-2xl border bg-card`} />
       )}
-      <Link href="/demo/week" className="mt-3 flex min-h-11 items-center justify-center rounded-xl bg-primary-soft px-4 text-sm font-medium text-primary-soft-text hover:bg-muted">Try the interactive calendar →</Link>
+      <Link href="/sign-up" className="mt-3 flex min-h-11 items-center justify-center rounded-xl bg-primary-soft px-4 text-sm font-medium text-primary-soft-text hover:bg-muted">Build your week with Weekflow →</Link>
     </div>
   );
 }
