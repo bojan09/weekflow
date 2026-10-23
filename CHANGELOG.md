@@ -18,6 +18,7 @@ Database schema migrations are tracked separately and never share this file.
 - The public demo remains separate, with account guidance reflecting real controls
 - Team tabs stack their active content cleanly, with accurate workspace stats and member identities
 - Account pages wait for private data without spurious navigation notices
+- Read-only scheduled GitHub monitoring reports Appwrite project status and stale Console activity; it does not prevent inactivity pauses
 - Release verification is in progress; the current app version remains unchanged until sign-off
 
 ## 0.0.17 — Get started from the landing page

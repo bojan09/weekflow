@@ -1,0 +1,113 @@
+name: Appwrite Free plan activity monitor
+
+on:
+  schedule:
+    - cron: "17 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: appwrite-free-plan-monitor
+  cancel-in-progress: false
+
+jobs:
+  inspect-project:
+    name: Check Appwrite project status
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Read project status and Console activity timestamp
+        env:
+          APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
+          APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
+        run: |
+          node --input-type=module <<'NODE'
+          const required = [
+            "APPWRITE_ENDPOINT",
+            "APPWRITE_PROJECT_ID",
+            "APPWRITE_API_KEY",
+          ];
+
+          for (const name of required) {
+            if (!process.env[name]) {
+              console.error(`Missing GitHub Actions secret: ${name}`);
+              process.exit(1);
+            }
+          }
+
+          let endpoint;
+          try {
+            endpoint = new URL(process.env.APPWRITE_ENDPOINT);
+          } catch {
+            console.error("APPWRITE_ENDPOINT must be a valid HTTPS URL ending in /v1.");
+            process.exit(1);
+          }
+
+          if (
+            endpoint.protocol !== "https:" ||
+            endpoint.username ||
+            endpoint.password ||
+            endpoint.search ||
+            endpoint.hash ||
+            !endpoint.pathname.replace(/\/+$/, "").endsWith("/v1")
+          ) {
+            console.error("APPWRITE_ENDPOINT must be an HTTPS Appwrite endpoint ending in /v1.");
+            process.exit(1);
+          }
+
+          const url = `${endpoint.origin}${endpoint.pathname.replace(/\/+$/, "")}/project`;
+
+          let response;
+          try {
+            response = await fetch(url, {
+              headers: {
+                "X-Appwrite-Project": process.env.APPWRITE_PROJECT_ID,
+                "X-Appwrite-Key": process.env.APPWRITE_API_KEY,
+              },
+              signal: AbortSignal.timeout(15000),
+            });
+          } catch {
+            console.error("Could not reach Appwrite. Check the endpoint and try again.");
+            process.exit(1);
+          }
+
+          if (!response.ok) {
+            console.error(`Appwrite project status request failed (HTTP ${response.status}). Check the endpoint, project ID, and project.read API-key scope.`);
+            process.exit(1);
+          }
+
+          let project;
+          try {
+            project = await response.json();
+          } catch {
+            console.error("Appwrite returned an unreadable project status response.");
+            process.exit(1);
+          }
+
+          const status = typeof project.status === "string" ? project.status : "unknown";
+          const accessedAt = project.consoleAccessedAt;
+          console.log(`Appwrite project status: ${status}`);
+
+          if (typeof accessedAt !== "string" || !Number.isFinite(Date.parse(accessedAt))) {
+            console.error("Appwrite did not provide a Console activity timestamp. Check the project in the Appwrite Console.");
+            process.exit(1);
+          }
+
+          const ageDays = Math.floor((Date.now() - Date.parse(accessedAt)) / 86400000);
+          console.log(`Last Appwrite Console access: ${accessedAt} (${ageDays} day(s) ago)`);
+
+          if (status.toLowerCase().includes("paus")) {
+            console.error("Appwrite reports a paused project. Open the Appwrite Console to review and reactivate it.");
+            process.exit(1);
+          }
+
+          if (ageDays >= 5) {
+            console.error("Action needed: visit the Appwrite Console and do real development work. This monitor cannot prevent an inactivity pause.");
+            process.exit(1);
+          }
+
+          console.log("No stale-activity warning. This read-only check does not count as Appwrite Console development activity.");
+          NODE
